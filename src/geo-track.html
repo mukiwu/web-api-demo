@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>用 Geolocation API 實作車子導航追蹤</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 90%;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    #map {
+      width: 100%;
+      height: 600px;
+      margin-bottom: 20px;
+    }
+
+    input,
+    button {
+      margin-bottom: 10px;
+    }
+
+    #status {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div>
+    <input type="text" id="addressInput" placeholder="輸入您的地址">
+    <button onclick="searchAddress()">搜尋地址</button>
+  </div>
+  <div id="map"></div>
+  <div>
+    <button onclick="startSimulation()">開始模擬</button>
+    <button onclick="stopSimulation()">停止模擬</button>
+  </div>
+  <div id="status"></div>
+  <div><a href="https://www.flaticon.com/free-icons/car" title="car icons">Car icons created by Konkapp - Flaticon</a></div>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-routing-machine/3.2.12/leaflet-routing-machine.min.js"></script>
+
+  <script>
+    let map, userMarker, driverMarker, routeControl;
+    let simulationInterval;
+    let routePoints = [];
+    let currentPointIndex = 0;
+
+    function initMap() {
+      map = L.map('map').setView([25.0330, 121.5654], 13);  // 台北市中心
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+      }).addTo(map);
+
+      userMarker = L.marker([25.0330, 121.5654]).addTo(map);
+      driverMarker = L.marker([25.0330, 121.5654], {
+        icon: L.icon({
+          // <a href="https://www.flaticon.com/free-icons/car" title="car icons">Car icons created by Konkapp - Flaticon</a>
+          iconUrl: 'https://muki.tw/demo/web-api/car.png',
+          iconSize: [30, 30],
+          iconAnchor: [15, 15]
+        })
+      }).addTo(map);
+    }
+
+    async function searchAddress() {
+      const address = document.getElementById('addressInput').value;
+      const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`);
+      const data = await response.json();
+      if (data.length > 0) {
+        const { lat, lon } = data[0];
+        userMarker.setLatLng([lat, lon]);
+        map.setView([lat, lon], 13);
+        calculateRoute(lat, lon);
+      } else {
+        document.getElementById('status').textContent = "找不到地址";
+      }
+    }
+
+    function calculateRoute(destLat, destLon) {
+      if (routeControl) {
+        map.removeControl(routeControl);
+      }
+
+      const driverStart = driverMarker.getLatLng();
+      routeControl = L.Routing.control({
+        waypoints: [
+          L.latLng(driverStart.lat, driverStart.lng),
+          L.latLng(destLat, destLon)
+        ],
+        routeWhileDragging: false,
+        addWaypoints: false,
+        draggableWaypoints: false,
+        fitSelectedRoutes: true,
+        show: true,  // 路線指示面板
+        lineOptions: {
+          styles: [{ color: 'blue', opacity: 0.6, weight: 4 }]
+        }
+      }).addTo(map);
+
+      routeControl.on('routesfound', function (e) {
+        routePoints = e.routes[0].coordinates;
+        const distance = e.routes[0].summary.totalDistance / 1000;  // 公里
+        const duration = Math.round(e.routes[0].summary.totalTime / 60);  // 分鐘
+        document.getElementById('status').textContent = `預計距離: ${distance.toFixed(2)} 公里, 時間: ${duration} 分鐘`;
+      });
+    }
+
+    function startSimulation() {
+      if (routePoints.length === 0) {
+        document.getElementById('status').textContent = "請先搜尋地址並計算路線";
+        return;
+      }
+      currentPointIndex = 0;
+      simulationInterval = setInterval(moveDriver, 1000);
+    }
+
+    function moveDriver() {
+      if (currentPointIndex >= routePoints.length) {
+        stopSimulation();
+        document.getElementById('status').textContent = "模擬完成，司機已到達目的地";
+        return;
+      }
+      const point = routePoints[currentPointIndex];
+      driverMarker.setLatLng([point.lat, point.lng]);
+      currentPointIndex++;
+
+      const userPos = userMarker.getLatLng();
+      const driverPos = driverMarker.getLatLng();
+      const distance = userPos.distanceTo(driverPos) / 1000;  // 公里
+      document.getElementById('status').textContent = `司機距離您還有 ${distance.toFixed(2)} 公里`;
+    }
+
+    function stopSimulation() {
+      clearInterval(simulationInterval);
+      simulationInterval = null;
+    }
+
+    initMap();
+  </script>
+</body>
+
+</html>
