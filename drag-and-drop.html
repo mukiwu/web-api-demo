@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>用 Drag and Drop API 拖曳網頁元素</title>
+  <style>
+    .drag-over-yellow {
+      background-color: yellow;
+    }
+
+    .drag-over-blue {
+      background-color: teal;
+    }
+
+    .drop-zone {
+      height: 300px;
+      width: 300px;
+      border: 1px solid black;
+      margin: 10px;
+      padding: 10px;
+    }
+
+    #draggable-item {
+      cursor: move;
+      padding: 10px;
+      background-color: #f0f0f0;
+      display: inline-block;
+    }
+
+    .flex {
+      display: flex;
+    }
+  </style>
+</head>
+
+<body>
+  <p>拖曳範例</p>
+  <div id="draggable-item" draggable="true">可以拖動的元素</div>
+  <div class="flex">
+    <div id="drop-zone-1" class="drop-zone">放置區域 1</div>
+    <div id="drop-zone-2" class="drop-zone">放置區域 2</div>
+  </div>
+  <script>
+    const draggableItem = document.getElementById('draggable-item');
+    const dropZones = document.querySelectorAll('.drop-zone');
+    const dropZone1 = document.getElementById('drop-zone-1');
+    const dropZone2 = document.getElementById('drop-zone-2');
+
+    draggableItem.addEventListener('dragstart', (event) => {
+      event.dataTransfer.setData('text/plain', event.target.id);
+      event.target.style.opacity = '0.5';
+    });
+
+    draggableItem.addEventListener('dragend', (event) => {
+      event.target.style.opacity = '';
+    });
+
+    dropZones.forEach(zone => {
+      zone.addEventListener('dragover', (event) => {
+        event.preventDefault(); // 阻止默認行為以允許放置
+      });
+
+      zone.addEventListener('drop', (event) => {
+        event.preventDefault();
+        const draggedItemId = event.dataTransfer.getData('text/plain');
+        const draggedItem = document.getElementById(draggedItemId);
+        event.target.appendChild(draggedItem);
+        event.target.classList.remove('drag-over-yellow', 'drag-over-blue');
+      });
+    });
+
+    dropZone1.addEventListener('dragenter', (event) => {
+      event.target.classList.add('drag-over-yellow');
+    });
+
+    dropZone1.addEventListener('dragleave', (event) => {
+      event.target.classList.remove('drag-over-yellow');
+    });
+
+    dropZone2.addEventListener('dragenter', (event) => {
+      event.target.classList.add('drag-over-blue');
+    });
+
+    dropZone2.addEventListener('dragleave', (event) => {
+      event.target.classList.remove('drag-over-blue');
+    });
+  </script>
+</body>
+
+</html>
