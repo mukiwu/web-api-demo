@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>File API 介紹與實際應用</title>
+</head>
+
+<body>
+  <input type="file" id="fileInput" />
+
+  <script>
+    const fileInput = document.getElementById('fileInput');
+
+    fileInput.addEventListener('change', async function (event) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+
+      // 使用 Blob 來處理文件
+      const blob = new Blob([file], { type: file.type });
+      console.log('blob', blob)
+
+      // 使用 slice() 方法
+      const sliceBlob = blob.slice(0, blob.size / 2);
+      console.log('sliceBlob', sliceBlob);
+
+      // 使用 stream() 方法
+      const stream = blob.stream();
+      const streamReader = stream.getReader();
+      const { value } = await streamReader.read();
+      console.log('Stream chunk:', value);
+    });
+  </script>
+</body>
+
+</html>

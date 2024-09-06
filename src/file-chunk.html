@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>File API 介紹與實際應用</title>
+</head>
+
+<body>
+  <input type="file" id="fileInput" />
+  <button onclick="generateAndDownloadFile()">下載檔案</button>
+
+  <script>
+    function generateAndDownloadFile() {
+      const content = 'This is the content of the file.';
+      const blob = new Blob([content], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'generated-file.txt';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      URL.revokeObjectURL(url);
+    }
+
+    document.getElementById('fileInput').addEventListener('change', function (event) {
+      const file = event.target.files[0];
+      if (file) {
+        uploadFile(file);
+        console.log('File 對象是否是 Blob 的實例:', file instanceof Blob);
+        console.log('File 對象是否是 File 的實例:', file instanceof AAA);
+      }
+    });
+
+    const CHUNK_SIZE = 1024 * 1024; // 1MB 分片大小
+
+    function uploadFile(file) {
+      const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
+      let currentChunk = 0;
+
+      function uploadNextChunk() {
+        const start = currentChunk * CHUNK_SIZE;
+        const end = Math.min(file.size, start + CHUNK_SIZE);
+        const chunk = file.slice(start, end);
+
+        const formData = new FormData();
+        formData.append('file', chunk, file.name);
+        formData.append('chunk', currentChunk);
+        formData.append('totalChunks', totalChunks);
+
+        // 模擬上傳
+        setTimeout(() => {
+          console.log(`上傳 chunk ${currentChunk + 1}/${totalChunks}:`, chunk);
+
+          currentChunk++;
+          if (currentChunk < totalChunks) {
+            uploadNextChunk();
+          } else {
+            console.log('文件上傳完成');
+          }
+        }, 500); // 模擬網絡延遲
+      }
+
+      uploadNextChunk();
+    }
+
+  </script>
+
+</body>
+
+</html>
