@@ -13,7 +13,7 @@
 
   <script>
     function generateAndDownloadFile() {
-      const content = 'This is the content of the file.';
+      const content = 'Hello, World!';
       const blob = new Blob([content], { type: 'text/plain' });
       const url = URL.createObjectURL(blob);
 
@@ -31,8 +31,6 @@
       const file = event.target.files[0];
       if (file) {
         uploadFile(file);
-        console.log('File 對象是否是 Blob 的實例:', file instanceof Blob);
-        console.log('File 對象是否是 File 的實例:', file instanceof AAA);
       }
     });
 
