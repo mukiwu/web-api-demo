@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>File API 介紹與實際應用</title>
+</head>
+
+<body>
+  <input type="file" id="fileInput" />
+  <img id="preview" src="" alt="Image preview" style="display:none;" />
+
+  <script>
+    const fileInput = document.getElementById('fileInput');
+    const img = document.getElementById('preview');
+    fileInput.addEventListener('change', async function (event) {
+      const file = event.target.files[0];
+      const imgURL = URL.createObjectURL(file);
+      img.src = imgURL;
+      img.style.display = 'block';
+    });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>File API 介紹與實際應用</title>
+  <style>
+    img {
+      max-width: 100%;
+    }
+
+    .drag-over-yellow {
+      background-color: yellow;
+    }
+
+    .drop-zone {
+      height: 300px;
+      width: 300px;
+      border: 1px solid black;
+      margin: 10px;
+      padding: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="drop-zone" class="drop-zone">放置區域</div>
+
+  <script>
+    const dropZone = document.getElementById('drop-zone');
+
+    dropZone.addEventListener('dragover', (event) => {
+      event.preventDefault();
+    });
+
+    dropZone.addEventListener('dragenter', (event) => {
+      if (event.dataTransfer.items && event.dataTransfer.items[0].kind === 'file') {
+        event.target.classList.add('drag-over-yellow');
+      }
+    });
+
+    dropZone.addEventListener('dragleave', (event) => {
+      event.target.classList.remove('drag-over-yellow');
+    });
+
+    dropZone.addEventListener('drop', (event) => {
+      event.preventDefault();
+      event.target.classList.remove('drag-over-yellow');
+      const file = event.dataTransfer.files[0];
+      if (file) {
+        const imgURL = URL.createObjectURL(file);
+        const img = document.createElement('img');
+        img.src = imgURL;
+        dropZone.innerHTML = '';
+        dropZone.appendChild(img);
+      }
+    });
+  </script>
+</body>
+
+</html>
