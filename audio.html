@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>用 Audio 和 Video API 打造自己的影音平台</title>
+  <style>
+    :root {
+      --base: #c3efe9;
+      --second: #269181;
+      --trackball: var(--second);
+      --range: 0%;
+    }
+
+    .audio-controller {
+      width: 300px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    #range {
+      appearance: none;
+      width: 300px;
+      position: relative;
+    }
+
+    #range:focus {
+      outline: none;
+    }
+
+    #range::before {
+      position: absolute;
+      content: "";
+      width: var(--range);
+      height: 2px;
+      background: var(--second);
+    }
+
+    #range::-webkit-slider-runnable-track {
+      background: var(--base);
+      height: 2px;
+    }
+
+    #range::-webkit-slider-thumb {
+      width: 10px;
+      height: 10px;
+      border-radius: 100%;
+      border: none;
+      -webkit-appearance: none;
+      background-color: var(--trackball);
+      margin-top: -3.5px;
+      z-index: 99;
+      position: relative;
+      transition: 0.5s all ease;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="audio-controller">
+    <audio id="audio" src="song.mp3"></audio>
+    <div class="controls">
+      <button id="playPause">播放</button>
+      <span id="currentTime">0:00</span> / <span id="duration">0:00</span>
+    </div>
+    <input type="range" id="range" min="0" max="100" value="0">
+  </div>
+
+  <script>
+    const audio = document.getElementById('audio');
+    const currentTime = document.getElementById('currentTime');
+    const duration = document.getElementById('duration');
+    const range = document.getElementById("range");
+
+    const playButton = document.getElementById('playPause');
+
+    const updateVar = (value) => {
+      document.documentElement.style.setProperty("--range", value + "%");
+    }
+
+    range.addEventListener("input", () => {
+      updateVar(range.value);
+    });
+
+    // 播放/暫停功能
+    function togglePlay() {
+      if (audio.paused) {
+        audio.play();
+        playButton.textContent = '暫停';
+      } else {
+        audio.pause();
+        playButton.textContent = '播放';
+      }
+    }
+
+    // 根據滑動桿的值設定音樂的當前時間
+    function setAudioProgress() {
+      const newTime = (range.value / 100) * audio.duration;
+      audio.currentTime = newTime;
+      updateTime();
+    }
+
+    // 更新時間
+    function updateTime() {
+      const currentMinutes = Math.floor(audio.currentTime / 60);
+      const currentSeconds = Math.floor(audio.currentTime % 60);
+      const durationMinutes = Math.floor(audio.duration / 60);
+      const durationSeconds = Math.floor(audio.duration % 60);
+
+      currentTime.textContent = `${currentMinutes}:${currentSeconds.toString().padStart(2, '0')}`;
+      duration.textContent = `${durationMinutes}:${durationSeconds.toString().padStart(2, '0')}`;
+    }
+
+    // 更新滑動桿
+    function updateRange() {
+      const rangeValue = (audio.currentTime / audio.duration) * 100;
+      range.value = rangeValue;
+      updateVar(rangeValue);
+    }
+
+    playButton.addEventListener('click', togglePlay);
+    audio.addEventListener('timeupdate', () => {
+      updateTime();
+      updateRange();
+    });
+    audio.addEventListener('loadedmetadata', () => {
+      updateTime();
+    });
+
+    range.addEventListener('input', setAudioProgress);
+  </script>
+</body>
+
+</html>
