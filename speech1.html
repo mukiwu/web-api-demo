@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>使用 Web Speech API 讓網頁開口說話</title>
+</head>
+
+<body>
+  <h1>語音合成控制</h1>
+
+  <label for="voiceSelect">選擇語音:</label>
+  <select id="voiceSelect"></select><br><br>
+
+  <label for="volumeRange">音量:</label>
+  <input type="range" id="volumeRange" min="0" max="1" step="0.1" value="1"><br><br>
+
+  <label for="pitchRange">音調:</label>
+  <input type="range" id="pitchRange" min="0" max="2" step="0.1" value="1"><br><br>
+
+  <label for="rateRange">語速:</label>
+  <input type="range" id="rateRange" min="0.1" max="2" step="0.1" value="1"><br><br>
+
+  <label for="textToSpeak">要說的話:</label><br>
+  <textarea id="textToSpeak" rows="4" cols="50">你好，歡迎使用我們的網站</textarea><br><br>
+
+  <button id="speakButton">播放語音</button>
+  <button id="pauseButton">暫停播放</button>
+  <button id="resumeButton">恢復播放</button>
+
+  <script>
+    // 獲取語音列表的變量
+    let voices = [];
+
+    // 更新語音選項
+    function populateVoiceList() {
+      voices = window.speechSynthesis.getVoices();
+      const voiceSelect = document.getElementById('voiceSelect');
+      voiceSelect.innerHTML = ''; // 清空現有選項
+
+      voices.forEach((voice, index) => {
+        const option = document.createElement('option');
+        option.textContent = `${voice.name} (${voice.lang})`;
+        option.value = index;
+        voiceSelect.appendChild(option);
+      });
+    }
+
+    // 當語音列表變更時更新語音選項
+    window.speechSynthesis.onvoiceschanged = populateVoiceList;
+
+    // 播放語音
+    document.getElementById('speakButton').onclick = function () {
+      const textToSpeak = document.getElementById('textToSpeak').value;
+      const utterance = new SpeechSynthesisUtterance(textToSpeak);
+
+      // 設定語音選擇
+      const selectedVoiceIndex = document.getElementById('voiceSelect').value;
+      utterance.voice = voices[selectedVoiceIndex];
+
+      // 設定音量、音調、語速
+      utterance.volume = document.getElementById('volumeRange').value;
+      utterance.pitch = document.getElementById('pitchRange').value;
+      utterance.rate = document.getElementById('rateRange').value;
+
+      // 播放語音
+      window.speechSynthesis.speak(utterance);
+    };
+
+    // 暫停播放
+    document.getElementById('pauseButton').onclick = function () {
+      window.speechSynthesis.pause();
+    };
+
+    // 恢復播放
+    document.getElementById('resumeButton').onclick = function () {
+      window.speechSynthesis.resume();
+    };
+  </script>
+</body>
+
+</html>
