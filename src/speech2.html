@@ -8,6 +8,10 @@
 </head>
 
 <body>
+  <div>
+    <p>可以輸入你的 OpenAI API Key 來與 AI 互動聊天。我不會儲存你的 API Key，請放心使用。</p>
+    <input type="text" id="apiKeyInput" placeholder="請輸入你的 OpenAI API Key">
+  </div>
   <button id="talkButton">說話</button>
   <p id="response">等待語音輸入...</p>
 
@@ -15,7 +19,7 @@
     let voices = []
     const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
     const utterance = new SpeechSynthesisUtterance();
-    const apiKey = '';
+    const apiKey = document.getElementById('apiKeyInput');
 
     recognition.lang = 'zh-TW';
     utterance.lang = 'zh-TW';
