@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>WebSocket 的處理訊息機制</title>
+    <style>
+        #messages {
+            border: 1px solid #ccc;
+            padding: 10px;
+            height: 300px;
+            overflow-y: scroll;
+        }
+        #input {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <p>WebSocekt 啟動需要一點時間，請稍等。</p>
+        <p>WebSocekt 連線狀態：<span id="connection-status">未連線</span></p>
+        <p>如果 server 被關閉，就不會收到 WebSocket 的訊息，但仍可以透過程式碼觀看完整範例。</p>
+    </div>
+    <div id="messages"></div>
+    <div id="input">
+        <input type="text" id="messageInput" placeholder="輸入訊息">
+        <button onclick="sendMessage()">發送</button>
+    </div>
+    <script>
+        const websocket = new WebSocket('wss://wary-telling-galley.glitch.me');
+        let messageQueue = [];
+        const BATCH_INTERVAL = 10000; // 10秒
+
+        websocket.onopen = function() {
+            document.getElementById('connection-status').textContent = '已連線';
+            console.log('WebSocket 連接已建立');
+        };
+
+        websocket.onclose = function() {
+            document.getElementById('connection-status').textContent = '已關閉';
+        };
+
+        websocket.onmessage = async function(event) {
+            const messages = JSON.parse(event.data);
+            const messagesDiv = document.getElementById('messages');
+            messages.forEach(message => {
+                const messageElement = document.createElement('div');
+                messageElement.textContent = message.content;
+                messagesDiv.appendChild(messageElement);
+            });
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            for (const message of messages) {
+              await processMessage(message);
+            }
+        };
+
+        websocket.onerror = function(error) {
+            console.error('WebSocket 錯誤:', error);
+            document.getElementById('connection-status').textContent = '錯誤';
+        };
+
+        async function processMessage(message) {
+          await new Promise(resolve => setTimeout(resolve, 100));
+          console.log('Processed message:', message);
+        }
+
+        function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput.value;
+            if (message) {
+                messageQueue.push({ content: message });
+                messageInput.value = '';
+            }
+        }
+
+        setInterval(() => {
+            if (messageQueue.length > 0) {
+                const batch = messageQueue.splice(0, messageQueue.length);
+                websocket.send(JSON.stringify(batch));
+            }
+        }, BATCH_INTERVAL);
+    </script>
+</body>
+</html>

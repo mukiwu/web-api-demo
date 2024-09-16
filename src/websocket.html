@@ -7,7 +7,9 @@
 </head>
 <body>
   <div>
-    如果 server 被關閉，就不會收到 WebSocket 的訊息，但仍可以透過程式碼觀看完整範例。
+    <p>WebSocekt 啟動需要一點時間，請稍等。</p>
+    <p>WebSocekt 連線狀態：<span id="connection-status">未連線</span></p>
+    <p>如果 server 被關閉，就不會收到 WebSocket 的訊息，但仍可以透過程式碼觀看完整範例。</p>
   </div>
   <div id="messages"></div>
 
@@ -15,6 +17,7 @@
     const socket = new WebSocket('wss:/torpid-hypnotic-flea.glitch.me/');
 
     socket.onopen = () => {
+      document.getElementById('connection-status').textContent = '已連線';
       console.log('Connected to the WebSocket server');
     };
 
@@ -26,10 +29,12 @@
     };
 
     socket.onclose = () => {
+      document.getElementById('connection-status').textContent = '已關閉';
       console.log('WebSocket connection closed');
     };
 
     socket.onerror = (error) => {
+      document.getElementById('connection-status').textContent = '錯誤';
       console.error('WebSocket error:', error);
     };
   </script>
