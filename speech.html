@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>使用 Web Speech API 讓網頁聽得懂我們說的話</title>
+</head>
+<body>
+    <p>請直接說出你要搜尋的關鍵字，當你說出「開始搜尋」時，就會停止語音辨識，並開始搜尋。</p>
+    <p id="status">狀態: 等待語音輸入</p>
+    <p id="search-term">語音內容: <span id="term"></span></p>
+    <script>
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        let searchTerm = '';
+
+        recognition.lang = 'zh-TW';
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        
+        recognition.onresult = function(event) {
+          let interimTranscript = '';
+          let finalTranscript = '';
+
+          for (let i = event.resultIndex; i < event.results.length; i++) {
+            const result = event.results[i];
+            if (result.isFinal) {
+              finalTranscript += result[0].transcript;
+            } else {
+              interimTranscript += result[0].transcript;
+            }
+          }
+
+            // 更新顯示的即時結果和最終結果
+            document.getElementById('term').textContent = finalTranscript + interimTranscript;
+            
+            // 檢查是否包含「開始搜尋」關鍵字
+            if (finalTranscript.includes('開始搜尋')) {
+              // 去除「開始搜尋」並取得剩餘文字作為搜尋關鍵字
+              searchTerm = finalTranscript.replace('開始搜尋', '').trim();
+              // 停止語音識別
+              recognition.stop();
+              // 更新狀態
+              document.getElementById('status').textContent = '狀態: 開始搜尋中...';
+              // 執行搜尋操作
+              performSearch(searchTerm);
+              searchTerm = '';
+            } else {
+              // 更新搜尋關鍵字
+              searchTerm = finalTranscript + interimTranscript;
+            }
+        };
+
+        recognition.onstart = function() {
+          document.getElementById('status').textContent = '狀態: 語音識別中...';
+        };
+        recognition.onend = function() {
+          document.getElementById('status').textContent = '狀態: 語音識別結束';
+        };
+        recognition.onerror = function(event) {
+          console.error('語音識別錯誤:', event.error);
+          document.getElementById('status').textContent = '狀態: 語音識別錯誤';
+        };
+
+        // 開始語音識別
+        recognition.start();
+
+        // 執行搜尋操作
+        function performSearch(query) {
+          if (query) {
+            console.log('搜尋關鍵字:', query);
+            const searchUrl = 'https://www.google.com/custom?q=' + encodeURIComponent(query);
+            window.location.href = searchUrl;
+          } else {
+            console.log('沒有提供搜尋關鍵字');
+          }
+        }
+    </script>
+</body>
+</html>
