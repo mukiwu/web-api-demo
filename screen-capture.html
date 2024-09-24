@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>使用 Screen Capture API 取得你的螢幕畫面</title>
+</head>
+<body>
+  <button id="startCapture">取得螢幕</button>
+  <input type="checkbox" id="enableSwitch" />允許切換分享視窗
+  <video id="screenVideo" controls autoplay></video>
+
+  <script>
+    document.getElementById('startCapture').addEventListener('click', startScreenCapture);
+    document.getElementById('switchCapture').addEventListener('click', captureWithSwitching);
+
+    async function startScreenCapture() {
+      try {
+        const videoElement = document.getElementById('screenVideo');
+        const enableSwitch = document.getElementById('enableSwitch').checked;
+
+        // 根據選擇啟用 surfaceSwitching
+        const screenStream = await navigator.mediaDevices.getDisplayMedia({
+          video: true,
+          surfaceSwitching: enableSwitch ? "include" : "exclude"
+        });
+
+        // 將擷取到的螢幕串流顯示在 video 元素中
+        videoElement.srcObject = screenStream;
+
+        // 在 videoElement 裡加入動畫效果
+        videoElement.animate([
+          { transform: 'scale(1)', opacity: 1 },
+          { transform: 'scale(1.02)', opacity: 0.8 },
+          { transform: 'scale(1)', opacity: 1 }
+        ], {
+          duration: 500
+        });
+      } catch (error) {
+        console.error("螢幕擷取失敗: ", error);
+      }
+    }
+  </script>
+</body>
+</html>
