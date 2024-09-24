@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>使用 Web Animations API 製作打散文字的動畫效果</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f5f5f5;
+      margin: 0;
+    }
+
+    #text-container {
+      font-size: 2rem;
+      line-height: 1.5;
+      display: inline-block;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .char {
+      display: inline-block;
+      transition: transform 0.5s ease-in-out;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="text-container">
+    你好，我是 MUKI，很高興認識你，Nice to meet you.
+  </div>
+
+  <script>
+    const textContainer = document.getElementById('text-container');
+    const textContent = textContainer.textContent;
+    textContainer.innerHTML = '';
+
+    textContent.split('').forEach(char => {
+      if (char === ' ') {
+        textContainer.appendChild(document.createTextNode(' '));
+      } else {
+        const span = document.createElement('span');
+        span.className = 'char';
+        span.textContent = char;
+        textContainer.appendChild(span);
+      }
+    });
+
+    const chars = document.querySelectorAll('.char');
+
+    textContainer.addEventListener('mouseenter', () => {
+      chars.forEach(char => {
+        const randomX = (Math.random() - 0.5) * 300;
+        const randomY = (Math.random() - 0.5) * 300;
+        const randomRotation = Math.random() * 360;
+
+        char.animate([
+          { transform: 'translate(0, 0) rotate(0deg)' },
+          { transform: `translate(${randomX}px, ${randomY}px) rotate(${randomRotation}deg)` }
+        ], {
+          duration: 1000,
+          fill: 'forwards'
+        });
+      });
+    });
+
+    textContainer.addEventListener('mouseleave', () => {
+      chars.forEach(char => {
+        const randomX = (Math.random() - 0.5) * 300;
+        const randomY = (Math.random() - 0.5) * 300;
+        const randomRotation = Math.random() * 360;
+        
+        char.animate([
+          { transform: `translate(${randomX}px, ${randomY}px) rotate(${randomRotation}deg)` },
+          { transform: 'translate(0, 0) rotate(0deg)' }
+        ], {
+          duration: 1000,
+          fill: 'forwards'
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>
