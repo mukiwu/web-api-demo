@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>使用 IndexedDB API 做一個筆記儲存功能</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      width: 80%;
+      max-width: 600px;
+      margin: 50px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1,
+    h2 {
+      color: #333;
+    }
+
+    form {
+      margin-bottom: 20px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 100px;
+      padding: 10px;
+      font-size: 16px;
+      margin-bottom: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #5cb85c;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #4cae4c;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      background: #f9f9f9;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    li button {
+      background-color: #d9534f;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    li button:hover {
+      background-color: #c9302c;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <form id="note-form">
+      <textarea id="note-content" placeholder="輸入筆記..."></textarea>
+      <button type="submit">儲存筆記</button>
+    </form>
+    <h2>筆記列表</h2>
+    <ul id="notes-list"></ul>
+  </div>
+
+  <script>
+    let db;
+    const request = window.indexedDB.open("notesDB", 1);
+
+    request.onerror = function (event) {
+      console.error("資料庫建立失敗", event);
+    };
+
+    request.onsuccess = function (event) {
+      db = event.target.result;
+      console.log("資料庫建立成功");
+      loadNotes();
+    };
+
+    request.onupgradeneeded = function (event) {
+      db = event.target.result;
+      const objectStore = db.createObjectStore("notes", { keyPath: "id", autoIncrement: true });
+      objectStore.createIndex("content", "content", { unique: false });
+    };
+
+    function addNote(content) {
+      const transaction = db.transaction(["notes"], "readwrite");
+      const objectStore = transaction.objectStore("notes");
+      const request = objectStore.add({ content: content });
+
+      request.onsuccess = function () {
+        loadNotes();
+      };
+
+      request.onerror = function (event) {
+        console.error("新增筆記失敗", event);
+      };
+    }
+
+    function loadNotes() {
+      const transaction = db.transaction(["notes"], "readonly");
+      const objectStore = transaction.objectStore("notes");
+      const request = objectStore.getAll();
+
+      request.onsuccess = function (event) {
+        const notes = event.target.result;
+        const notesList = document.getElementById("notes-list");
+        notesList.innerHTML = "";
+        notes.forEach(note => {
+          const li = document.createElement("li");
+          li.textContent = note.content;
+          const deleteButton = document.createElement("button");
+          deleteButton.textContent = "刪除";
+          deleteButton.onclick = function () {
+            deleteNote(note.id);
+          };
+          li.appendChild(deleteButton);
+          notesList.appendChild(li);
+        });
+      };
+
+      request.onerror = function (event) {
+        console.error("載入失敗", event);
+      };
+    }
+
+    function deleteNote(id) {
+      const transaction = db.transaction(["notes"], "readwrite");
+      const objectStore = transaction.objectStore("notes");
+      const request = objectStore.delete(id);
+
+      request.onsuccess = function () {
+        loadNotes();
+      };
+
+      request.onerror = function (event) {
+        console.error("刪除失敗", event);
+      };
+    }
+
+    document.getElementById("note-form").onsubmit = function (event) {
+      event.preventDefault();
+      const content = document.getElementById("note-content").value;
+      if (content.trim()) {
+        addNote(content);
+        document.getElementById("note-content").value = "";
+      }
+    };
+
+  </script>
+</body>
+
+</html>
