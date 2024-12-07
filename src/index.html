@@ -3,27 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/css/uikit.min.css" />
   <title>Web API Demo</title>
 </head>
 <body>
-  <div class="uk-container">
-    <div uk-grid>
-      <div id="sidebar" class="uk-width-1-3@m"></div>
-      <div class="uk-width-2-3@m uk-margin-medium-top">
-        <article class="uk-article">
-          <h1 class="uk-article-title">Web API 系列文章</h1>
-          <p class="uk-margin-small-top">這系列文章是我參加 2024 iThome 鐵人賽期間撰寫的作品。完賽後，我對文章進行潤稿與修訂，並重新發佈在部落格上。</p>
-          <p class="uk-margin-small-top">為了聚焦在 Web API 上，文章內的所有範例都使用原生 HTML + CSS + JavaScript 撰寫，並提供完整的線上範例，如有任何問題，歡迎留言討論。</p>
-          <p class="uk-margin-small-top">這裡放的是文章內容的範例，關於完整文章，請移駕至我的部落格觀看：<a href="https://muki.tw/tag/web-api/">Web API 系列文章</a></p>
-          
-          <h3 class="uk-margin-small-bottom" id="b">問題與回報</h3>
-          <p class="uk-margin-small-top">如果文章內有任何問題，歡迎留言討論，或透過<a href="https://www.facebook.com/mukispace">粉絲團</a>與我聯繫</p>
-        </article>
-      </div>
-    </div>
-  </div>
+  <div id="header"></div>
+  <div id="sidebar"></div>
+  <article class="uk-article">
+    <h1>Web API 系列文章</h1>
+    <p>這系列文章是我參加 2024 iThome 鐵人賽期間撰寫的作品。完賽後，我對文章進行潤稿與修訂，並重新發佈在部落格上。</p>
+    <p>為了聚焦在 Web API 上，文章內的所有範例都使用原生 HTML + CSS + JavaScript 撰寫，並提供完整的線上範例，如有任何問題，歡迎留言討論。</p>
+    <p>這裡放的是文章內容的範例，關於完整文章，請移駕至我的部落格觀看：<a href="https://muki.tw/tag/web-api/">Web API 系列文章</a></p>
+    
+    <h3>問題與回報</h3>
+    <p>如果文章內有任何問題，歡迎留言討論，或透過<a href="https://www.facebook.com/mukispace">粉絲團</a>與我聯繫</p>
+  </article>
+<div id="footer"></div>
 </body>
-<script src="sidebar.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.3.7/dist/js/uikit.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
+<script>
+  // 配置 Nunjucks 的模板路徑
+  nunjucks.configure('templates', { autoescape: true });
+
+  // 動態載入模板
+  document.getElementById('header').innerHTML = nunjucks.render('header.html');
+  document.getElementById('footer').innerHTML = nunjucks.render('footer.html');
+  document.getElementById('sidebar').innerHTML = nunjucks.render('sidebar.html');
+</script>
 </html>
