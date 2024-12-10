@@ -5,28 +5,55 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Web API Demo</title>
 </head>
-<body>
-  <div id="header"></div>
-  <div id="sidebar"></div>
-  <article class="uk-article">
-    <h1>Web API 系列文章</h1>
-    <p>這系列文章是我參加 2024 iThome 鐵人賽期間撰寫的作品。完賽後，我對文章進行潤稿與修訂，並重新發佈在部落格上。</p>
-    <p>為了聚焦在 Web API 上，文章內的所有範例都使用原生 HTML + CSS + JavaScript 撰寫，並提供完整的線上範例，如有任何問題，歡迎留言討論。</p>
-    <p>這裡放的是文章內容的範例，關於完整文章，請移駕至我的部落格觀看：<a href="https://muki.tw/tag/web-api/">Web API 系列文章</a></p>
-    
-    <h3>問題與回報</h3>
-    <p>如果文章內有任何問題，歡迎留言討論，或透過<a href="https://www.facebook.com/mukispace">粉絲團</a>與我聯繫</p>
-  </article>
-<div id="footer"></div>
+<body class="bg-gray-100 text-gray-800">
+  <div class="flex min-h-screen">
+    <aside id="sidebar" class="w-64 bg-white border-r border-gray-200 p-6 hidden md:block"></aside>
+    <main class="flex-1 p-8 md:p-12">
+      <div class="bg-white shadow-md rounded-lg p-8">
+        <section id="introduction" class="mb-8">
+          <h1 class="text-3xl font-bold mb-4">Web API 系列文章</h1>
+          <p class="text-gray-600 leading-relaxed">
+            這系列文章是我參加 2024 iThome 鐵人賽期間撰寫的作品。完賽後，我對文章進行潤稿與修訂，並重新發佈在部落格上。
+          </p>
+          <p class="text-gray-600 leading-relaxed">
+            為了聚焦在 Web API 上，文章內的所有範例都使用原生 HTML + CSS + JavaScript 撰寫，並提供完整的線上範例，如有任何問題，歡迎留言討論。
+          </p>
+          <p class="text-gray-600 leading-relaxed">
+            這裡放的是文章內容的範例，關於完整文章，請移駕至我的部落格觀看：<a href="https://muki.tw/tag/web-api/" class="text-blue-500">Web API 系列文章</a>
+          </p>
+        </section>
+
+        <section id="getting-started" class="mb-8">
+          <h2 class="text-2xl font-semibold mb-4">問題與回報</h2>
+          <p class="text-gray-600 leading-relaxed">
+            如果文章內有任何問題，歡迎留言討論，或透過<a href="https://www.facebook.com/mukispace">粉絲團</a>與我聯繫
+          </p>
+        </section>
+      </div>
+    </main>
+    <!-- 移動端菜單切換按鈕 -->
+    <button onclick="toggleMobileMenu()" class="fixed top-4 right-4 md:hidden bg-blue-500 text-white p-2 rounded z-50">
+      菜單
+    </button>
+    <!-- 移動端側邊欄 -->
+    <div id="mobile-menu" class="fixed inset-0 bg-white z-40 hidden"></div>
+  </div>
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
 <script>
+  function toggleMobileMenu() {
+    const mobileMenu = document.getElementById('mobile-menu');
+    mobileMenu.classList.toggle('hidden');
+  }
+
   // 配置 Nunjucks 的模板路徑
   nunjucks.configure('templates', { autoescape: true });
 
   // 動態載入模板
-  document.getElementById('header').innerHTML = nunjucks.render('header.html');
-  document.getElementById('footer').innerHTML = nunjucks.render('footer.html');
+  // document.getElementById('header').innerHTML = nunjucks.render('header.html');
+  // document.getElementById('footer').innerHTML = nunjucks.render('footer.html');
   document.getElementById('sidebar').innerHTML = nunjucks.render('sidebar.html');
+  document.getElementById('mobile-menu').innerHTML = nunjucks.render('mobile-menu.html');
 </script>
 </html>
