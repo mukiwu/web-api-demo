@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Web API Demo</title>
+  <title>Web API 系列文章 | MUKI space*</title>
 </head>
 <body class="bg-gray-100 text-gray-800">
   <div class="flex min-h-screen">
@@ -40,20 +40,6 @@
   </div>
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
+<script src="template.js"></script>
 <script src="https://cdn.tailwindcss.com"></script>
-<script>
-  function toggleMobileMenu() {
-    const mobileMenu = document.getElementById('mobile-menu');
-    mobileMenu.classList.toggle('hidden');
-  }
-
-  // 配置 Nunjucks 的模板路徑
-  nunjucks.configure('templates', { autoescape: true });
-
-  // 動態載入模板
-  // document.getElementById('header').innerHTML = nunjucks.render('header.html');
-  // document.getElementById('footer').innerHTML = nunjucks.render('footer.html');
-  document.getElementById('sidebar').innerHTML = nunjucks.render('sidebar.html');
-  document.getElementById('mobile-menu').innerHTML = nunjucks.render('mobile-menu.html');
-</script>
 </html>
