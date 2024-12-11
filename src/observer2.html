@@ -1,16 +1,13 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
-
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>深入了解 Intersection Observer API 與其應用 II</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/css/uikit.min.css" />
+  <title>深入了解 Intersection Observer API 與其應用 II | Web API 系列文章 | MUKI space*</title>
+</head>
+<body>
   <style>
-    body,
-    html {
-      margin: 0;
-      padding: 0;
-    }
-
     header {
       position: fixed;
       top: 0;
@@ -52,51 +49,61 @@
       background-color: #D3EFD3;
     }
   </style>
-</head>
+<div class="uk-container-expand">
+  <div class="uk-grid-divider" uk-grid>
+    <div id="sidebar" class="uk-width-1-5@m"></div>
+    <div class="uk-width-3-5@m" uk-height-viewport="expand: true">
+      <article class="uk-article uk-padding uk-padding-remove-horizontal@m">
+        <h1 class="uk-article-title uk-margin-bottom">深入了解 Intersection Observer API 與其應用 II</h1>
+        <div uk-alert>
+          <p class="uk-margin">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10357361" class="uk-text-primary">深入了解 Intersection Observer API 與其應用 II</a></p>
+          <p class="uk-margin">請持續往下滾動頁面</p>
+        </div>
+        <header id="mainHeader">
+          <nav>
+            <a href="#section1">Section 1</a>
+            <a href="#section2">Section 2</a>
+            <a href="#section3">Section 3</a>
+          </nav>
+        </header>
+        <section id="section1" data-color="#FF6666">
+          <h2>Section 1</h2>
+        </section>
+        <section id="section2" data-color="#6666FF">
+          <h2>Section 2</h2>
+        </section>
+        <section id="section3" data-color="#94A437">
+          <h2>Section 3</h2>
+        </section>
+      </article>
+    </div>
+  </div>
+</div>
+</html>
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit-icons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
+<script src="template.js"></script>
+<script>
+  const header = document.getElementById('mainHeader');
+  const sections = document.querySelectorAll('section');
 
-<body>
-  <header id="mainHeader">
-    <nav>
-      <a href="#section1">Section 1</a>
-      <a href="#section2">Section 2</a>
-      <a href="#section3">Section 3</a>
-    </nav>
-  </header>
+  const observerOptions = {
+    threshold: 0.5
+  };
 
-  <section id="section1" data-color="#FF6666">
-    <h2>Section 1</h2>
-  </section>
-
-  <section id="section2" data-color="#6666FF">
-    <h2>Section 2</h2>
-  </section>
-
-  <section id="section3" data-color="#94A437">
-    <h2>Section 3</h2>
-  </section>
-
-  <script>
-    const header = document.getElementById('mainHeader');
-    const sections = document.querySelectorAll('section');
-
-    const observerOptions = {
-      threshold: 0.5
-    };
-
-    const observerCallback = (entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          header.style.backgroundColor = entry.target.dataset.color;
-        }
-      });
-    };
-
-    const observer = new IntersectionObserver(observerCallback, observerOptions);
-
-    sections.forEach(section => {
-      observer.observe(section);
+  const observerCallback = (entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        header.style.backgroundColor = entry.target.dataset.color;
+      }
     });
-  </script>
-</body>
+  };
 
+  const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+  sections.forEach(section => {
+    observer.observe(section);
+  });
+</script>
 </html>

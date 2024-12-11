@@ -10,4 +10,3 @@ nunjucks.configure('templates', { autoescape: true });
 // document.getElementById('header').innerHTML = nunjucks.render('header.html');
 // document.getElementById('footer').innerHTML = nunjucks.render('footer.html');
 document.getElementById('sidebar').innerHTML = nunjucks.render('sidebar.html');
-document.getElementById('mobile-menu').innerHTML = nunjucks.render('mobile-menu.html');

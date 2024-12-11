@@ -5,23 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/css/uikit.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css" />
-  <title>用 Geolocation API 取得與追蹤使用者地理位置</title>
-  <style>
-      #map {
-          width: 500px;
-          height: 500px;
-      }
-  </style>
+  <title>用 Geolocation API 取得與追蹤使用者地理位置 | Web API 系列文章 | MUKI space*</title>
 </head>
 <body>
-<div class="uk-container">
-  <div uk-grid>
-    <div id="sidebar" class="uk-width-1-3@m"></div>
-    <div class="uk-width-2-3@m uk-margin-medium-top">
-      <article class="uk-article">
+<style>
+  #map {
+    width: 500px;
+    height: 500px;
+  }
+</style>
+<div class="uk-container-expand">
+  <div class="uk-grid-divider" uk-grid>
+    <div id="sidebar" class="uk-width-1-5@m"></div>
+    <div class="uk-width-3-5@m" uk-height-viewport="expand: true">
+      <article class="uk-article uk-padding uk-padding-remove-horizontal@m">
+        <h1 class="uk-article-title uk-margin-bottom">用 Geolocation API 取得與追蹤使用者地理位置</h1>
         <div uk-alert>
-          <p>完整文章：<a href="https://muki.tw/geolocation-api-track-location/">用 Geolocation API 取得與追蹤使用者地理位置</a></p>
-          <p>請先點選「開始追蹤」並允許瀏覽器取得你的地理位置。</p>
+          <p class="uk-margin">完整文章：<a href="https://muki.tw/geolocation-api-track-location/" class="uk-text-primary">用 Geolocation API 取得與追蹤使用者地理位置</a></p>
+          <p class="uk-margin">請先點選「<span class="uk-text-bold">開始追蹤</span>」並允許瀏覽器取得你的地理位置。</p>
         </div>
         <div id="map" class="uk-background-muted"></div>
         <div id="status" class="uk-margin-small-top uk-margin-small-bottom"></div>
@@ -34,8 +35,11 @@
     </div>
   </div>
 </div>
-<script src="sidebar.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.3.7/dist/js/uikit.min.js"></script>
+</html>
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit-icons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
+<script src="template.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
 <script>
     let watchId;
@@ -104,6 +108,4 @@
         }
     }
 </script>
-</body>
-
 </html>

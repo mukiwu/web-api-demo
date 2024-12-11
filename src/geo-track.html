@@ -1,55 +1,55 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
-
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>用 Geolocation API 實作車子導航追蹤</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 90%;
-      margin: 0 auto;
-      padding: 20px;
-    }
-
-    #map {
-      width: 100%;
-      height: 600px;
-      margin-bottom: 20px;
-    }
-
-    input,
-    button {
-      margin-bottom: 10px;
-    }
-
-    #status {
-      margin-top: 10px;
-    }
-  </style>
-</head>
-
-<body>
-  <div>
-    <input type="text" id="addressInput" placeholder="輸入您的地址">
-    <button onclick="searchAddress()">搜尋地址</button>
-  </div>
-  <div id="map"></div>
-  <div>
-    <button onclick="startSimulation()">開始模擬</button>
-    <button onclick="stopSimulation()">停止模擬</button>
-  </div>
-  <div id="status"></div>
-  <div><a href="https://www.flaticon.com/free-icons/car" title="car icons">Car icons created by Konkapp - Flaticon</a></div>
-
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/css/uikit.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
-  <script
-    src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-routing-machine/3.2.12/leaflet-routing-machine.min.js"></script>
-
-  <script>
+  <title>用 Geolocation API 實作車子導航追蹤 | Web API 系列文章 | MUKI space*</title>
+</head>
+<body>
+<style>
+  #map {
+    width: 100%;
+    height: 600px;
+  }
+</style>
+<div class="uk-container-expand">
+  <div class="uk-grid-divider" uk-grid>
+    <div id="sidebar" class="uk-width-1-5@m"></div>
+    <div class="uk-width-3-5@m" uk-height-viewport="expand: true">
+      <article class="uk-article uk-padding uk-padding-remove-horizontal@m">
+        <h1 class="uk-article-title uk-margin-bottom">用 Geolocation API 實作車子導航追蹤</h1>
+        <div uk-alert>
+          <p class="uk-margin">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10348874" class="uk-text-primary">用 Geolocation API 實作車子導航追蹤</a></p>
+          <p class="uk-margin">請先輸入你的目的地並點選「<span class="uk-text-bold">搜尋地址</span>」，(不會儲存您的地址，請安心使用)。</p>
+        </div>
+        <div class="uk-margin">
+          <input type="text" id="addressInput" placeholder="輸入您的地址" class="uk-input uk-form-width-medium">
+          <button onclick="searchAddress()" class="uk-button uk-button-default">搜尋地址</button>
+        </div>
+        <div id="status" class="uk-margin-small-top uk-margin-small-bottom"></div>
+        <div class="uk-margin">
+          <button class="uk-button uk-button-default" onclick="startSimulation()">開始模擬</button>
+          <button class="uk-button uk-button-default" onclick="stopSimulation()">停止模擬</button>
+        </div>
+        <div id="map" class="uk-background-muted"></div>
+        <div>
+          <a href="https://www.flaticon.com/free-icons/car" title="car icons">Car icons created by Konkapp - Flaticon</a>
+        </div>
+      </article>
+    </div>
+  </div>
+</div>
+</html>
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit-icons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
+<script src="template.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-routing-machine/3.2.12/leaflet-routing-machine.min.js"></script>
+<script>
     let map, userMarker, driverMarker, routeControl;
     let simulationInterval;
     let routePoints = [];
@@ -147,6 +147,4 @@
 
     initMap();
   </script>
-</body>
-
 </html>

@@ -1,171 +1,109 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
-
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>認識 History API：SPA 的關鍵技術之一</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      line-height: 1.6;
-      margin: 0;
-      padding: 20px;
-      max-width: 800px;
-      margin: 0 auto;
-    }
-
-    img {
-      max-width: 100%;
-    }
-
-    nav {
-      margin-bottom: 20px;
-    }
-
-    nav a {
-      margin-right: 10px;
-      text-decoration: none;
-      color: #333;
-      padding: 5px 10px;
-      border: 1px solid #333;
-      border-radius: 5px;
-    }
-
-    #content {
-      padding: 20px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      min-height: 200px;
-      position: relative;
-    }
-
-    .loading {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(255, 255, 255, 0.8);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 24px;
-      color: #333;
-    }
-
-    .loading::after {
-      content: "載入中...";
-      animation: dots 1.5s steps(5, end) infinite;
-    }
-
-    @keyframes dots {
-
-      0%,
-      20% {
-        content: "載入中";
-      }
-
-      40% {
-        content: "載入中.";
-      }
-
-      60% {
-        content: "載入中..";
-      }
-
-      80%,
-      100% {
-        content: "載入中...";
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/css/uikit.min.css" />
+  <title>認識 History API：SPA 的關鍵技術之一 | Web API 系列文章 | MUKI space*</title>
 </head>
-
 <body>
-  <nav>
-    <a href="cdn-tailwindcss-vscode-enable-tailwindcss-intellisense/">文章一</a>
-    <a href="introduction-singleton-design-pattern/">文章二</a>
-    <a href="quill-react-ant-design-and-upload-image/">文章三</a>
-  </nav>
+<div class="uk-container-expand">
+  <div class="uk-grid-divider" uk-grid>
+    <div id="sidebar" class="uk-width-1-5@m"></div>
+    <div class="uk-width-3-5@m" uk-height-viewport="expand: true">
+      <article class="uk-article uk-padding uk-padding-remove-horizontal@m">
+        <h1 class="uk-article-title uk-margin-bottom">認識 History API：SPA 的關鍵技術之一</h1>
+        <div uk-alert>
+          <p class="uk-margin">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10348876" class="uk-text-primary">認識 History API：SPA 的關鍵技術之一</a></p>
+        </div>
+        <nav class="uk-margin">
+          <a class="uk-button uk-button-default" href="cdn-tailwindcss-vscode-enable-tailwindcss-intellisense/">文章一</a>
+          <a class="uk-button uk-button-default" href="introduction-singleton-design-pattern/">文章二</a>
+          <a class="uk-button uk-button-default" href="quill-react-ant-design-and-upload-image/">文章三</a>
+        </nav>
+        <div id="content" class="uk-background-muted"></div>
+      </article>
+    </div>
+  </div>
+</div>
+</html>
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit-icons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
+<script src="template.js"></script>
+<script>
+  const contentElement = document.getElementById('content');
 
-  <div id="content"></div>
+  function showLoading() {
+    const loadingElement = document.createElement('div');
+    loadingElement.className = 'loading';
+    contentElement.appendChild(loadingElement);
+  }
 
-  <script>
-    const contentElement = document.getElementById('content');
-
-    function showLoading() {
-      const loadingElement = document.createElement('div');
-      loadingElement.className = 'loading';
-      contentElement.appendChild(loadingElement);
+  function hideLoading() {
+    const loadingElement = document.querySelector('.loading');
+    if (loadingElement) {
+      loadingElement.remove();
     }
+  }
 
-    function hideLoading() {
-      const loadingElement = document.querySelector('.loading');
-      if (loadingElement) {
-        loadingElement.remove();
+  async function navigateTo(page) {
+    showLoading();
+    try {
+      const res = await fetch(`https://muki.tw/${page}`);
+      console.log('res', res);
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
       }
+      const htmlContent = await res.text();
+      const extractedContent = extractContent(htmlContent);
+      history.pushState({ page, content: extractedContent }, page, `/${page}`);
+      updateContent(extractedContent);
+    } catch (error) {
+      console.error('Fetch error:', error);
+      updateContent('載入失敗，請稍後再試。');
+    } finally {
+      hideLoading();
     }
+  }
 
-    async function navigateTo(page) {
-      showLoading();
-      try {
-        const res = await fetch(`https://muki.tw/${page}`);
-        console.log('res', res);
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
-        const htmlContent = await res.text();
-        const extractedContent = extractContent(htmlContent);
-        history.pushState({ page, content: extractedContent }, page, `/${page}`);
-        updateContent(extractedContent);
-      } catch (error) {
-        console.error('Fetch error:', error);
-        updateContent('載入失敗，請稍後再試。');
-      } finally {
-        hideLoading();
-      }
+  function extractContent(htmlString) {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlString, 'text/html');
+    const targetDiv = doc.querySelector('.content');
+
+    if (targetDiv) {
+      return targetDiv.innerHTML;
+    } else {
+      // 如果找不到指定的 div，嘗試獲取 body 內容
+      const bodyContent = doc.body.innerHTML;
+      return bodyContent || '找不到指定的內容';
     }
+  }
 
-    function extractContent(htmlString) {
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(htmlString, 'text/html');
-      const targetDiv = doc.querySelector('div[class*="min-h-[calc(100vh-70px)]"]');
+  function updateContent(content) {
+    contentElement.innerHTML = content;
+  }
 
-      if (targetDiv) {
-        return targetDiv.innerHTML;
-      } else {
-        // 如果找不到指定的 div，嘗試獲取 body 內容
-        const bodyContent = doc.body.innerHTML;
-        return bodyContent || '找不到指定的內容';
-      }
-    }
-
-    function updateContent(content) {
-      contentElement.innerHTML = content;
-    }
-
-    document.querySelectorAll('nav a').forEach(link => {
-      link.addEventListener('click', function (e) {
-        e.preventDefault();
-        const page = this.getAttribute('href').replace(/^\//, '');
-        navigateTo(page);
-      });
+  document.querySelectorAll('nav a').forEach(link => {
+    link.addEventListener('click', function (e) {
+      e.preventDefault();
+      const page = this.getAttribute('href').replace(/^\//, '');
+      navigateTo(page);
     });
+  });
 
-    window.onpopstate = async function (event) {
-      if (event.state && event.state.content) {
-        updateContent(event.state.content);
-      } else if (event.state && event.state.page) {
-        await navigateTo(event.state.page);
-      }
-    };
+  window.onpopstate = async function (event) {
+    if (event.state && event.state.content) {
+      updateContent(event.state.content);
+    } else if (event.state && event.state.page) {
+      await navigateTo(event.state.page);
+    }
+  };
 
-    window.addEventListener('load', async function () {
-      const initialPage = 'cdn-tailwindcss-vscode-enable-tailwindcss-intellisense/';
-      await navigateTo(initialPage);
-    });
-  </script>
-</body>
-
+  window.addEventListener('load', async function () {
+    const initialPage = 'cdn-tailwindcss-vscode-enable-tailwindcss-intellisense/';
+    await navigateTo(initialPage);
+  });
+</script>
 </html>
