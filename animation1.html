@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/css/uikit.min.css" />
+  <title>使用 JavaScript 操作動畫的 Web Animations API | Web API 系列文章 | MUKI space*</title>
+</head>
+<body>
+<style>
+  .box {
+    width: 100px;
+    height: 100px;
+    position: absolute;
+  }
+  .box1 {
+    background-color: gray;
+  }
+  .box2 {
+    background-color: #d8b455;
+  }
+</style>
+<div class="uk-container-expand">
+  <div class="uk-grid-divider" uk-grid>
+    <div id="sidebar" class="uk-width-1-5@m"></div>
+    <div class="uk-width-3-5@m" uk-height-viewport="expand: true">
+      <article class="uk-article uk-padding uk-padding-remove-horizontal@m">
+        <h1 class="uk-article-title uk-margin-bottom">使用 JavaScript 操作動畫的 Web Animations API</h1>
+        <div uk-alert>
+          <p class="uk-margin">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10357394" class="uk-text-primary">使用 JavaScript 操作動畫的 Web Animations API</a></p>
+        </div>
+        <div id="box1" class="box box1"></div>
+        <div id="box2" class="box box2"></div>
+      </article>
+    </div>
+  </div>
+</div>
+</html>
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit-icons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
+<script src="template.js"></script>
+<script>
+const box1 = document.getElementById('box1');
+const box2 = document.getElementById('box2');
+
+const animation = box1.animate([
+  { transform: 'translateX(0)' },
+  { transform: 'translateX(300px)' }
+], {
+  duration: 1500,
+  fill: 'forwards'
+});
+
+animation.onfinish = () => {
+  box2.animate([
+    { transform: 'translateY(0)' },
+    { transform: 'translateY(300px)' }
+  ], {
+    duration: 1000,
+    fill: 'forwards'
+  });
+};
+</script>
+</html>

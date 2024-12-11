@@ -1,45 +1,64 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>使用 Screen Capture API 取得你的螢幕畫面</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/css/uikit.min.css" />
+  <title>使用 Screen Capture API 取得你的螢幕畫面 | Web API 系列文章 | MUKI space*</title>
 </head>
 <body>
-  <button id="startCapture">取得螢幕</button>
-  <input type="checkbox" id="enableSwitch" />允許切換分享視窗
-  <video id="screenVideo" controls autoplay></video>
+<div class="uk-container-expand">
+  <div class="uk-grid-divider" uk-grid>
+    <div id="sidebar" class="uk-width-1-5@m"></div>
+    <div class="uk-width-3-5@m" uk-height-viewport="expand: true">
+      <article class="uk-article uk-padding uk-padding-remove-horizontal@m">
+        <h1 class="uk-article-title uk-margin-bottom">使用 Screen Capture API 取得你的螢幕畫面</h1>
+        <div uk-alert>
+          <p class="uk-margin">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10357398" class="uk-text-primary">使用 Screen Capture API 取得你的螢幕畫面</a></p>
+        </div>
+        <button id="startCapture" class="uk-button uk-button-default">取得螢幕</button>
+        <input type="checkbox" id="enableSwitch" class="uk-checkbox" />允許切換分享視窗
+        <div class="uk-margin">
+          <video id="screenVideo" controls autoplay></video>
+        </div>
+      </article>
+    </div>
+  </div>
+</div>
+</html>
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit-icons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
+<script src="template.js"></script>
+<script>
+  document.getElementById('startCapture').addEventListener('click', startScreenCapture);
+  document.getElementById('switchCapture').addEventListener('click', captureWithSwitching);
 
-  <script>
-    document.getElementById('startCapture').addEventListener('click', startScreenCapture);
-    document.getElementById('switchCapture').addEventListener('click', captureWithSwitching);
+  async function startScreenCapture() {
+    try {
+      const videoElement = document.getElementById('screenVideo');
+      const enableSwitch = document.getElementById('enableSwitch').checked;
 
-    async function startScreenCapture() {
-      try {
-        const videoElement = document.getElementById('screenVideo');
-        const enableSwitch = document.getElementById('enableSwitch').checked;
+      // 根據選擇啟用 surfaceSwitching
+      const screenStream = await navigator.mediaDevices.getDisplayMedia({
+        video: true,
+        surfaceSwitching: enableSwitch ? "include" : "exclude"
+      });
 
-        // 根據選擇啟用 surfaceSwitching
-        const screenStream = await navigator.mediaDevices.getDisplayMedia({
-          video: true,
-          surfaceSwitching: enableSwitch ? "include" : "exclude"
-        });
+      // 將擷取到的螢幕串流顯示在 video 元素中
+      videoElement.srcObject = screenStream;
 
-        // 將擷取到的螢幕串流顯示在 video 元素中
-        videoElement.srcObject = screenStream;
-
-        // 在 videoElement 裡加入動畫效果
-        videoElement.animate([
-          { transform: 'scale(1)', opacity: 1 },
-          { transform: 'scale(1.02)', opacity: 0.8 },
-          { transform: 'scale(1)', opacity: 1 }
-        ], {
-          duration: 500
-        });
-      } catch (error) {
-        console.error("螢幕擷取失敗: ", error);
-      }
+      // 在 videoElement 裡加入動畫效果
+      videoElement.animate([
+        { transform: 'scale(1)', opacity: 1 },
+        { transform: 'scale(1.02)', opacity: 0.8 },
+        { transform: 'scale(1)', opacity: 1 }
+      ], {
+        duration: 500
+      });
+    } catch (error) {
+      console.error("螢幕擷取失敗: ", error);
     }
-  </script>
-</body>
+  }
+</script>
 </html>

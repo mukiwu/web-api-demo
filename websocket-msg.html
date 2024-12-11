@@ -1,84 +1,95 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <title>WebSocket 的處理訊息機制</title>
-    <style>
-        #messages {
-            border: 1px solid #ccc;
-            padding: 10px;
-            height: 300px;
-            overflow-y: scroll;
-        }
-        #input {
-            margin-top: 10px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/css/uikit.min.css" />
+  <title>WebSocket 的處理訊息機制 | Web API 系列文章 | MUKI space*</title>
 </head>
+
 <body>
-    <div>
-        <p>WebSocekt 啟動需要一點時間，請稍等。</p>
-        <p>WebSocekt 連線狀態：<span id="connection-status">未連線</span></p>
-        <p>如果 server 被關閉，就不會收到 WebSocket 的訊息，但仍可以透過程式碼觀看完整範例。</p>
+  <div class="uk-container-expand">
+    <div class="uk-grid-divider" uk-grid>
+      <div id="sidebar" class="uk-width-1-5@m"></div>
+      <div class="uk-width-3-5@m" uk-height-viewport="expand: true">
+        <article class="uk-article uk-padding uk-padding-remove-horizontal@m">
+          <h1 class="uk-article-title uk-margin-bottom">WebSocket 的處理訊息機制</h1>
+          <div uk-alert>
+            <p class="uk-margin">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10351866"
+                class="uk-text-primary">WebSocket 的處理訊息機制</a></p>
+            <p class="uk-margin">WebSocekt 啟動需要一點時間，請稍等。</p>
+          </div>
+          <p class="uk-margin">WebSocekt 連線狀態：<span id="connection-status">未連線</span></p>
+          <p class="uk-margin">可靜置網頁一段時間，通常 WebSocket 會自動連線，如果 server 被關閉，就不會收到 WebSocket 的訊息，但仍可以透過程式碼觀看完整範例。</p>
+          <div id="messages"></div>
+          <div id="input">
+            <input type="text" id="messageInput" placeholder="輸入訊息" class="uk-input uk-form-width-medium">
+            <button onclick="sendMessage()" class="uk-button uk-button-default">發送</button>
+          </div>
+        </article>
+      </div>
     </div>
-    <div id="messages"></div>
-    <div id="input">
-        <input type="text" id="messageInput" placeholder="輸入訊息">
-        <button onclick="sendMessage()">發送</button>
-    </div>
-    <script>
-        const websocket = new WebSocket('wss://wary-telling-galley.glitch.me');
-        let messageQueue = [];
-        const BATCH_INTERVAL = 10000; // 10秒
+  </div>
 
-        websocket.onopen = function() {
-            document.getElementById('connection-status').textContent = '已連線';
-            console.log('WebSocket 連接已建立');
-        };
+</html>
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit-icons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
+<script src="template.js"></script>
+<script>
+  const websocket = new WebSocket('wss://wary-telling-galley.glitch.me');
+  let messageQueue = [];
+  const BATCH_INTERVAL = 10000; // 10秒
 
-        websocket.onclose = function() {
-            document.getElementById('connection-status').textContent = '已關閉';
-        };
+  websocket.onopen = function () {
+    document.getElementById('connection-status').textContent = '已連線';
+    console.log('WebSocket 連接已建立');
+  };
 
-        websocket.onmessage = async function(event) {
-            const messages = JSON.parse(event.data);
-            const messagesDiv = document.getElementById('messages');
-            messages.forEach(message => {
-                const messageElement = document.createElement('div');
-                messageElement.textContent = message.content;
-                messagesDiv.appendChild(messageElement);
-            });
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-            for (const message of messages) {
-              await processMessage(message);
-            }
-        };
+  websocket.onclose = function () {
+    document.getElementById('connection-status').textContent = '已關閉';
+  };
 
-        websocket.onerror = function(error) {
-            console.error('WebSocket 錯誤:', error);
-            document.getElementById('connection-status').textContent = '錯誤';
-        };
+  websocket.onmessage = async function (event) {
+    const messages = JSON.parse(event.data);
+    const messagesDiv = document.getElementById('messages');
+    messages.forEach(message => {
+      const messageElement = document.createElement('div');
+      messageElement.textContent = message.content;
+      messagesDiv.appendChild(messageElement);
+    });
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    for (const message of messages) {
+      await processMessage(message);
+    }
+  };
 
-        async function processMessage(message) {
-          await new Promise(resolve => setTimeout(resolve, 100));
-          console.log('Processed message:', message);
-        }
+  websocket.onerror = function (error) {
+    console.error('WebSocket 錯誤:', error);
+    document.getElementById('connection-status').textContent = '錯誤';
+  };
 
-        function sendMessage() {
-            const messageInput = document.getElementById('messageInput');
-            const message = messageInput.value;
-            if (message) {
-                messageQueue.push({ content: message });
-                messageInput.value = '';
-            }
-        }
+  async function processMessage(message) {
+    await new Promise(resolve => setTimeout(resolve, 100));
+    console.log('Processed message:', message);
+  }
 
-        setInterval(() => {
-            if (messageQueue.length > 0) {
-                const batch = messageQueue.splice(0, messageQueue.length);
-                websocket.send(JSON.stringify(batch));
-            }
-        }, BATCH_INTERVAL);
-    </script>
-</body>
+  function sendMessage() {
+    const messageInput = document.getElementById('messageInput');
+    const message = messageInput.value;
+    if (message) {
+      messageQueue.push({ content: message });
+      messageInput.value = '';
+    }
+  }
+
+  setInterval(() => {
+    if (messageQueue.length > 0) {
+      const batch = messageQueue.splice(0, messageQueue.length);
+      websocket.send(JSON.stringify(batch));
+    }
+  }, BATCH_INTERVAL);
+</script>
+
 </html>

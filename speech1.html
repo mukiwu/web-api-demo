@@ -1,35 +1,56 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
-
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>使用 Web Speech API 讓網頁開口說話</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/css/uikit.min.css" />
+  <title>使用 Web Speech API 讓網頁開口說話 | Web API 系列文章 | MUKI space*</title>
 </head>
-
 <body>
-  <h1>語音合成控制</h1>
-
-  <label for="voiceSelect">選擇語音:</label>
-  <select id="voiceSelect"></select><br><br>
-
-  <label for="volumeRange">音量:</label>
-  <input type="range" id="volumeRange" min="0" max="1" step="0.1" value="1"><br><br>
-
-  <label for="pitchRange">音調:</label>
-  <input type="range" id="pitchRange" min="0" max="2" step="0.1" value="1"><br><br>
-
-  <label for="rateRange">語速:</label>
-  <input type="range" id="rateRange" min="0.1" max="2" step="0.1" value="1"><br><br>
-
-  <label for="textToSpeak">要說的話:</label><br>
-  <textarea id="textToSpeak" rows="4" cols="50">你好，歡迎使用我們的網站</textarea><br><br>
-
-  <button id="speakButton">播放語音</button>
-  <button id="pauseButton">暫停播放</button>
-  <button id="resumeButton">恢復播放</button>
-
-  <script>
+<div class="uk-container-expand">
+  <div class="uk-grid-divider" uk-grid>
+    <div id="sidebar" class="uk-width-1-5@m"></div>
+    <div class="uk-width-3-5@m" uk-height-viewport="expand: true">
+      <article class="uk-article uk-padding uk-padding-remove-horizontal@m">
+        <h1 class="uk-article-title uk-margin-bottom">使用 Web Speech API 讓網頁開口說話</h1>
+        <div uk-alert>
+          <p class="uk-margin">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10351877" class="uk-text-primary">使用 Web Speech API 讓網頁開口說話</a></p>
+          <p class="uk-margin">輸入的內容跟選擇的語言請相同，例如輸入英文，就請選擇 en-US</p>
+        </div>
+        <div class="uk-text-lead">語音合成控制</div>
+        <div class="uk-margin">
+          <label for="voiceSelect">選擇語音:</label>
+          <select id="voiceSelect" class="uk-select"></select>
+        </div>
+        <div class="uk-margin">
+          <label for="volumeRange">音量:</label>
+          <input type="range" class="uk-range" id="volumeRange" min="0" max="1" step="0.1" value="1">
+        </div>
+        <div class="uk-margin">
+          <label for="pitchRange">音調:</label>
+          <input type="range" id="pitchRange" class="uk-range" min="0" max="2" step="0.1" value="1">
+        </div>
+        <div class="uk-margin">
+          <label for="rateRange">語速:</label>
+          <input type="range" id="rateRange" class="uk-range" min="0.1" max="2" step="0.1" value="1">
+        </div>
+        <div class="uk-margin">
+          <label for="textToSpeak">要說的話:</label><br>
+          <textarea id="textToSpeak" class="uk-textarea" rows="4" cols="50">你好，歡迎使用我們的網站</textarea>
+        </div>
+        <button id="speakButton" class="uk-button uk-button-default">播放語音</button>
+        <button id="pauseButton" class="uk-button uk-button-default">暫停播放</button>
+        <button id="resumeButton" class="uk-button uk-button-default">恢復播放</button>
+      </article>
+    </div>
+  </div>
+</div>
+</html>
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit-icons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
+<script src="template.js"></script>
+<script>
     // 獲取語音列表的變量
     let voices = [];
 
@@ -78,6 +99,4 @@
       window.speechSynthesis.resume();
     };
   </script>
-</body>
-
 </html>

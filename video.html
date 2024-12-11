@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<html lang="zh">
-
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>用 Audio 和 Video API 打造自己的影音平台 II</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/css/uikit.min.css" />
+  <title>用 Audio 和 Video API 打造自己的影音平台 II | Web API 系列文章 | MUKI space*</title>
+</head>
+<body>
   <style>
     :root {
       --base: #c3efe9;
@@ -62,118 +64,131 @@
       transition: 0.5s all ease;
     }
   </style>
-</head>
-
-<body>
-  <div class="video-controller">
-    <video id="video" width="300" controls>
-      <source src="video.mp4" type="video/mp4">
-    </video>
-    <div class="controls">
-      <button id="playPause">播放</button>
-      <button id="pipButton">子母畫面</button>
-      <span id="currentTime">0:00</span> / <span id="duration">0:00</span>
+<div class="uk-container-expand">
+  <div class="uk-grid-divider" uk-grid>
+    <div id="sidebar" class="uk-width-1-5@m"></div>
+    <div class="uk-width-3-5@m" uk-height-viewport="expand: true">
+      <article class="uk-article uk-padding uk-padding-remove-horizontal@m">
+        <h1 class="uk-article-title uk-margin-bottom">用 Audio 和 Video API 打造自己的影音平台 II</h1>
+        <div uk-alert>
+          <p class="uk-margin">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10351844" class="uk-text-primary">用 Audio 和 Video API 打造自己的影音平台 II</a></p>
+          <audio id="audio" src="song.mp3"></audio>
+        </div>
+        <div class="video-controller">
+          <video id="video" width="300" controls class="uk-margin uk-width-1-1">
+            <source src="video.mp4" type="video/mp4">
+          </video>
+          <button id="playPause" class="uk-button uk-button-default">播放</button>
+          <button id="pipButton" class="uk-button uk-button-default">子母畫面</button>
+          <div class="uk-margin">
+            <span id="currentTime">0:00</span> / <span id="duration">0:00</span>
+          </div>
+        </div>
+        <input type="range" id="range" min="0" max="100" value="0">
+      </article>
     </div>
-    <input type="range" id="range" min="0" max="100" value="0">
   </div>
+</div>
+</html>
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit-icons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
+<script src="template.js"></script>
+<script>
+  // 獲取 DOM 元素
+  const video = document.getElementById('video');
+  const currentTime = document.getElementById('currentTime');
+  const duration = document.getElementById('duration');
+  const range = document.getElementById("range");
 
-  <script>
-    // 獲取 DOM 元素
-    const video = document.getElementById('video');
-    const currentTime = document.getElementById('currentTime');
-    const duration = document.getElementById('duration');
-    const range = document.getElementById("range");
+  const playButton = document.getElementById('playPause');
 
-    const playButton = document.getElementById('playPause');
+  const updateVar = (value) => {
+    document.documentElement.style.setProperty("--range", value + "%");
+  }
+  range.addEventListener("input", () => {
+    updateVar(range.value);
+  });
 
-    const updateVar = (value) => {
-      document.documentElement.style.setProperty("--range", value + "%");
+  // 播放/暫停功能
+  function togglePlay() {
+    if (video.paused) {
+      video.play();
+      playButton.textContent = '暫停';
+    } else {
+      video.pause();
+      playButton.textContent = '播放';
     }
-    range.addEventListener("input", () => {
-      updateVar(range.value);
-    });
-
-    // 播放/暫停功能
-    function togglePlay() {
-      if (video.paused) {
-        video.play();
-        playButton.textContent = '暫停';
-      } else {
-        video.pause();
-        playButton.textContent = '播放';
-      }
-    }
-
-    // 根據滑動桿的值設置視頻的當前時間
-    function setVideoProgress() {
-      const newTime = (range.value / 100) * video.duration;
-      video.currentTime = newTime;
-      updateTime();
-    }
-
-    // 子母畫面功能
-    async function togglePiP() {
-    try {
-      if (video !== document.pictureInPictureElement) {
-        await video.requestPictureInPicture();
-      } else {
-        await document.exitPictureInPicture();
-        }
-      } catch (error) {
-        console.error(error);
-      }
   }
 
-    pipButton.addEventListener('click', togglePiP);
+  // 根據滑動桿的值設定影片的當前時間
+  function setVideoProgress() {
+    const newTime = (range.value / 100) * video.duration;
+    video.currentTime = newTime;
+    updateTime();
+  }
 
-    // 更新時間
-    function updateTime() {
-      const currentMinutes = Math.floor(video.currentTime / 60);
-      const currentSeconds = Math.floor(video.currentTime % 60);
-      const durationMinutes = Math.floor(video.duration / 60);
-      const durationSeconds = Math.floor(video.duration % 60);
-
-      currentTime.textContent = `${currentMinutes}:${currentSeconds.toString().padStart(2, '0')}`;
-      duration.textContent = `${durationMinutes}:${durationSeconds.toString().padStart(2, '0')}`;
+  // 子母畫面功能
+  async function togglePiP() {
+  try {
+    if (video !== document.pictureInPictureElement) {
+      await video.requestPictureInPicture();
+    } else {
+      await document.exitPictureInPicture();
+      }
+    } catch (error) {
+      console.error(error);
     }
+}
 
-    // 更新滑動桿
-    function updateRange() {
-      const rangeValue = (video.currentTime / video.duration) * 100;
-      range.value = rangeValue;
-      updateVar(rangeValue);
-    }
+  pipButton.addEventListener('click', togglePiP);
 
-    playButton.addEventListener('click', togglePlay);
-    video.addEventListener('timeupdate', () => {
-      updateTime();
-      updateRange();
-    });
-    video.addEventListener('loadedmetadata', () => {
-      updateTime();
-    });
+  // 更新時間
+  function updateTime() {
+    const currentMinutes = Math.floor(video.currentTime / 60);
+    const currentSeconds = Math.floor(video.currentTime % 60);
+    const durationMinutes = Math.floor(video.duration / 60);
+    const durationSeconds = Math.floor(video.duration % 60);
 
-    range.addEventListener('input', setVideoProgress);
+    currentTime.textContent = `${currentMinutes}:${currentSeconds.toString().padStart(2, '0')}`;
+    duration.textContent = `${durationMinutes}:${durationSeconds.toString().padStart(2, '0')}`;
+  }
+
+  // 更新滑動桿
+  function updateRange() {
+    const rangeValue = (video.currentTime / video.duration) * 100;
+    range.value = rangeValue;
+    updateVar(rangeValue);
+  }
+
+  playButton.addEventListener('click', togglePlay);
+  video.addEventListener('timeupdate', () => {
+    updateTime();
+    updateRange();
+  });
+  video.addEventListener('loadedmetadata', () => {
+    updateTime();
+  });
+
+  range.addEventListener('input', setVideoProgress);
 
 
-    video.addEventListener('waiting', () => {
-      console.log('緩衝中...');
-    });
+  video.addEventListener('waiting', () => {
+    console.log('緩衝中...');
+  });
 
-    video.addEventListener('canplay', () => {
-      console.log('可以播放');
-    });
+  video.addEventListener('canplay', () => {
+    console.log('可以播放');
+  });
 
-    // 檢查緩衝進度
-    setInterval(() => {
-    const buffered = video.buffered;
-    if (buffered.length > 0) {
-        const bufferedEnd = buffered.end(buffered.length - 1);
-        console.log(`已緩衝 ${bufferedEnd} 秒`);
-    }
-  }, 1000);
+  // 檢查緩衝進度
+  setInterval(() => {
+  const buffered = video.buffered;
+  if (buffered.length > 0) {
+      const bufferedEnd = buffered.end(buffered.length - 1);
+      console.log(`已緩衝 ${bufferedEnd} 秒`);
+  }
+}, 1000);
 
-  </script>
-</body>
-
+</script>
 </html>

@@ -1,0 +1,52 @@
+<style>
+  .logo {
+    background-image: url('https://muki.tw/logo.svg');
+    overflow: hidden;
+    display: inline-block;
+    width: 206px;
+    height: 48px;
+    text-indent: 100%;
+    font-size: 0;
+  }
+  #nav-toggle:checked + .menu {
+    display: block !important;
+  }
+</style>
+<div class="uk-padding">
+  <a class="logo" href="https://muki.tw">
+    <h1>MUKI space*</h1>
+  </a>
+</div>
+<label for="nav-toggle" class="uk-button uk-button-link" style="margin: 0 0 1rem 1rem">
+  <span uk-icon="plus"></span>/<span uk-icon="minus"></span>
+  收合選單
+</label>
+<input type="checkbox" id="nav-toggle" class="uk-hidden">
+<div class="menu uk-width@m uk-visible@s">
+  <ul class="uk-padding uk-padding-remove-vertical uk-nav-default uk-nav-divider" uk-nav>
+    <li><a href="index.html">Web API 系列文章 首頁</a></li>
+    <li><a href="geo.html">用 Geolocation API 取得與追蹤使用者地理位置</a></li>
+    <li><a href="geo-track.html">用 Geolocation API 實作車子導航追蹤</a></li>
+    <li><a href="drag-and-drop.html">用 Drag and Drop API 拖曳網頁元素</a></li>
+    <li><a href="history.html">認識 History API：SPA 的關鍵技術之一</a></li>
+    <!-- <li><a href="#">探索 Fullscreen API：從基礎到應用場景</a></li> -->
+    <li><a href="notification.html">使用 Web Notifications API 幫網站加入通知功能</a></li>
+    <li><a href="file-drag.html">File API 介紹與實際應用</a></li>
+    <li><a href="battery-safe.html">用 Battery Status API 打造節能模式的網站</a></li>
+    <li><a href="audio.html">用 Audio 和 Video API 打造自己的影音平台</a></li>
+    <li><a href="video.html">用 Audio 和 Video API 打造自己的影音平台 II</a></li>
+    <li><a href="websocket.html">自己架個 WebSocket Server 玩玩吧</a></li>
+    <li><a href="websocket-msg.html">WebSocket 的處理訊息機制</a></li>
+    <li><a href="speech.html">使用 Web Speech API 讓網頁聽得懂我們說的話</a></li>
+    <li><a href="speech1.html">使用 Web Speech API 讓網頁開口說話</a></li>
+    <li><a href="speech2.html">用 Web Speech API 與你的 AI 朋友互動聊天</a></li>
+    <li><a href="mutation.html">如何使用 MutationObserver API 追蹤 DOM 的變化</a></li>
+    <li><a href="observer.html">深入了解 Intersection Observer API 與其應用 I</a></li>
+    <li><a href="observer2.html">深入了解 Intersection Observer API 與其應用 II</a></li>
+    <li><a href="indexeddb.html">另一種儲存資料的方式：IndexedDB API</a></li>
+    <!-- <li><a href="#">使用 IndexedDB API 做一個筆記儲存功能</a></li> -->
+    <li><a href="animation1.html">使用 JavaScript 操作動畫的 Web Animations API</a></li>
+    <li><a href="animation.html">使用 Web Animations API 製作打散文字的動畫效果</a></li>
+    <li><a href="screen-capture.html">使用 Screen Capture API 取得你的螢幕畫面</a></li>
+  </ul>
+</div>
