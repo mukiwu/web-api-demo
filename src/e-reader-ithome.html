@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智慧文件閱讀器</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+  <section class="h-screen bg-gray-100 pt-10 text-gray-600">
+    <div class="container mx-auto mt-10 flex max-w-3xl flex-wrap justify-center rounded-lg bg-white px-5 py-24">
+      <div class="flex w-full">
+        <div class="mx-auto">
+          <h1 class="mb-12 text-center text-xl font-bold">用 Web API 打造文件閱讀器</h1>
+          <div class="mx-auto w-52">
+            <div class="m-4">
+              <div class="flex w-full items-center justify-center">
+                <label class="flex h-14 w-full cursor-pointer flex-col border-4 border-dashed border-gray-200 hover:border-gray-300 hover:bg-gray-100">
+                  <div class="mt-3 flex items-center justify-center space-x-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-6 w-6 text-gray-400">
+                      <path stroke-linecap="round" stroke-linejoin="rㄍound" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
+                    </svg>
+                    <p class="font-laonoto text-sm tracking-wider text-gray-400 group-hover:text-gray-600">選擇文字檔案</p>
+                  </div>
+                  <input type="file" id="fileInput" accept=".txt" class="opacity-0" />
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="flex my-4">
+            <button id="playBtn" class="mx-auto block rounded-md border bg-blue-500 px-3 py-1 text-white text-sm outline-none">開始閱讀</button>
+            <button id="pauseBtn" class="mx-auto block rounded-md border bg-yellow-500 px-3 py-1 text-white text-sm outline-none">暫停</button>
+            <button id="stopBtn" class="mx-auto block rounded-md border bg-red-500 px-3 py-1 text-white text-sm outline-none">停止</button>
+          </div>
+
+          <div class="flex justify-center items-center gap-4">
+            <input type="range" id="rateRange" min="0.5" max="2" step="0.1" value="1" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+            <span id="rateValue" class="text-center text-gray-700 min-w-[3rem]">1x</span>
+          </div>
+          <div id="status" class="mt-4 text-gray-600 text-center"></div>
+
+        </div>
+        <!-- Step Checkout -->
+        <div class="mt-8 max-w-sm md:mt-0 md:ml-10 md:w-3/4">
+          <div class="relative flex pb-12">
+            <div class="absolute inset-0 flex h-full w-10 items-center justify-center">
+              <div class="pointer-events-none h-full w-1 bg-gray-200"></div>
+            </div>
+            <div class="relative z-10 inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-blue-500 text-white">
+              <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="h-5 w-5" viewBox="0 0 24 24">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              </svg>
+            </div>
+            <div class="flex-grow pl-4">
+              <h2 class="title-font mb-3 text-sm font-medium tracking-wider text-gray-900">文件內容</h2>
+              <div id="content" class="border border-gray-200 rounded-lg p-4 font-laonoto leading-relaxed">
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+      let speechSynth = window.speechSynthesis
+      let utterance = null
+      let currentPosition = 0
+      let content = ''
+      let throttleTimer = null
+
+      let status = document.getElementById('status')
+
+      // 語音控制
+      const speak = (text, position = 0) => {
+        utterance = new SpeechSynthesisUtterance(text)
+        // 預設使用美佳聲音
+        utterance.voice = speechSynth.getVoices().find(voice => 
+          voice.name.includes('Microsoft Meijia'))
+        utterance.rate = parseFloat(document.getElementById('rateRange').value)
+        utterance.onboundary = (e) => {
+          currentPosition = position + e.charIndex
+        }
+        speechSynth.speak(utterance)
+      }
+
+      // 語速控制
+      const adjustRate = (rate, message = '') => {
+        rate = parseFloat(rate)
+        document.getElementById('rateRange').value = rate
+        document.getElementById('rateValue').textContent = `${rate}x`
+
+        if (message) {
+          status.textContent = message
+        }
+
+        clearTimeout(throttleTimer)
+        throttleTimer = setTimeout(() => {
+          if (speechSynth.speaking) {
+            const currentIndex = currentPosition
+            speechSynth.cancel()
+            speak(content.slice(currentIndex), currentIndex)
+          }
+        }, 200)
+      }
+
+      // 頁面載入時重置語音狀態
+      window.addEventListener('load', () => {
+        speechSynth.cancel()
+      })
+
+      // 檔案讀取功能
+      document.getElementById('fileInput').addEventListener('change', (e) => {
+        // 取消當前朗讀狀態
+        speechSynth.cancel()
+
+        const file = e.target.files[0]
+        const reader = new FileReader()
+
+        reader.onload = (event) => {
+          content = event.target.result
+          document.getElementById('content').innerText = content
+        }
+
+        reader.readAsText(file)
+      })
+
+      // 頁面可見性控制
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          if (speechSynth.speaking) {
+            speechSynth.pause()
+          }
+        } else {
+          if (speechSynth.paused) {
+            speechSynth.resume()
+          }
+        }
+      })
+
+      // 電池狀態監控
+      navigator.getBattery().then(battery => {
+        if (battery.level < 0.45) {
+          adjustRate(0.5, '電量低，已自動降低語速')
+        }
+        battery.addEventListener('levelchange', () => {
+          if (battery.level < 0.45) {
+            adjustRate(0.5, '電量低，已自動降低語速')
+          }
+        })
+      })
+
+      // 按鈕控制
+      document.getElementById('playBtn').addEventListener('click', () => {
+        if (content) {
+          if (speechSynth.paused) {
+            speechSynth.resume()
+            status.textContent = '已恢復閱讀'
+          } else {
+            speak(content.slice(currentPosition), currentPosition)
+            status.textContent = '開始閱讀'
+          }
+        }
+      })
+
+      document.getElementById('pauseBtn').addEventListener('click', () => {
+        speechSynth.pause()
+        status.textContent = '已暫停閱讀'
+      })
+
+      document.getElementById('stopBtn').addEventListener('click', () => {
+        speechSynth.cancel()
+        currentPosition = 0
+        status.textContent = '已停止閱讀'
+      })
+
+      // 語速控制
+      document.getElementById('rateRange').addEventListener('input', (e) => {
+        adjustRate(e.target.value)
+      })
+  </script>
+</body>
+</html>
