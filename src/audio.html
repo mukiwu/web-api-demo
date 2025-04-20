@@ -27,10 +27,19 @@
               <span id="currentTime">0:00</span>
               <span id="duration">0:00</span>
             </div>
-            <div class="flex justify-center mt-4 space-x-6 text-2xl text-[#3d405b]">
-              <button onclick="prev()"><span uk-icon="icon: chevron-double-left"></span></button>
-              <button onclick="togglePlay()" id="playBtn"><span uk-icon="icon: play-circle"></span></button>
-              <button onclick="next()"><span uk-icon="icon: chevron-double-right"></span></button>
+            <div class="flex justify-between mt-4">
+              <div></div>
+              <div class="space-x-6">
+                <button onclick="prev()"><span uk-icon="icon: chevron-double-left"></span></button>
+                <button onclick="togglePlay()" id="playBtn"><span uk-icon="icon: play-circle"></span></button>
+                <button onclick="next()"><span uk-icon="icon: chevron-double-right"></span></button>
+              </div>
+              <div class="flex items-center">
+                <div id="volumeControl">
+                  <input type="range" id="volume" value="100" min="0" max="100" class="w-full accent-[#e07a5f]">
+                </div>
+                <button id="volumeBtn"><span uk-icon="icon: bell"></span></button>
+              </div>
             </div>
           </div>
         
@@ -81,6 +90,9 @@
     const subtitleEl = document.getElementById('subtitle');
     const coverEl = document.getElementById('cover');
     const playlistEl = document.getElementById('playlist');
+    const volumeEl = document.getElementById('volume');
+    const volumeBtnEl = document.getElementById('volumeBtn');
+    const volumeControlEl = document.getElementById('volumeControl');
 
     let currentIndex = 0;
 
@@ -91,6 +103,7 @@
       coverEl.src = track.cover;
       audio.src = track.src;
       audio.load();
+      audio.volume = volumeEl.value / 100;
       document.querySelectorAll('.track').forEach(el => el.classList.remove('bg-[#e07a5f]/30'));
       document.querySelectorAll('.track')[index].classList.add('bg-[#e07a5f]/30');
     }
@@ -128,6 +141,10 @@
 
     progress.addEventListener('input', () => {
       audio.currentTime = audio.duration * (progress.value / 100);
+    });
+
+    volumeEl.addEventListener('input', () => {
+      audio.volume = volumeEl.value / 100;
     });
 
     function formatTime(time) {
