@@ -4,142 +4,209 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/css/uikit.min.css" />
-  <title>用 Audio 和 Video API 打造自己的影音平台 | Web API 系列文章 | MUKI space*</title>
-</head>
-<body>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>使用 audio 打造音樂播放器 | Web API 系列文章 | MUKI space*</title>
   <style>
-    :root {
-      --base: #c3efe9;
-      --second: #269181;
-      --trackball: var(--second);
-      --range: 0%;
-    }
-
-    #range {
+    input[id='volume']::-webkit-slider-thumb {
       appearance: none;
-      width: 300px;
-      position: relative;
+      height: 14px;
+      width: 14px;
+      background-color: #3d405b;
+      border-radius: 50%;
+      border: 2px solid #7A9E9F;
+      margin-top: 0px;
+    }
+  
+    input[id='volume']::-moz-range-thumb {
+      height: 14px;
+      width: 14px;
+      background-color: #3d405b;
+      border-radius: 50%;
+      border: 2px solid #7A9E9F;
     }
 
-    #range:focus {
-      outline: none;
+    input[id='progress']::-webkit-slider-thumb {
+      transition: transform 0.2s ease; 
+    }
+    input[id='progress']::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
     }
 
-    #range::before {
-      position: absolute;
-      content: "";
-      width: var(--range);
-      height: 2px;
-      background: var(--second);
+    input[id='progress']::-moz-range-thumb {
+      transition: transform 0.2s ease; 
     }
-
-    #range::-webkit-slider-runnable-track {
-      background: var(--base);
-      height: 2px;
-    }
-
-    #range::-webkit-slider-thumb {
-      width: 10px;
-      height: 10px;
-      border-radius: 100%;
-      border: none;
-      -webkit-appearance: none;
-      background-color: var(--trackball);
-      margin-top: -3.5px;
-      z-index: 99;
-      position: relative;
-      transition: 0.5s all ease;
+    input[id='progress']::-moz-range-thumb:hover {
+      transform: scale(1.2);
     }
   </style>
-<div class="uk-container-expand">
-  <div class="uk-grid-divider" uk-grid>
-    <div id="sidebar" class="uk-width-1-5@m"></div>
-    <div class="uk-width-3-5@m" uk-height-viewport="expand: true">
-      <article class="uk-article uk-padding uk-padding-remove-horizontal@m">
-        <h1 class="uk-article-title uk-margin-bottom">用 Audio 和 Video API 打造自己的影音平台</h1>
-        <div uk-alert>
-          <p class="uk-margin">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10349363" class="uk-text-primary">用 Audio 和 Video API 打造自己的影音平台</a></p>
-        </div>
-        <audio id="audio" src="song.mp3"></audio>
-        <div class="controls">
-          <div class="uk-margin">
-            <button id="playPause" class="uk-button uk-button-default">播放</button>
+</head>
+<body>
+  <div class="uk-container-expand">
+    <div class="uk-grid-divider" uk-grid>
+      <div id="sidebar" class="uk-width-1-5@m"></div>
+      <div class="uk-width-3-5@m" uk-height-viewport="expand: true">
+        <article class="uk-article uk-padding uk-padding-remove-horizontal@m">
+          <h1 class="uk-article-title uk-margin-bottom">使用 audio 打造音樂播放器 </h1>
+          <div uk-alert>
+            <p class="uk-margin">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10349363" class="uk-text-primary">用 Audio 和 Video API 打造自己的影音平台</a></p>
+            <p>(範例有調整過，會跟文章內容有些許不同)</p>
           </div>
-          <div class="uk-margin">
-            <span id="currentTime">0:00</span> / <span id="duration">0:00</span>
+          <div class="text-[#2f2f2f] rounded-xl p-6 m-4 max-w-md shadow-lg text-center border-4 border-[#e07a5f]">
+            <img id="cover" src="img/Johann_Sebastian_Bach.png" alt="cover" class="w-full rounded-xl mb-4 border-2 border-[#81b29a]">
+            <div class="text-xl font-bold" id="title">15 Inventions</div>
+            <div class="text-sm text-[#3d405b] mb-3" id="subtitle">Johann Sebastian Bach</div>
+            <input type="range" id="progress" value="0" min="0" max="100" class="w-full h-1 accent-[#e07a5f] cursor-pointer">
+            <div class="flex justify-between text-xs text-[#3d405b] mt-1">
+              <span id="currentTime">0:00</span>
+              <span id="duration">0:00</span>
+            </div>
+            <div class="flex justify-between items-center mt-4">
+              <div class="flex-1"></div>
+              <div class="flex-1 relative top-0.5">
+                <div class="space-x-6">
+                  <button onclick="prev()" class="leading-none"><span uk-icon="icon: chevron-double-left"></span></button>
+                  <button onclick="togglePlay()" id="playBtn" class="leading-none"><span uk-icon="icon: play-circle"></span></button>
+                  <button onclick="next()" class="leading-none"><span uk-icon="icon: chevron-double-right"></span></button>
+                </div>
+              </div>
+              <div class="flex-1 flex justify-end items-center space-x-2">
+                <input type="range" id="volume" value="1" min="0" max="1" step="0.01" class="relative -top-0.5 w-16 h-1 accent-[#7A9E9F] bg-[#e5e5e5] appearance-none cursor-pointer">
+              </div>
+            </div>
           </div>
-        </div>
-        <input type="range" id="range" min="0" max="100" value="0">
-      </article>
+        
+          <div class="overflow-y-auto flex-grow w-full max-w-md mx-4" id="playlist"></div>
+
+          <audio id="audio"></audio>
+          
+          <div uk-alert class="text-xs text-[#3d405b] mt-4">封面圖片為依據 Johann Sebastian Bach 公有畫像風格重新繪製之 AI 圖像，用於教學示意，無商業授權爭議。</div>
+        </article>
+      </div>
     </div>
   </div>
-</div>
-</html>
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit-icons.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
-<script src="template.js"></script>
-<script>
-  const audio = document.getElementById('audio');
-  const currentTime = document.getElementById('currentTime');
-  const duration = document.getElementById('duration');
-  const range = document.getElementById("range");
+  <script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit-icons.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
+  <script src="template.js"></script>
+  <script>
+    const tracks = [
+      {
+        title: "15 Inventions",
+        subtitle: "Johann Sebastian Bach",
+        src: encodeURIComponent("15 Inventions, BWV. 772-786 - No.10 - G major.mp3"),
+        cover: "img/Johann_Sebastian_Bach.png",
+        duration: "1:13"
+      },
+      {
+        title: "Goldberg Variations",
+        subtitle: "Johann Sebastian Bach",
+        src: encodeURIComponent("Goldberg Variations, BWV 988 - 03 - Variatio 2 a 1 Clav.mp3"),
+        cover: "img/Johann_Sebastian_Bach.png",
+        duration: "2:03"
+      },
+      {
+        title: "J.S Bach",
+        subtitle: "Johann Sebastian Bach",
+        src: encodeURIComponent("J.S Bach - Concerto in C minor, Prades Festival - I. Allegro.mp3"),
+        cover: "img/Johann_Sebastian_Bach.png",
+        duration: "5:49"
+      }
+    ];
 
-  const playButton = document.getElementById('playPause');
+    const audio = document.getElementById('audio');
+    const playBtn = document.getElementById('playBtn');
+    const progress = document.getElementById('progress');
+    const currentTimeEl = document.getElementById('currentTime');
+    const durationEl = document.getElementById('duration');
+    const titleEl = document.getElementById('title');
+    const subtitleEl = document.getElementById('subtitle');
+    const coverEl = document.getElementById('cover');
+    const playlistEl = document.getElementById('playlist');
+    const volumeEl = document.getElementById('volume');
 
-  const updateVar = (value) => {
-    document.documentElement.style.setProperty("--range", value + "%");
-  }
+    let currentIndex = 0;
 
-  range.addEventListener("input", () => {
-    updateVar(range.value);
-  });
-
-  // 播放/暫停功能
-  function togglePlay() {
-    if (audio.paused) {
-      audio.play();
-      playButton.textContent = '暫停';
-    } else {
-      audio.pause();
-      playButton.textContent = '播放';
+    function loadTrack(index) {
+      const track = tracks[index];
+      titleEl.textContent = track.title;
+      subtitleEl.textContent = track.subtitle;
+      coverEl.src = track.cover;
+      audio.src = track.src;
+      audio.load();
+      audio.volume = volumeEl.value;
+      document.querySelectorAll('.track').forEach(el => el.classList.remove('bg-[#e07a5f]/30'));
+      document.querySelectorAll('.track')[index].classList.add('bg-[#e07a5f]/30');
     }
-  }
 
-  // 根據滑動桿的值設定音樂的當前時間
-  function setAudioProgress() {
-    const newTime = (range.value / 100) * audio.duration;
-    audio.currentTime = newTime;
-    updateTime();
-  }
+    function togglePlay() {
+      if (audio.paused) {
+        audio.play();
+        playBtn.innerHTML = "<span uk-icon='icon: minus'></span>";
+      } else {
+        audio.pause();
+        playBtn.innerHTML = "<span uk-icon='icon: play-circle'></span>";
+      }
+    }
 
-  // 更新時間
-  function updateTime() {
-    const currentMinutes = Math.floor(audio.currentTime / 60);
-    const currentSeconds = Math.floor(audio.currentTime % 60);
-    const durationMinutes = Math.floor(audio.duration / 60);
-    const durationSeconds = Math.floor(audio.duration % 60);
+    function prev() {
+      currentIndex = (currentIndex - 1 + tracks.length) % tracks.length;
+      loadTrack(currentIndex);
+      audio.play();
+      playBtn.innerHTML = "<span uk-icon='icon: minus'></span>";
+    }
 
-    currentTime.textContent = `${currentMinutes}:${currentSeconds.toString().padStart(2, '0')}`;
-    duration.textContent = `${durationMinutes}:${durationSeconds.toString().padStart(2, '0')}`;
-  }
+    function next() {
+      currentIndex = (currentIndex + 1) % tracks.length;
+      loadTrack(currentIndex);
+      audio.play();
+      playBtn.innerHTML = "<span uk-icon='icon: minus'></span>";
+    }
 
-  // 更新滑動桿
-  function updateRange() {
-    const rangeValue = (audio.currentTime / audio.duration) * 100;
-    range.value = rangeValue;
-    updateVar(rangeValue);
-  }
+    audio.addEventListener('loadedmetadata', () => {
+      durationEl.textContent = formatTime(audio.duration);
+    })
 
-  playButton.addEventListener('click', togglePlay);
-  audio.addEventListener('timeupdate', () => {
-    updateTime();
-    updateRange();
-  });
-  audio.addEventListener('loadedmetadata', () => {
-    updateTime();
-  });
+    audio.addEventListener('timeupdate', () => {
+      const percent = (audio.currentTime / audio.duration) * 100;
+      progress.value = percent || 0;
+      currentTimeEl.textContent = formatTime(audio.currentTime);
+    });
 
-  range.addEventListener('input', setAudioProgress);
-</script>
+    progress.addEventListener('input', () => {
+      audio.currentTime = audio.duration * (progress.value / 100);
+    });
+
+    volumeEl.addEventListener('input', () => {
+      audio.volume = volumeEl.value;
+    });
+
+    function formatTime(time) {
+      const min = Math.floor(time / 60) || '00';
+      const sec = time ? Math.floor(time % 60).toString().padStart(2, '0') : '00';
+      return `${min}:${sec}`;
+    }
+
+    tracks.forEach((track, i) => {
+      const div = document.createElement('div');
+      div.className = 'track flex items-center bg-[#81b29a]/10 hover:bg-[#81b29a]/20 transition rounded-lg p-2 mb-2 cursor-pointer';
+      div.innerHTML = `
+        <img src="${track.cover}" alt="" class="w-10 h-10 rounded mr-3">
+        <div class="flex-1">
+          <div class="text-sm">${track.title}</div>
+          <div class="text-xs text-[#3d405b]">${track.subtitle}</div>
+        </div>
+        <div class="text-sm text-[#3d405b]">${track.duration}</div>
+      `;
+      div.addEventListener('click', () => {
+        currentIndex = i;
+        loadTrack(i);
+        audio.play();
+        playBtn.innerHTML = "<span uk-icon='icon: minus'></span>";
+      });
+      playlistEl.appendChild(div);
+    });
+
+    loadTrack(currentIndex);
+  </script>
+</body>
 </html>
