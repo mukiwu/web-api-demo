@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/css/uikit.min.css" />
-  <title>用 Audio 和 Video API 打造自己的影音平台 II | Web API 系列文章 | MUKI space*</title>
+  <title>用 video 實作影音播放功能  | Web API 系列文章 | MUKI space*</title>
 </head>
 <body>
   <style>
@@ -27,41 +27,9 @@
       justify-content: space-between;
       margin-bottom: 10px;
     }
-
-    #range {
-      appearance: none;
-      width: 300px;
-      position: relative;
-    }
-
-    #range:focus {
-      outline: none;
-    }
-
-    #range::before {
-      position: absolute;
-      content: "";
-      width: var(--range);
-      height: 2px;
-      background: var(--second);
-    }
-
-    #range::-webkit-slider-runnable-track {
-      background: var(--base);
-      height: 2px;
-    }
-
-    #range::-webkit-slider-thumb {
-      width: 10px;
-      height: 10px;
-      border-radius: 100%;
-      border: none;
-      -webkit-appearance: none;
-      background-color: var(--trackball);
-      margin-top: -3.5px;
-      z-index: 99;
-      position: relative;
-      transition: 0.5s all ease;
+    
+    .highlight {
+      background-color: #ffff99;
     }
   </style>
 <div class="uk-container-expand">
@@ -69,22 +37,24 @@
     <div id="sidebar" class="uk-width-1-5@m"></div>
     <div class="uk-width-3-5@m" uk-height-viewport="expand: true">
       <article class="uk-article uk-padding uk-padding-remove-horizontal@m">
-        <h1 class="uk-article-title uk-margin-bottom">用 Audio 和 Video API 打造自己的影音平台 II</h1>
+        <h1 class="uk-article-title uk-margin-bottom">用 Video 實作影音播放功能</h1>
         <div uk-alert>
           <p class="uk-margin">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10351844" class="uk-text-primary">用 Audio 和 Video API 打造自己的影音平台 II</a></p>
-          <audio id="audio" src="song.mp3"></audio>
+          <p>(範例有調整過，會跟文章內容有些許不同)</p>
         </div>
         <div class="video-controller">
           <video id="video" width="300" controls class="uk-margin uk-width-1-1">
             <source src="video.mp4" type="video/mp4">
           </video>
+          <dl id="hint" class="uk-description-list">
+            <dt id="hint-5">第五秒</dt>
+            <dd id="content-5">我是第五秒的內容</dd>
+            <dt id="hint-10">第十秒</dt>
+            <dd id="content-10">我是第十秒的內容</dd>
+          </dl>
           <button id="playPause" class="uk-button uk-button-default">播放</button>
           <button id="pipButton" class="uk-button uk-button-default">子母畫面</button>
-          <div class="uk-margin">
-            <span id="currentTime">0:00</span> / <span id="duration">0:00</span>
-          </div>
         </div>
-        <input type="range" id="range" min="0" max="100" value="0">
       </article>
     </div>
   </div>
@@ -97,18 +67,8 @@
 <script>
   // 獲取 DOM 元素
   const video = document.getElementById('video');
-  const currentTime = document.getElementById('currentTime');
-  const duration = document.getElementById('duration');
-  const range = document.getElementById("range");
-
+  const hint = document.getElementById('hint');
   const playButton = document.getElementById('playPause');
-
-  const updateVar = (value) => {
-    document.documentElement.style.setProperty("--range", value + "%");
-  }
-  range.addEventListener("input", () => {
-    updateVar(range.value);
-  });
 
   // 播放/暫停功能
   function togglePlay() {
@@ -119,13 +79,6 @@
       video.pause();
       playButton.textContent = '播放';
     }
-  }
-
-  // 根據滑動桿的值設定影片的當前時間
-  function setVideoProgress() {
-    const newTime = (range.value / 100) * video.duration;
-    video.currentTime = newTime;
-    updateTime();
   }
 
   // 子母畫面功能
@@ -142,36 +95,29 @@
 }
 
   pipButton.addEventListener('click', togglePiP);
-
-  // 更新時間
-  function updateTime() {
-    const currentMinutes = Math.floor(video.currentTime / 60);
-    const currentSeconds = Math.floor(video.currentTime % 60);
-    const durationMinutes = Math.floor(video.duration / 60);
-    const durationSeconds = Math.floor(video.duration % 60);
-
-    currentTime.textContent = `${currentMinutes}:${currentSeconds.toString().padStart(2, '0')}`;
-    duration.textContent = `${durationMinutes}:${durationSeconds.toString().padStart(2, '0')}`;
-  }
-
-  // 更新滑動桿
-  function updateRange() {
-    const rangeValue = (video.currentTime / video.duration) * 100;
-    range.value = rangeValue;
-    updateVar(rangeValue);
-  }
-
   playButton.addEventListener('click', togglePlay);
+  
   video.addEventListener('timeupdate', () => {
-    updateTime();
-    updateRange();
+    // 第五秒時顯示提示並高亮第一組內容
+    if (video.currentTime >= 5 && video.currentTime < 6) {
+      hint.style.display = 'block';
+      document.getElementById('hint-5').classList.add('highlight');
+      document.getElementById('content-5').classList.add('highlight');
+    } 
+    // 第十秒時高亮第二組內容
+    else if (video.currentTime >= 10 && video.currentTime < 11) {
+      hint.style.display = 'block';
+      document.getElementById('hint-10').classList.add('highlight');
+      document.getElementById('content-10').classList.add('highlight');
+    }
+    // 其他時間移除所有高亮
+    else {
+      document.getElementById('hint-5').classList.remove('highlight');
+      document.getElementById('content-5').classList.remove('highlight');
+      document.getElementById('hint-10').classList.remove('highlight');
+      document.getElementById('content-10').classList.remove('highlight');
+    }
   });
-  video.addEventListener('loadedmetadata', () => {
-    updateTime();
-  });
-
-  range.addEventListener('input', setVideoProgress);
-
 
   video.addEventListener('waiting', () => {
     console.log('緩衝中...');
