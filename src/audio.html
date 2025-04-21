@@ -5,7 +5,40 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/css/uikit.min.css" />
   <script src="https://cdn.tailwindcss.com"></script>
-  <title>用 Audio 和 Video API 打造自己的影音平台 | Web API 系列文章 | MUKI space*</title>
+  <title>使用 audio 打造音樂播放器 | Web API 系列文章 | MUKI space*</title>
+  <style>
+    input[id='volume']::-webkit-slider-thumb {
+      appearance: none;
+      height: 14px;
+      width: 14px;
+      background-color: #3d405b;
+      border-radius: 50%;
+      border: 2px solid #7A9E9F;
+      margin-top: 0px;
+    }
+  
+    input[id='volume']::-moz-range-thumb {
+      height: 14px;
+      width: 14px;
+      background-color: #3d405b;
+      border-radius: 50%;
+      border: 2px solid #7A9E9F;
+    }
+
+    input[id='progress']::-webkit-slider-thumb {
+      transition: transform 0.2s ease; 
+    }
+    input[id='progress']::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    input[id='progress']::-moz-range-thumb {
+      transition: transform 0.2s ease; 
+    }
+    input[id='progress']::-moz-range-thumb:hover {
+      transform: scale(1.2);
+    }
+  </style>
 </head>
 <body>
   <div class="uk-container-expand">
@@ -13,32 +46,31 @@
       <div id="sidebar" class="uk-width-1-5@m"></div>
       <div class="uk-width-3-5@m" uk-height-viewport="expand: true">
         <article class="uk-article uk-padding uk-padding-remove-horizontal@m">
-          <h1 class="uk-article-title uk-margin-bottom">用 Audio 和 Video API 打造自己的影音平台</h1>
+          <h1 class="uk-article-title uk-margin-bottom">使用 audio 打造音樂播放器 </h1>
           <div uk-alert>
             <p class="uk-margin">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10349363" class="uk-text-primary">用 Audio 和 Video API 打造自己的影音平台</a></p>
+            <p>(範例有調整過，會跟文章內容有些許不同)</p>
           </div>
           <div class="text-[#2f2f2f] rounded-xl p-6 m-4 max-w-md shadow-lg text-center border-4 border-[#e07a5f]">
             <img id="cover" src="img/Johann_Sebastian_Bach.png" alt="cover" class="w-full rounded-xl mb-4 border-2 border-[#81b29a]">
             <div class="text-xl font-bold" id="title">15 Inventions</div>
             <div class="text-sm text-[#3d405b] mb-3" id="subtitle">Johann Sebastian Bach</div>
-
-            <input type="range" id="progress" value="0" min="0" max="100" class="w-full accent-[#e07a5f]">
+            <input type="range" id="progress" value="0" min="0" max="100" class="w-full h-1 accent-[#e07a5f] cursor-pointer">
             <div class="flex justify-between text-xs text-[#3d405b] mt-1">
               <span id="currentTime">0:00</span>
               <span id="duration">0:00</span>
             </div>
-            <div class="flex justify-between mt-4">
-              <div></div>
-              <div class="space-x-6">
-                <button onclick="prev()"><span uk-icon="icon: chevron-double-left"></span></button>
-                <button onclick="togglePlay()" id="playBtn"><span uk-icon="icon: play-circle"></span></button>
-                <button onclick="next()"><span uk-icon="icon: chevron-double-right"></span></button>
-              </div>
-              <div class="flex items-center">
-                <div id="volumeControl">
-                  <input type="range" id="volume" value="100" min="0" max="100" class="w-full accent-[#e07a5f]">
+            <div class="flex justify-between items-center mt-4">
+              <div class="flex-1"></div>
+              <div class="flex-1 relative top-0.5">
+                <div class="space-x-6">
+                  <button onclick="prev()" class="leading-none"><span uk-icon="icon: chevron-double-left"></span></button>
+                  <button onclick="togglePlay()" id="playBtn" class="leading-none"><span uk-icon="icon: play-circle"></span></button>
+                  <button onclick="next()" class="leading-none"><span uk-icon="icon: chevron-double-right"></span></button>
                 </div>
-                <button id="volumeBtn"><span uk-icon="icon: bell"></span></button>
+              </div>
+              <div class="flex-1 flex justify-end items-center space-x-2">
+                <input type="range" id="volume" value="1" min="0" max="1" step="0.01" class="relative -top-0.5 w-16 h-1 accent-[#7A9E9F] bg-[#e5e5e5] appearance-none cursor-pointer">
               </div>
             </div>
           </div>
@@ -91,8 +123,6 @@
     const coverEl = document.getElementById('cover');
     const playlistEl = document.getElementById('playlist');
     const volumeEl = document.getElementById('volume');
-    const volumeBtnEl = document.getElementById('volumeBtn');
-    const volumeControlEl = document.getElementById('volumeControl');
 
     let currentIndex = 0;
 
@@ -103,7 +133,7 @@
       coverEl.src = track.cover;
       audio.src = track.src;
       audio.load();
-      audio.volume = volumeEl.value / 100;
+      audio.volume = volumeEl.value;
       document.querySelectorAll('.track').forEach(el => el.classList.remove('bg-[#e07a5f]/30'));
       document.querySelectorAll('.track')[index].classList.add('bg-[#e07a5f]/30');
     }
@@ -132,11 +162,14 @@
       playBtn.innerHTML = "<span uk-icon='icon: minus'></span>";
     }
 
+    audio.addEventListener('loadedmetadata', () => {
+      durationEl.textContent = formatTime(audio.duration);
+    })
+
     audio.addEventListener('timeupdate', () => {
       const percent = (audio.currentTime / audio.duration) * 100;
       progress.value = percent || 0;
       currentTimeEl.textContent = formatTime(audio.currentTime);
-      durationEl.textContent = formatTime(audio.duration);
     });
 
     progress.addEventListener('input', () => {
@@ -144,7 +177,7 @@
     });
 
     volumeEl.addEventListener('input', () => {
-      audio.volume = volumeEl.value / 100;
+      audio.volume = volumeEl.value;
     });
 
     function formatTime(time) {
