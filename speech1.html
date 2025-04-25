@@ -69,7 +69,10 @@
     }
 
     // 當語音列表變更時更新語音選項
-    window.speechSynthesis.onvoiceschanged = populateVoiceList;
+    window.speechSynthesis.onvoiceschanged = function() {
+      // 延遲執行 populateVoiceList，確保語音列表已經加載完成
+      setTimeout(populateVoiceList, 1000);
+    };
 
     // 播放語音
     document.getElementById('speakButton').onclick = function () {
