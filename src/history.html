@@ -51,7 +51,6 @@
     showLoading();
     try {
       const res = await fetch(`https://muki.tw/${page}`);
-      console.log('res', res);
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);
       }
@@ -70,7 +69,7 @@
   function extractContent(htmlString) {
     const parser = new DOMParser();
     const doc = parser.parseFromString(htmlString, 'text/html');
-    const targetDiv = doc.querySelector('.content');
+    const targetDiv = doc.querySelector('.single-content-inner');
 
     if (targetDiv) {
       return targetDiv.innerHTML;
