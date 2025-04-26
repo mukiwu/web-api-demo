@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/css/uikit.min.css" />
+  <title>探索 Fullscreen API：從基礎到應用場景 | Web API 系列文章 | MUKI space*</title>
+</head>
+<body>
+  <div class="uk-container-expand">
+    <div class="uk-grid-divider" uk-grid>
+      <div id="sidebar" class="uk-width-1-5@m"></div>
+      <div class="uk-width-3-5@m" uk-height-viewport="expand: true">
+        <article class="uk-article uk-padding uk-padding-remove-horizontal@m">
+          <h1 class="uk-article-title uk-margin-bottom">探索 Fullscreen API：從基礎到應用場景</h1>
+          <div uk-alert>
+            <p class="uk-margin">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10348877" class="uk-text-primary">探索 Fullscreen API：從基礎到應用場景</a></p>
+
+            <div id="fullscreenTarget" class="uk-card uk-card-secondary uk-card-body">
+              我是目標元素
+            </div>
+            
+            <div class="uk-margin-medium-top">
+              <button class="uk-button uk-button-primary" onclick="enterElementFullscreen()">單個元素全螢幕</button>
+              <button class="uk-button uk-button-primary" onclick="enterPageFullscreen()">整頁全螢幕</button>
+              <button class="uk-button uk-button-default" onclick="exitFullscreen()">退出全螢幕</button>
+            </div>
+          </div>          
+        </article>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit-icons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
+  <script src="template.js"></script>
+  <script>
+    const target = document.getElementById('fullscreenTarget');
+
+    function enterElementFullscreen() {
+      if (target.requestFullscreen) {
+        target.requestFullscreen();
+      }
+    }
+
+    function enterPageFullscreen() {
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen();
+      }
+    }
+
+    function exitFullscreen() {
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      }
+    }
+  </script>
+</body>
+</html>
