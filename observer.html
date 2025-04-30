@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/css/uikit.min.css" />
   <title>深入了解 Intersection Observer API 與其應用 I | Web API 系列文章 | MUKI space*</title>
 </head>
+
 <body>
   <style>
     /* 設置容器樣式以模擬滾動區域 */
@@ -32,38 +34,37 @@
 
     /* 目標元素樣式 */
     .target-element {
-      width: 100px;
-      height: 100px;
-      background-color: #3498db;
-      margin: 20px auto;
-      opacity: 0;
-      transform: translateY(50px);
-      transition: opacity 0.5s ease, transform 0.5s ease;
+      width: 200px;
+      height: 200px;
+      margin: 0 auto;
+      background-color: #ccc;
+      transition: background-color 0.3s ease;
     }
 
-    /* 當元素進入可視區域時添加的類 */
-    .visible {
-      opacity: 1;
-      transform: translateY(0);
+    /* 當元素進入可視區域時添加的 class */
+    .in-view {
+      background-color: #4caf50;
     }
   </style>
-<div class="uk-container-expand">
-  <div class="uk-grid-divider" uk-grid>
-    <div id="sidebar" class="uk-width-1-5@m"></div>
-    <div class="uk-width-3-5@m" uk-height-viewport="expand: true">
-      <article class="uk-article uk-padding uk-padding-remove-horizontal@m">
-        <h1 class="uk-article-title uk-margin-bottom">深入了解 Intersection Observer API 與其應用 I</h1>
-        <div uk-alert>
-          <p class="uk-margin">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10357361" class="uk-text-primary">深入了解 Intersection Observer API 與其應用 I</a></p>
-          <p class="uk-margin">請在方框內持續往下滾動</p>
-        </div>
-        <div class="scroll-container">
-          <div class="target-element"></div>
-        </div>
-      </article>
+  <div class="uk-container-expand">
+    <div class="uk-grid-divider" uk-grid>
+      <div id="sidebar" class="uk-width-1-5@m"></div>
+      <div class="uk-width-3-5@m" uk-height-viewport="expand: true">
+        <article class="uk-article uk-padding uk-padding-remove-horizontal@m">
+          <h1 class="uk-article-title uk-margin-bottom">深入了解 Intersection Observer API 與其應用 I</h1>
+          <div uk-alert>
+            <p class="uk-margin">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10357361"
+                class="uk-text-primary">深入了解 Intersection Observer API 與其應用 I</a></p>
+            <p class="uk-margin">請在方框內持續往下滾動</p>
+          </div>
+          <div class="scroll-container">
+            <div class="target-element"></div>
+          </div>
+        </article>
+      </div>
     </div>
   </div>
-</div>
+
 </html>
 <script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit-icons.min.js"></script>
@@ -82,13 +83,12 @@
   function callback(entries) {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        console.log('目標元素在可視區域內');
+        target.classList.add('in-view');
       } else {
-        entry.target.classList.remove('visible');
-        console.log('目標元素在可視區域外');
+        target.classList.remove('in-view');
       }
     });
   }
 </script>
+
 </html>
