@@ -28,136 +28,139 @@
     </div>
   </div>
 
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit-icons.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
-<script src="template.js"></script>
-<script>
-  // 檢查瀏覽器是否支援語音辨識 API
-  if (!('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
-    document.getElementById('status').textContent = '狀態: 您的瀏覽器不支援語音辨識功能';
-    document.getElementById('start-btn').disabled = true;
-  } else {
-    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-    let searchTerm = '';
+  <script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit-icons.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
+  <script src="template.js"></script>
+  <script>
+    // 檢查瀏覽器是否支援語音辨識 API
+    if (!('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
+      document.getElementById('status').textContent = '狀態: 您的瀏覽器不支援語音辨識功能';
+      document.getElementById('start-btn').disabled = true;
+    } else {
+      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      let searchTerm = '';
 
-    recognition.lang = 'zh-TW';
-    recognition.continuous = true;
-    recognition.interimResults = true;
+      recognition.lang = 'zh-TW';
+      recognition.continuous = true;
+      recognition.interimResults = true;
 
-    recognition.onresult = function (event) {
-      let interimTranscript = '';
-      let finalTranscript = '';
+      recognition.onresult = function (event) {
+        let interimTranscript = '';
+        let finalTranscript = '';
 
-      for (let i = event.resultIndex; i < event.results.length; i++) {
-        const result = event.results[i];
-        if (result.isFinal) {
-          finalTranscript += result[0].transcript;
-        } else {
-          interimTranscript += result[0].transcript;
-        }
-      }
-
-      // 更新顯示的即時結果和最終結果
-      document.getElementById('term').textContent = finalTranscript + interimTranscript;
-
-      // 檢查是否包含「開始搜尋」關鍵字
-      if (finalTranscript.includes('開始搜尋')) {
-        // 去除「開始搜尋」並取得剩餘文字作為搜尋關鍵字
-        searchTerm = finalTranscript.replace('開始搜尋', '').trim();
-        // 停止語音識別
-        recognition.stop();
-        // 更新狀態
-        document.getElementById('status').textContent = '狀態: 開始搜尋中...';
-        // 執行搜尋操作
-        performSearch(searchTerm);
-        searchTerm = '';
-      } else {
-        // 更新搜尋關鍵字
-        searchTerm = finalTranscript + interimTranscript;
-      }
-    };
-
-    recognition.onstart = function () {
-      document.getElementById('status').textContent = '狀態: 語音識別中...';
-      document.getElementById('start-btn').textContent = '停止識別';
-    };
-    
-    recognition.onend = function () {
-      document.getElementById('status').textContent = '狀態: 語音識別結束';
-      document.getElementById('start-btn').textContent = '開始語音辨識';
-    };
-    
-    recognition.onerror = function (event) {
-      console.error('語音識別錯誤:', event.error);
-      if (event.error === 'not-allowed') {
-        document.getElementById('status').textContent = '狀態: 語音識別錯誤 - 未獲得麥克風權限';
-      } else if (event.error === 'no-speech') {
-        document.getElementById('status').textContent = '狀態: 語音識別錯誤 - 未檢測到語音';
-      } else if (event.error === 'network') {
-        document.getElementById('status').textContent = '狀態: 語音識別錯誤 - 網路連接問題，請確認您的網路連接正常且沒有被防火牆阻擋';
-        // 設定一個延遲重試
-        setTimeout(() => {
-          if (document.getElementById('start-btn').textContent === '停止識別') {
-            try {
-              recognition.start();
-              document.getElementById('status').textContent = '狀態: 嘗試重新連接...';
-            } catch (e) {
-              console.error('語音識別重新啟動失敗:', e);
-            }
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const result = event.results[i];
+          if (result.isFinal) {
+            finalTranscript += result[0].transcript;
+          } else {
+            interimTranscript += result[0].transcript;
           }
-        }, 3000);
-      } else {
-        document.getElementById('status').textContent = `狀態: 語音識別錯誤 - ${event.error}`;
-      }
-      document.getElementById('start-btn').textContent = '開始語音辨識';
-    };
-
-    // 執行搜尋操作
-    function performSearch(query) {
-      if (query) {
-        console.log('搜尋關鍵字:', query);
-        const searchUrl = 'https://www.google.com/custom?q=' + encodeURIComponent(query);
-        window.location.href = searchUrl;
-      } else {
-        console.log('沒有提供搜尋關鍵字');
-      }
-    }
-
-    // 添加按鈕事件監聽器
-    document.getElementById('start-btn').addEventListener('click', function() {
-      if (this.textContent === '開始語音辨識') {
-        try {
-          // 重設語音識別參數
-          recognition.continuous = true;
-          recognition.interimResults = true;
-          recognition.maxAlternatives = 1;
-          
-          // 確保連接可靠性
-          document.getElementById('status').textContent = '狀態: 正在建立語音識別連接...';
-          
-          // 啟動語音識別
-          recognition.start();
-        } catch (e) {
-          console.error('語音識別啟動失敗:', e);
-          document.getElementById('status').textContent = '狀態: 語音識別啟動失敗';
         }
-      } else {
-        recognition.stop();
-      }
-    });
 
-    // 添加頁面卸載事件，確保識別資源被釋放
-    window.addEventListener('beforeunload', function() {
-      if (recognition) {
-        try {
+        // 更新顯示的即時結果和最終結果
+        console.log('即時結果', interimTranscript);
+        console.log('最終結果', finalTranscript);
+        document.getElementById('term').textContent = finalTranscript + interimTranscript;
+
+        // 檢查是否包含「開始搜尋」關鍵字
+        if (finalTranscript.includes('開始搜尋')) {
+          // 去除「開始搜尋」並取得剩餘文字作為搜尋關鍵字
+          searchTerm = finalTranscript.replace('開始搜尋', '').trim();
+          // 停止語音識別
           recognition.stop();
-        } catch (e) {
-          console.error('停止語音識別失敗:', e);
+          // 更新狀態
+          document.getElementById('status').textContent = '狀態: 開始搜尋中...';
+          // 執行搜尋操作
+          performSearch(searchTerm);
+          searchTerm = '';
+        } else {
+          // 更新搜尋關鍵字
+          searchTerm = finalTranscript + interimTranscript;
+        }
+      };
+
+      recognition.onstart = function () {
+        document.getElementById('status').textContent = '狀態: 語音識別中...';
+        document.getElementById('start-btn').textContent = '停止識別';
+      };
+
+      recognition.onend = function () {
+        document.getElementById('status').textContent = '狀態: 語音識別結束';
+        document.getElementById('start-btn').textContent = '開始語音辨識';
+      };
+
+      recognition.onerror = function (event) {
+        console.error('語音識別錯誤:', event.error);
+        if (event.error === 'not-allowed') {
+          document.getElementById('status').textContent = '狀態: 語音識別錯誤 - 未獲得麥克風權限';
+        } else if (event.error === 'no-speech') {
+          document.getElementById('status').textContent = '狀態: 語音識別錯誤 - 未檢測到語音';
+        } else if (event.error === 'network') {
+          document.getElementById('status').textContent = '狀態: 語音識別錯誤 - 網路連接問題，請確認您的網路連接正常且沒有被防火牆阻擋';
+          // 設定一個延遲重試
+          setTimeout(() => {
+            if (document.getElementById('start-btn').textContent === '停止識別') {
+              try {
+                recognition.start();
+                document.getElementById('status').textContent = '狀態: 嘗試重新連接...';
+              } catch (e) {
+                console.error('語音識別重新啟動失敗:', e);
+              }
+            }
+          }, 3000);
+        } else {
+          document.getElementById('status').textContent = `狀態: 語音識別錯誤 - ${event.error}`;
+        }
+        document.getElementById('start-btn').textContent = '開始語音辨識';
+      };
+
+      // 執行搜尋操作
+      function performSearch(query) {
+        if (query) {
+          console.log('搜尋關鍵字:', query);
+          const searchUrl = 'https://www.google.com/custom?q=' + encodeURIComponent(query);
+          window.location.href = searchUrl;
+        } else {
+          console.log('沒有提供搜尋關鍵字');
         }
       }
-    });
-  }
-</script>
+
+      // 添加按鈕事件監聽器
+      document.getElementById('start-btn').addEventListener('click', function () {
+        if (this.textContent === '開始語音辨識') {
+          try {
+            // 重設語音識別參數
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.maxAlternatives = 1;
+
+            // 確保連接可靠性
+            document.getElementById('status').textContent = '狀態: 正在建立語音識別連接...';
+
+            // 啟動語音識別
+            recognition.start();
+          } catch (e) {
+            console.error('語音識別啟動失敗:', e);
+            document.getElementById('status').textContent = '狀態: 語音識別啟動失敗';
+          }
+        } else {
+          recognition.stop();
+        }
+      });
+
+      // 添加頁面卸載事件，確保識別資源被釋放
+      window.addEventListener('beforeunload', function () {
+        if (recognition) {
+          try {
+            recognition.stop();
+          } catch (e) {
+            console.error('停止語音識別失敗:', e);
+          }
+        }
+      });
+    }
+  </script>
 </body>
+
 </html>
