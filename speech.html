@@ -120,7 +120,7 @@
         if (query) {
           console.log('搜尋關鍵字:', query);
           const searchUrl = 'https://www.google.com/custom?q=' + encodeURIComponent(query);
-          window.location.href = searchUrl;
+          window.open(searchUrl, '_blank');
         } else {
           console.log('沒有提供搜尋關鍵字');
         }
