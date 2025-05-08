@@ -6,6 +6,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/css/uikit.min.css" />
   <title>用 Web Speech API 與你的 AI 朋友互動聊天 | Web API 系列文章 | MUKI space*</title>
+  <style>
+    #spinner {
+      visibility: hidden;
+    }
+  </style>
 </head>
 
 <body>
@@ -25,6 +30,7 @@
           </div>
           <button id="talkButton" class="uk-button uk-button-default uk-margin">說話</button>
           <p id="response">等待語音輸入...</p>
+          <div id="spinner" uk-spinner></div>
         </article>
       </div>
     </div>
@@ -58,7 +64,7 @@
     recognition.onresult = async function (event) {
       const command = event.results[0][0].transcript;
       document.getElementById('response').textContent = '你說的話: ' + command;
-
+      document.getElementById('spinner').style.visibility = 'visible';
       // 呼叫 OpenAI API
       const openAIResponse = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
@@ -85,7 +91,7 @@
 
       // 更新網頁顯示
       document.getElementById('response').innerHTML += '<br>AI 回應: ' + aiResponse;
-
+      document.getElementById('spinner').style.visibility = 'hidden';
       // 使用 SpeechSynthesis 播放 AI 的回應
       utterance.text = aiResponse;
       utterance.voice = voices.filter(voice => voice.lang === 'zh-TW')[1];
