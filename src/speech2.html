@@ -10,6 +10,10 @@
     #spinner {
       visibility: hidden;
     }
+
+    #response {
+      line-height: 1.8;
+    }
   </style>
 </head>
 
@@ -53,6 +57,14 @@
     voices = window.speechSynthesis.getVoices();
   };
 
+  const conversationHistory = [
+    {
+      role: 'system',
+      // 'content': "你是一個很好的談心事的朋友，請以溫暖且堅定的口氣對話。"
+      'content': "你熱愛吐槽，對我說的話總是能雞蛋裡挑骨頭，找出許多負面的東西，但同時你又是我非常好的朋友，請帶著毒舌卻帶有一絲溫暖的對話。"
+    }
+  ];
+
   document.getElementById('talkButton').addEventListener('click', function () {
     const apiKey = document.getElementById('apiKeyInput').value.trim();
     if (!apiKey) {
@@ -63,8 +75,12 @@
 
     recognition.onresult = async function (event) {
       const command = event.results[0][0].transcript;
-      document.getElementById('response').textContent = '你說的話: ' + command;
+      document.getElementById('response').innerHTML += `<br><b>你說的話:</b> ${command}`;
       document.getElementById('spinner').style.visibility = 'visible';
+
+      // 將使用者說的話加入對話歷史
+      conversationHistory.push({ role: 'user', content: command });
+
       // 呼叫 OpenAI API
       const openAIResponse = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
@@ -74,14 +90,7 @@
         },
         body: JSON.stringify({
           model: 'gpt-4o',
-          messages: [{
-            'role': 'system',
-            // 'content': "你是一個很好的談心事的朋友，請以溫暖且堅定的口氣對話。"
-            'content': "你熱愛吐槽，對我說的話總是能雞蛋裡挑骨頭，找出許多負面的東西，但同時你又是我非常好的朋友，請帶著毒舌卻帶有一絲溫暖的對話。"
-          }, {
-            'role': 'user',
-            'content': command
-          }],
+          messages: conversationHistory,
           max_tokens: 300
         })
       });
@@ -89,9 +98,13 @@
       const data = await openAIResponse.json();
       const aiResponse = data.choices[0].message.content;
 
-      // 更新網頁顯示
-      document.getElementById('response').innerHTML += '<br>AI 回應: ' + aiResponse;
+      // 將 AI 的回應加入對話歷史
+      conversationHistory.push({ role: 'assistant', content: aiResponse });
+
+      // 顯示回應文字
+      document.getElementById('response').innerHTML += `<br><b>AI 回應:</b> ${aiResponse}`;
       document.getElementById('spinner').style.visibility = 'hidden';
+
       // 使用 SpeechSynthesis 播放 AI 的回應
       utterance.text = aiResponse;
       utterance.voice = voices.filter(voice => voice.lang === 'zh-TW')[1];
