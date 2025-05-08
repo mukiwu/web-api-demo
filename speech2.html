@@ -1,56 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/css/uikit.min.css" />
   <title>用 Web Speech API 與你的 AI 朋友互動聊天 | Web API 系列文章 | MUKI space*</title>
+  <style>
+    #spinner {
+      visibility: hidden;
+    }
+
+    #response {
+      line-height: 1.8;
+    }
+  </style>
 </head>
+
 <body>
-<div class="uk-container-expand">
-  <div class="uk-grid-divider" uk-grid>
-    <div id="sidebar" class="uk-width-1-5@m"></div>
-    <div class="uk-width-3-5@m" uk-height-viewport="expand: true">
-      <article class="uk-article uk-padding uk-padding-remove-horizontal@m">
-        <h1 class="uk-article-title uk-margin-bottom">用 Web Speech API 與你的 AI 朋友互動聊天</h1>
-        <div uk-alert>
-          <p class="uk-margin">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10351879" class="uk-text-primary">用 Web Speech API 與你的 AI 朋友互動聊天</a></p>
-          <p class="uk-margin">可以輸入你的 OpenAI API Key 來與 AI 互動聊天。我不會儲存你的 API Key，請放心使用。</p>
-        </div>
-        <div class="uk-margin">
-          <input type="text" id="apiKeyInput" class="uk-input" placeholder="請輸入你的 OpenAI API Key">
-        </div>
-        <button id="talkButton" class="uk-button uk-button-default uk-margin">說話</button>
-        <p id="response">等待語音輸入...</p>
-      </article>
+  <div class="uk-container-expand">
+    <div class="uk-grid-divider" uk-grid>
+      <div id="sidebar" class="uk-width-1-5@m"></div>
+      <div class="uk-width-3-5@m" uk-height-viewport="expand: true">
+        <article class="uk-article uk-padding uk-padding-remove-horizontal@m">
+          <h1 class="uk-article-title uk-margin-bottom">用 Web Speech API 與你的 AI 朋友互動聊天</h1>
+          <div uk-alert>
+            <p class="uk-margin">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10351879" class="uk-text-primary">用
+                Web Speech API 與你的 AI 朋友互動聊天</a></p>
+            <p class="uk-margin">可以輸入你的 OpenAI API Key 來與 AI 互動聊天。我不會儲存你的 API Key，請放心使用。</p>
+          </div>
+          <div class="uk-margin">
+            <input type="text" id="apiKeyInput" class="uk-input" placeholder="請輸入你的 OpenAI API Key">
+          </div>
+          <button id="talkButton" class="uk-button uk-button-default uk-margin">說話</button>
+          <p id="response">等待語音輸入...</p>
+          <div id="spinner" uk-spinner></div>
+        </article>
+      </div>
     </div>
   </div>
-</div>
+
 </html>
 <script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit-icons.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
 <script src="template.js"></script>
 <script>
-    let voices = []
-    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-    const utterance = new SpeechSynthesisUtterance();
-    const apiKey = document.getElementById('apiKeyInput');
+  let voices = []
+  const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+  const utterance = new SpeechSynthesisUtterance();
 
-    recognition.lang = 'zh-TW';
-    utterance.lang = 'zh-TW';
+  recognition.lang = 'zh-TW';
+  utterance.lang = 'zh-TW';
 
-    window.speechSynthesis.onvoiceschanged = function () {
-      voices = window.speechSynthesis.getVoices();
-    };
+  window.speechSynthesis.onvoiceschanged = function () {
+    voices = window.speechSynthesis.getVoices();
+  };
 
-    document.getElementById('talkButton').addEventListener('click', function () {
-      recognition.start();
-    });
+  const conversationHistory = [
+    {
+      role: 'system',
+      // 'content': "你是一個很好的談心事的朋友，請以溫暖且堅定的口氣對話。"
+      'content': "你熱愛吐槽，對我說的話總是能雞蛋裡挑骨頭，找出許多負面的東西，但同時你又是我非常好的朋友，請帶著毒舌卻帶有一絲溫暖的對話。"
+    }
+  ];
+
+  document.getElementById('talkButton').addEventListener('click', function () {
+    const apiKey = document.getElementById('apiKeyInput').value.trim();
+    if (!apiKey) {
+      alert('請輸入你的 OpenAI API Key');
+      return;
+    }
+    recognition.start();
 
     recognition.onresult = async function (event) {
       const command = event.results[0][0].transcript;
-      document.getElementById('response').textContent = '你說的話: ' + command;
+      document.getElementById('response').innerHTML += `<br><b>你說的話:</b> ${command}`;
+      document.getElementById('spinner').style.visibility = 'visible';
+
+      // 將使用者說的話加入對話歷史
+      conversationHistory.push({ role: 'user', content: command });
 
       // 呼叫 OpenAI API
       const openAIResponse = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -61,14 +90,7 @@
         },
         body: JSON.stringify({
           model: 'gpt-4o',
-          messages: [{
-            'role': 'system',
-            // 'content': "你是一個很好的談心事的朋友，請以溫暖且堅定的口氣對話。"
-            'content': "你熱愛吐槽，對我說的話總是能雞蛋裡挑骨頭，找出許多負面的東西，但同時你又是我非常好的朋友，請帶著毒舌卻帶有一絲溫暖的對話。"
-          }, {
-            'role': 'user',
-            'content': command
-          }],
+          messages: conversationHistory,
           max_tokens: 300
         })
       });
@@ -76,8 +98,12 @@
       const data = await openAIResponse.json();
       const aiResponse = data.choices[0].message.content;
 
-      // 更新網頁顯示
-      document.getElementById('response').textContent = 'AI 回應: ' + aiResponse;
+      // 將 AI 的回應加入對話歷史
+      conversationHistory.push({ role: 'assistant', content: aiResponse });
+
+      // 顯示回應文字
+      document.getElementById('response').innerHTML += `<br><b>AI 回應:</b> ${aiResponse}`;
+      document.getElementById('spinner').style.visibility = 'hidden';
 
       // 使用 SpeechSynthesis 播放 AI 的回應
       utterance.text = aiResponse;
@@ -88,5 +114,8 @@
     recognition.onerror = function (event) {
       console.error('語音識別錯誤:', event.error);
     };
-  </script>
+  });
+
+</script>
+
 </html>
