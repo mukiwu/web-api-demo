@@ -55,25 +55,10 @@
     Notification.requestPermission().then(function (permission) {
       if (permission === "granted") {
         console.log("通知權限已獲得");
-        // 可以在這裡添加一個新的通知來測試
-        new Notification("測試通知", { body: "這是一個測試通知" });
       } else {
         console.log("通知權限被拒絕");
       }
     });
-  });
-
-  document.getElementById('showNotificationButton').addEventListener('click', function () {
-    if (Notification.permission === "granted") {
-      const notification = new Notification("新文章", {
-        body: "MUKI 發佈了一篇新文章，點我閱讀。"
-      });
-
-      notification.onclick = function () {
-        window.open("https://muki.tw/ngrok-err-ngrok-6024/", "_blank");
-        notification.close()
-      }
-    }
   });
 </script>
 
