@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/css/uikit.min.css" />
-  <title>使用 Web Notifications API 幫網站加入通知功能 | Web API 系列文章 | MUKI space*</title>
+  <title>Web Notifications API 搭配 Service Workers 發送通知 | Web API 系列文章 | MUKI space*</title>
 </head>
 
 <body>
@@ -14,14 +14,30 @@
       <div id="sidebar" class="uk-width-1-5@m"></div>
       <div class="uk-width-3-5@m" uk-height-viewport="expand: true">
         <article class="uk-article uk-padding uk-padding-remove-horizontal@m">
-          <h1 class="uk-article-title uk-margin-bottom">使用 Web Notifications API 幫網站加入通知功能</h1>
+          <h1 class="uk-article-title uk-margin-bottom">Web Notifications API 搭配 Service Workers 發送通知</h1>
           <div uk-alert>
-            <p class="uk-margin">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10348878"
-                class="uk-text-primary">使用 Web Notifications API 幫網站加入通知功能</a></p>
+            <p class="uk-margin">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10348879"
+                class="uk-text-primary">Web Notifications API 搭配 Service Workers 發送通知</a></p>
           </div>
           <div>
+            <p>請先點擊「請求通知權限」，才能開始此功能</p>
             <button id="notificationButton" class="uk-button uk-button-default">請求通知權限</button>
-            <button id="showNotificationButton" class="uk-button uk-button-default">發送通知</button>
+          </div>
+          <div uk-alert>
+            <a href class="uk-alert-close"></a>
+            <h3>使用方法</h3>
+            <p>1. 打開瀏覽器開發者工具，切換到 Application 分頁，點擊 Service Workers，可以看到 Service Workers 的狀態</p>
+            <p>2. 點擊「Push」，可以看到 Push 的註冊狀態</p>
+            <p>3. 在 Push 對話框填入以下資料，再按下 Push 就會發送通知</p>
+            <p class="uk-text-small uk-text-wrap">
+              {
+              "title": "這是通知標題",
+              "body": "這是通知內容",
+              "data": {
+              "url": "https://muki.tw/ngrok-err-ngrok-6024/"
+              }
+              }
+            </p>
           </div>
         </article>
       </div>
@@ -33,6 +49,7 @@
 <script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit-icons.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
 <script src="template.js"></script>
+<script src="sw.js"></script>
 <script>
   document.getElementById('notificationButton').addEventListener('click', function () {
     Notification.requestPermission().then(function (permission) {
