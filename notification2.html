@@ -21,7 +21,8 @@
           </div>
           <div uk-alert>
             <a href class="uk-alert-close"></a>
-            <p>請按右鍵檢視原始碼，以取得完整的 Firebase Cloud Messaging 串接程式碼</p>
+            <p>完整程式碼請<a href="https://gist.github.com/mukiwu/0a551b0ee496ca9fea3a010bf33c99a8" class="uk-text-primary"
+                target="_blank">點我</a></p>
           </div>
         </article>
       </div>
@@ -33,33 +34,5 @@
 <script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit-icons.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
 <script src="template.js"></script>
-<script src="firebase-messaging-sw.js"></script>
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
-  import { getMessaging, getToken, onMessage } from 'https://www.gstatic.com/firebasejs/11.7.1/firebase-messaging.js';
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyA9lJFHBl0RQ6joVHvGX4kOkTsgyWZtpYQ",
-    authDomain: "web-notification-459705.firebaseapp.com",
-    projectId: "web-notification-459705",
-    storageBucket: "web-notification-459705.firebasestorage.app",
-    messagingSenderId: "314033823953",
-    appId: "1:314033823953:web:c6a222651ab47ea48465f0",
-    measurementId: "G-G4XLB03BNN"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const messaging = getMessaging(app);
-
-  getToken(messaging, { vapidKey: 'BNAUkmi0IZDHQHnK6ABvHQoYJ-6ybEdxv-mq2jC_ZRxzk6soFSVMf9JC2cUceuJPkL20tYMpcYSxEjzhfSmh8l8	' })
-    .then(token => {
-      console.log('FCM Token:', token);
-      // 將 token 發送到後端伺服器 
-      sendTokenToServer(token);
-    })
-    .catch(err => console.error('無法獲取 FCM token:', err));
-
-
-</script>
 
 </html>
