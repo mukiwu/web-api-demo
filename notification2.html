@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/css/uikit.min.css" />
+  <title>Web Notifications API 結合 Google Cloud 的應用 | Web API 系列文章 | MUKI space*</title>
+</head>
+
+<body>
+  <div class="uk-container-expand">
+    <div class="uk-grid-divider" uk-grid>
+      <div id="sidebar" class="uk-width-1-5@m"></div>
+      <div class="uk-width-3-5@m" uk-height-viewport="expand: true">
+        <article class="uk-article uk-padding uk-padding-remove-horizontal@m">
+          <h1 class="uk-article-title uk-margin-bottom">Web Notifications API 結合 Google Cloud 的應用</h1>
+          <div uk-alert>
+            <p class="uk-margin">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10348880"
+                class="uk-text-primary">Web Notifications API 結合 Google Cloud 的應用</a></p>
+          </div>
+          <div uk-alert>
+            <a href class="uk-alert-close"></a>
+            <p>請按右鍵檢視原始碼，以取得完整的 Firebase Cloud Messaging 串接程式碼</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+
+</html>
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit-icons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
+<script src="template.js"></script>
+<script src="firebase-messaging-sw.js"></script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
+  import { getMessaging, getToken, onMessage } from 'https://www.gstatic.com/firebasejs/11.7.1/firebase-messaging.js';
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyA9lJFHBl0RQ6joVHvGX4kOkTsgyWZtpYQ",
+    authDomain: "web-notification-459705.firebaseapp.com",
+    projectId: "web-notification-459705",
+    storageBucket: "web-notification-459705.firebasestorage.app",
+    messagingSenderId: "314033823953",
+    appId: "1:314033823953:web:c6a222651ab47ea48465f0",
+    measurementId: "G-G4XLB03BNN"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const messaging = getMessaging(app);
+
+  getToken(messaging, { vapidKey: 'BNAUkmi0IZDHQHnK6ABvHQoYJ-6ybEdxv-mq2jC_ZRxzk6soFSVMf9JC2cUceuJPkL20tYMpcYSxEjzhfSmh8l8	' })
+    .then(token => {
+      console.log('FCM Token:', token);
+      // 將 token 發送到後端伺服器 
+      sendTokenToServer(token);
+    })
+    .catch(err => console.error('無法獲取 FCM token:', err));
+
+
+</script>
+
+</html>
