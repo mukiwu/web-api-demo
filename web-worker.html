@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/css/uikit.min.css" />
+  <title>使用 Web Workers API 處理大型資料的基本範例 | Web API 系列文章 | MUKI space*</title>
+</head>
+
+<body>
+  <div class="uk-container-expand">
+    <div class="uk-grid-divider" uk-grid>
+      <div id="sidebar" class="uk-width-1-5@m"></div>
+      <div class="uk-width-3-5@m" uk-height-viewport="expand: true">
+        <article class="uk-article uk-padding uk-padding-remove-horizontal@m">
+          <h1 class="uk-article-title uk-margin-bottom">使用 Web Workers API 處理大型資料的基本範例</h1>
+          <div uk-alert>
+            <p class="uk-margin">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10351857"
+                class="uk-text-primary">Web Workers API 的限制與效能優化處理</a></p>
+          </div>
+          <div uk-alert>
+            <button id="button" class="uk-button uk-button-primary">
+              點我執行一段文字
+            </button>
+            <p>請打開 console 面板查看結果</p>
+            <p>完整程式碼：</p>
+            <p><a href="web-worker-main.js" class="uk-text-primary">web-worker-main.js</a></p>
+            <p><a href="web-worker-chunk.js" class="uk-text-primary">web-worker-chunk.js</a></p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+
+</html>
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit-icons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
+<script src="template.js"></script>
+<script src="web-worker-main.js"></script>
+
+<script>
+  const button = document.getElementById('button');
+  button.addEventListener('click', () => {
+    console.log('點我執行一段文字');
+  });
+</script>
+
+</html>
