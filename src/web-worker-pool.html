@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/css/uikit.min.css" />
+  <title>Worker Pool 範例 | Web API 系列文章 | MUKI space*</title>
+  <style>
+    #output {
+      border: 1px solid #ccc;
+      padding: 10px;
+      height: 500px;
+      overflow-y: auto;
+      background-color: #f9f9f9;
+      font-family: monospace;
+      font-size: 12px;
+      white-space: pre-wrap;
+    }
+
+    .task-done {
+      color: green;
+    }
+
+    .task-error {
+      color: red;
+    }
+
+    .worker-log {
+      color: blue;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="uk-container-expand">
+    <div class="uk-grid-divider" uk-grid>
+      <div id="sidebar" class="uk-width-1-5@m"></div>
+      <div class="uk-width-3-5@m" uk-height-viewport="expand: true">
+        <article class="uk-article uk-padding uk-padding-remove-horizontal@m">
+          <h1 class="uk-article-title uk-margin-bottom">Worker Pool 範例</h1>
+          <div uk-alert>
+            <p class="uk-margin">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10351858"
+                class="uk-text-primary">Web Workers API 的生命週期</a></p>
+          </div>
+          <div class="uk-margin">
+            <button id="addTask" class="uk-button uk-button-primary">新增任務</button>
+            <button id="addMultipleTasks" class="uk-button uk-button-primary">新增 5 個任務</button>
+            <button id="clearLog" class="uk-button uk-button-primary">清除日誌</button>
+          </div>
+          <div id="output"></div>
+        </article>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit-icons.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
+  <script src="template.js"></script>
+
+  <script>
+    function addLog(message, className) {
+      const output = document.getElementById('output');
+      if (output) {
+        const div = document.createElement('div');
+        if (className) {
+          div.className = className;
+        }
+        div.textContent = `[${new Date().toLocaleTimeString('zh-TW', { hour12: false })}] ${message}`;
+        output.appendChild(div);
+        output.scrollTop = output.scrollHeight;
+      }
+    }
+
+    class WorkerPool {
+      constructor(size, script) {
+        addLog(`建立 WorkerPool，數量: ${size}，使用腳本: ${script}`);
+        this.pool = [];
+        this.taskQueue = [];
+
+        for (let i = 0; i < size; i++) {
+          addLog(`建立 Worker ${i + 1}/${size}`);
+          const worker = new Worker(script);
+
+          // 自訂 id，讓每個 Worker 可辨識
+          worker.id = i + 1;
+
+          // 設定是否忙碌的狀態
+          worker.isBusy = false;
+
+          // 設定 Worker 的監聽事件（處理結果、日誌、錯誤）
+          this._setupWorkerEvents(worker);
+
+          // 加入到 Pool
+          this.pool.push(worker);
+        }
+
+        addLog(`WorkerPool 已建立完成，共 ${this.pool.length} 個 Worker`);
+      }
+
+      // 設定 Worker 的 onmessage 與 onerror 事件
+      _setupWorkerEvents(worker) {
+        worker.onmessage = (event) => {
+          const data = event.data;
+
+          // 如果是任務結果
+          if (typeof data === 'object' && data.type === 'result') {
+            addLog(`Worker ${worker.id} 完成任務: ${data.task}，耗時: ${data.time}ms, 結果: ${data.result}`, 'task-done');
+
+            worker.isBusy = false;
+            this._processNextTask();
+          }
+          // 如果是日誌訊息或錯誤訊息
+          else if (typeof data === 'string') {
+            if (data.includes('[Worker 日誌]')) {
+              addLog(`Worker ${worker.id}: ${data}`, 'worker-log');
+            } else if (data.includes('[Worker 錯誤]')) {
+              addLog(`Worker ${worker.id}: ${data}`, 'task-error');
+            } else {
+              addLog(`Worker ${worker.id}: ${data}`, 'worker-log');
+            }
+          }
+        };
+
+        worker.onerror = (error) => {
+          addLog(`Worker ${worker.id} 發生錯誤: ${error.message || '未知錯誤'}`, 'task-error');
+          worker.isBusy = false;
+          this._processNextTask();
+        };
+      }
+
+      // 嘗試分配下一個排隊中的任務
+      _processNextTask() {
+        if (this.taskQueue.length > 0) {
+          const nextTask = this.taskQueue.shift();
+          addLog(`從隊列中取出任務: ${nextTask}，現隊列長度: ${this.taskQueue.length}`);
+          this.assignTask(nextTask);
+        }
+      }
+
+      // 取得目前空閒的 Worker
+      getAvailableWorker() {
+        const worker = this.pool.find(worker => !worker.isBusy);
+        if (worker) {
+          addLog(`找到可用的 Worker ${worker.id}`);
+        } else {
+          addLog(`沒有可用的 Worker`);
+        }
+        return worker;
+      }
+
+      // 分配任務
+      assignTask(task) {
+        addLog(`開始分配任務: ${task}`);
+        const worker = this.getAvailableWorker();
+
+        if (worker) {
+          addLog(`將任務 ${task} 分配給 Worker ${worker.id}`);
+          worker.isBusy = true;
+          worker.postMessage(task);
+        } else {
+          // 無可用 Worker，加入隊列
+          this.taskQueue.push(task);
+          addLog(`沒有可用的 Worker，任務 ${task} 已加入隊列，隊列長度: ${this.taskQueue.length}`);
+        }
+      }
+    }
+
+    // 初始化流程
+    addLog('頁面已載入，準備初始化 WorkerPool');
+
+    // 建立一個 WorkerPool
+    const pool = new WorkerPool(4, 'worker.js');
+
+    // 分配多個任務
+    addLog('開始分配預設任務');
+    pool.assignTask('Task 1');
+    pool.assignTask('Task 2');
+    pool.assignTask('Task 3');
+    pool.assignTask('Task 4');
+    pool.assignTask('Task 5');
+
+
+    // 添加按鈕事件處理
+    document.getElementById('addTask').addEventListener('click', () => {
+      const taskId = new Date().getTime();
+      addLog(`按鈕點擊: 新增單一任務 ${taskId}`);
+      pool.assignTask(`Task ${taskId}`);
+    });
+
+    document.getElementById('addMultipleTasks').addEventListener('click', () => {
+      addLog('按鈕點擊: 新增多個任務');
+      const baseTaskId = new Date().getTime();
+      for (let i = 0; i < 5; i++) {
+        pool.assignTask(`Task ${baseTaskId + i}`);
+      }
+    });
+
+    document.getElementById('clearLog').addEventListener('click', () => {
+      addLog('按鈕點擊: 清除日誌');
+      document.getElementById('output').innerHTML = '';
+      addLog('日誌已清除');
+    });
+
+    addLog('頁面初始化完成');
+  </script>
+</body>
+
+</html>
