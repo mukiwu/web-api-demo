@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/css/uikit.min.css" />
+  <title>自己架個 WebSocket Server 玩玩吧 | Web API 系列文章 | MUKI space*</title>
+  <style>
+    canvas {
+      border: 1px solid #ccc;
+      cursor: crosshair;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="uk-container-expand">
+    <div class="uk-grid-divider" uk-grid>
+      <div id="sidebar" class="uk-width-1-5@m"></div>
+      <div class="uk-width-3-5@m" uk-height-viewport="expand: true">
+        <article class="uk-article uk-padding uk-padding-remove-horizontal@m">
+          <h1 class="uk-article-title uk-margin-bottom">用 WebSocket 實作多人白板服務</h1>
+          <div class="uk-margin">
+            <p>線上人數：<span id="online-count" class="uk-text-primary"></span></p>
+            <p>我的畫筆顏色：<span id="my-color" class="uk-text-primary"></span></p>
+          </div>
+          <canvas id="board" width="800" height="600"></canvas>
+        </article>
+      </div>
+    </div>
+  </div>
+
+</html>
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit-icons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
+<script src="template.js"></script>
+<script>
+  const canvas = document.getElementById('board');
+  const ctx = canvas.getContext('2d');
+  let drawing = false;
+  let points = [];
+  // 自己預設的顏色
+  let myColor = '#000';
+  let onlineCount = 0;
+
+  const onlineCountElement = document.getElementById('online-count');
+  const myColorElement = document.getElementById('my-color');
+  myColorElement.textContent = myColor;
+  onlineCountElement.textContent = onlineCount;
+
+  const socket = new WebSocket('ws:/localhost:3000/');
+
+  socket.onopen = () => {
+    console.log('Connected to WebSocket server.');
+  };
+
+  socket.onmessage = (event) => {
+    if (event.data instanceof Blob) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const text = reader.result;
+        const data = JSON.parse(text);
+
+        // 原本的程式碼 (如果沒有修改，會畫出兩條線，因為會收到兩次)
+        // if (data.type === 'draw') {
+        //   drawFromServer(data);
+        // }
+
+        // 修改後
+        handleServerMessage(data);
+      };
+      reader.readAsText(event.data);
+    } else {
+      const data = JSON.parse(event.data);
+      // 原本的程式碼
+      // if (data.type === 'draw') {
+      //   drawFromServer(data);
+      // }
+
+      // 修改後
+      handleServerMessage(data);
+    }
+  };
+
+  socket.onclose = () => {
+    console.log('WebSocket disconnected.');
+  };
+
+  canvas.addEventListener('mousedown', (e) => {
+    drawing = true;
+    const { x, y } = getMousePos(e);
+    points.push({ x, y });
+  });
+
+  canvas.addEventListener('mousemove', (e) => {
+    if (!drawing) return;
+    const { x, y } = getMousePos(e);
+    points.push({ x, y });
+    drawLine(points[points.length - 2], points[points.length - 1], myColor);
+
+    const message = {
+      type: 'draw',
+      userId: 'user123',
+      boardId: 'board001',
+      color: myColor,
+      points: [points[points.length - 2], points[points.length - 1]],
+      timestamp: Date.now()
+    };
+    socket.send(JSON.stringify(message));
+  });
+
+  canvas.addEventListener('mouseup', () => {
+    drawing = false;
+    points = [];
+
+  });
+
+  // 處理從 server 收到的訊息
+  function handleServerMessage(data) {
+    if (data.type === 'assignColor') {
+      myColor = data.color;
+      myColorElement.textContent = myColor;
+      console.log('Assigned color:', myColor);
+    } else if (data.type === 'draw') {
+      drawFromServer(data);
+    } else if (data.type === 'onlineCount') {
+      // 收到線上人數資料後，更新畫面上的顯示
+      onlineCount = data.count;
+      onlineCountElement.textContent = onlineCount;
+    }
+  }
+
+  function getMousePos(e) {
+    const rect = canvas.getBoundingClientRect();
+    return {
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top
+    };
+  }
+
+  function drawLine(start, end, color) {
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(start.x, start.y);
+    ctx.lineTo(end.x, end.y);
+    ctx.stroke();
+  }
+
+  function drawFromServer(data) {
+    const points = data.points;
+    if (points.length < 2) return;
+    drawLine(points[0], points[1], data.color || '#000');
+  }
+
+</script>
+
+</html>
