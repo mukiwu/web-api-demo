@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/css/uikit.min.css" />
+  <title>使用 Drag and Drop API 和 File API 實作拖放與檔案上傳介面 | Web API 系列文章 | MUKI space*</title>
+</head>
+
+<body>
+  <div class="uk-container-expand">
+    <div class="uk-grid-divider" uk-grid>
+      <div id="sidebar" class="uk-width-1-5@m"></div>
+      <div class="uk-width-3-5@m" uk-height-viewport="expand: true">
+        <article class="uk-article uk-padding uk-padding-remove-horizontal@m">
+          <h1 class="uk-article-title uk-margin-bottom">使用 Drag and Drop API 和 File API 實作拖放與檔案上傳介面: 上傳多個檔案</h1>
+          <div id="drop-zone" class="drop-zone uk-card uk-card-default uk-card-body uk-width-1-2 uk-height-medium">
+            <h3 class="uk-card-title">拖放檔案到這裡</h3>
+          </div>
+          <div id="preview-area"></div>
+          <button id="upload-btn">上傳</button>
+        </article>
+      </div>
+    </div>
+  </div>
+
+</html>
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit-icons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
+<script src="template.js"></script>
+<script>
+  const dropZone = document.getElementById('drop-zone');
+  const previewArea = document.getElementById('preview-area');
+  const uploadBtn = document.getElementById('upload-btn');
+
+  let files = [];
+
+  dropZone.addEventListener('dragover', (event) => {
+    event.preventDefault();
+    dropZone.classList.add('drag-over-yellow');
+  });
+
+  dropZone.addEventListener('dragleave', (event) => {
+    dropZone.classList.remove('drag-over-yellow');
+  });
+
+  dropZone.addEventListener('drop', (event) => {
+    event.preventDefault();
+    dropZone.classList.remove('drag-over-yellow');
+    const droppedFiles = Array.from(event.dataTransfer.files);
+    files.push(...droppedFiles);
+    renderPreview();
+  });
+
+  function renderPreview() {
+    previewArea.innerHTML = '';
+    files.forEach((file, index) => {
+      const fileItem = document.createElement('div');
+      fileItem.className = 'file-item';
+
+      if (file.type.startsWith('image/')) {
+        const imgURL = URL.createObjectURL(file);
+        const img = document.createElement('img');
+        img.src = imgURL;
+        img.className = 'preview-img';
+        fileItem.appendChild(img);
+      } else if (file.type.startsWith('text/')) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const pre = document.createElement('pre');
+          pre.textContent = reader.result;
+          fileItem.appendChild(pre);
+        };
+        reader.readAsText(file);
+      } else {
+        const fileName = document.createElement('p');
+        fileName.textContent = file.name;
+        fileItem.appendChild(fileName);
+      }
+      // 刪除按鈕
+      const deleteBtn = document.createElement('button');
+      deleteBtn.textContent = '刪除';
+      deleteBtn.addEventListener('click', () => {
+        files.splice(index, 1);
+        renderPreview();
+      });
+      fileItem.appendChild(deleteBtn);
+      previewArea.appendChild(fileItem);
+    });
+  }
+
+  uploadBtn.addEventListener('click', () => {
+    if (files.length === 0) {
+      alert('請先拖放檔案再上傳！');
+      return;
+    }
+    // 模擬依序上傳
+    console.log('開始上傳檔案：');
+    files.forEach((file, index) => {
+      console.log(`第 ${index + 1} 個檔案：${file.name}`);
+      // 這裡可改成實際的 fetch / XMLHttpRequest 上傳程式碼
+    });
+    alert('上傳完成（模擬）！');
+  });
+</script>
+
+</html>

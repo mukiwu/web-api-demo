@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/css/uikit.min.css" />
+  <title>結合 Web API 製作情緒追蹤器，以更好地理解自己 | MUKI space*</title>
+  <style>
+    .uk-table td img {
+      display: block;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="uk-container-expand">
+    <div class="uk-grid-divider" uk-grid>
+      <div id="sidebar" class="uk-width-1-5@m"></div>
+      <div class="uk-width-3-5@m" uk-height-viewport="expand: true">
+        <article class="uk-article uk-padding uk-padding-remove-horizontal@m">
+          <h1 class="uk-article-title uk-margin-bottom">結合 Web API 製作情緒追蹤器，以更好地理解自己</h1>
+
+          <div class="uk-card uk-card-default uk-card-body uk-margin">
+            <h3 class="uk-card-title">記錄今日心情</h3>
+
+            <div class="uk-margin">
+              <label class="uk-form-label" for="mood">我的心情：</label>
+              <div class="uk-form-controls">
+                <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
+                  <label><input class="uk-radio" type="radio" name="mood" value="1"> 1 (很差)</label>
+                  <label><input class="uk-radio" type="radio" name="mood" value="2"> 2 (不好)</label>
+                  <label><input class="uk-radio" type="radio" name="mood" value="3" checked> 3 (一般)</label>
+                  <label><input class="uk-radio" type="radio" name="mood" value="4"> 4 (不錯)</label>
+                  <label><input class="uk-radio" type="radio" name="mood" value="5"> 5 (很好)</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="uk-margin">
+              <label class="uk-form-label" for="notes">心情筆記：</label>
+              <div class="uk-form-controls">
+                <textarea class="uk-textarea" id="notes" rows="4" placeholder="寫下您此刻的想法和感受..."></textarea>
+              </div>
+            </div>
+
+            <div class="uk-margin">
+              <label class="uk-form-label" for="mediaUpload">上傳照片或語音：</label>
+              <div class="uk-form-controls">
+                <div uk-form-custom="target: true">
+                  <input type="file" id="mediaUpload" accept="image/*,audio/*">
+                  <input class="uk-input uk-form-width-medium" type="text" placeholder="選擇檔案" disabled>
+                </div>
+              </div>
+            </div>
+
+            <button class="uk-button uk-button-primary" id="saveMood">記錄心情</button>
+          </div>
+
+          <div class="uk-card uk-card-default uk-card-body">
+            <h3 class="uk-card-title">過往記錄</h3>
+            <div id="entries" class="uk-margin">
+              <table class="uk-table uk-table-divider uk-table-hover uk-table-middle uk-table-responsive">
+                <thead>
+                  <tr>
+                    <th>日期</th>
+                    <th>地點</th>
+                    <th>心情</th>
+                    <th>筆記</th>
+                    <th>媒體</th>
+                  </tr>
+                </thead>
+                <tbody id="entriesBody">
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </article>
+      </div>
+    </div>
+  </div>
+
+</html>
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit-icons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
+<script src="template.js"></script>
+
+<script>
+  const DB_NAME = 'moodDB';
+  const DB_VERSION = 1;
+  const STORE_NAME = 'moodEntries';
+
+  let db;
+
+  function openDatabase() {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open(DB_NAME, DB_VERSION);
+
+      request.onupgradeneeded = (event) => {
+        db = event.target.result;
+        if (!db.objectStoreNames.contains(STORE_NAME)) {
+          db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
+        }
+      };
+
+      request.onsuccess = (event) => {
+        db = event.target.result;
+        resolve(db);
+      };
+
+      request.onerror = (event) => {
+        console.error('IndexedDB error:', event.target.errorCode);
+        reject(event.target.errorCode);
+      };
+    });
+  }
+
+  // 在頁面載入時打開資料庫
+  document.addEventListener('DOMContentLoaded', () => {
+    openDatabase().then(() => {
+      displayMoodEntries(); // 資料庫打開後顯示現有記錄
+    });
+  });
+
+  function getCurrentLocation() {
+    return new Promise((resolve, reject) => {
+      if (!navigator.geolocation) {
+        console.warn('Geolocation is not supported by your browser');
+        resolve(null); // 如果不支援，則返回 null
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          resolve({ latitude, longitude });
+        },
+        (error) => {
+          console.error('Error getting location:', error.message);
+          resolve(null); // 錯誤時也返回 null
+        },
+        { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+      );
+    });
+  }
+
+  function readFileAsDataURL(file) {
+    return new Promise((resolve, reject) => {
+      if (!file) {
+        resolve(null);
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (event) => resolve(event.target.result);
+      reader.onerror = (error) => reject(error);
+      reader.readAsDataURL(file);
+    });
+  }
+
+  document.getElementById('saveMood').addEventListener('click', async () => {
+    const mood = document.querySelector('input[name="mood"]:checked').value;
+    const notes = document.getElementById('notes').value;
+    const mediaFile = document.getElementById('mediaUpload').files[0];
+
+    const location = await getCurrentLocation();
+    const mediaDataURL = await readFileAsDataURL(mediaFile);
+
+    const transaction = db.transaction([STORE_NAME], 'readwrite');
+    const store = transaction.objectStore(STORE_NAME);
+
+    const entry = {
+      mood: parseInt(mood),
+      notes: notes,
+      timestamp: new Date().toISOString(),
+      location: location,
+      media: mediaDataURL || null, // 儲存 Data URL
+      mediaType: mediaFile ? mediaFile.type : null
+    };
+
+    const request = store.add(entry);
+
+    request.onsuccess = () => {
+      document.querySelector('input[name="mood"]:checked').value = 3;
+      document.getElementById('notes').value = '';
+      document.getElementById('mediaUpload').value = '';
+      displayMoodEntries();
+    };
+
+    request.onerror = (event) => {
+      console.error('Error saving mood entry:', event.target.errorCode);
+    };
+  });
+
+  function displayMoodEntries() {
+    const entriesBody = document.getElementById('entriesBody');
+    entriesBody.innerHTML = '';
+
+    const transaction = db.transaction([STORE_NAME], 'readonly');
+    const store = transaction.objectStore(STORE_NAME);
+    const request = store.openCursor(null, 'prev');
+
+    request.onsuccess = (event) => {
+      const cursor = event.target.result;
+      if (cursor) {
+        const entry = cursor.value;
+        const row = document.createElement('tr');
+        const date = new Date(entry.timestamp).toLocaleString();
+        let locationText = '';
+        if (entry.location) {
+          locationText = ` (${entry.location.latitude.toFixed(4)}, ${entry.location.longitude.toFixed(4)})`;
+        }
+
+        let mediaHTML = '';
+        if (entry.media) {
+          if (entry.mediaType && entry.mediaType.startsWith('image/')) {
+            mediaHTML = `<img src="${entry.media}" alt="Mood Image" style="max-width: 200px; max-height: 200px; object-fit: contain;">`;
+          } else if (entry.mediaType && entry.mediaType.startsWith('audio/')) {
+            mediaHTML = `<audio controls src="${entry.media}"></audio>`;
+          }
+        }
+
+        row.innerHTML = `
+                <td>${date}</td>
+                <td>${entry.location ? `${entry.location.latitude.toFixed(4)}, ${entry.location.longitude.toFixed(4)}` : '無'}</td>
+                <td>${entry.mood}</td>
+                <td>${entry.notes || '無'}</td>
+                <td>${mediaHTML}</td>
+            `;
+        entriesBody.appendChild(row);
+        cursor.continue();
+      } else {
+        if (entriesBody.children.length === 0) {
+          const noDataRow = document.createElement('tr');
+          noDataRow.innerHTML = '<td colspan="5" class="uk-text-center">目前沒有記錄，開始記錄您的心情吧！</td>';
+          entriesBody.appendChild(noDataRow);
+        }
+      }
+    };
+
+    request.onerror = (event) => {
+      console.error('Error reading mood entries:', event.target.errorCode);
+    };
+  }
+</script>
+
+</html>
