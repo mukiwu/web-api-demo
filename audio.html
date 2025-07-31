@@ -62,15 +62,15 @@
 </head>
 
 <body class="bg-gray-50 h-screen overflow-hidden">
-  <div class="flex h-full">
+  <div class="flex flex-col lg:flex-row h-full">
     <!-- Sidebar -->
-    <div id="sidebar" class="w-80 flex-shrink-0"></div>
+    <div id="sidebar" class="w-full lg:w-80 flex-shrink-0"></div>
 
     <!-- Main Content -->
     <div class="flex-1 min-h-screen overflow-y-auto">
-      <div class="px-8 py-8">
-        <h1 class="text-4xl font-bold text-gray-900 mb-6">使用 audio 打造音樂播放器 </h1>
-        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+      <div class="px-4 py-6 lg:px-8 lg:py-8">
+        <h1 class="text-2xl lg:text-4xl font-bold text-gray-900 mb-6">使用 audio 打造音樂播放器 </h1>
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 lg:p-6 mb-6">
           <p class="mb-4 leading-none">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10349363"
               class="text-blue-600 hover:text-blue-800 font-medium underline">用 Audio 和 Video API 打造自己的影音平台</a></p>
           <p>(範例有調整過，會跟文章內容有些許不同)</p>
@@ -80,7 +80,7 @@
           <img id="cover" src="img/Johann_Sebastian_Bach.png" alt="cover"
             class="w-full rounded-xl mb-4 border-2 border-gray-300">
           <div class="text-xl font-bold text-gray-900" id="title">15 Inventions</div>
-          <div class="text-sm text-gray-600 mb-3" id="subtitle">Johann Sebastian Bach</div>
+          <div class="text-xs lg:text-sm text-gray-600 mb-3" id="subtitle">Johann Sebastian Bach</div>
           <input type="range" id="progress" value="0" min="0" max="100"
             class="w-full h-1 accent-blue-600 cursor-pointer">
           <div class="flex justify-between text-xs text-gray-500 mt-1">
@@ -127,7 +127,7 @@
 
         <audio id="audio"></audio>
 
-        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6 text-xs text-[#3d405b] mt-4">封面圖片為依據 Johann
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 lg:p-6 mb-6 text-xs text-[#3d405b] mt-4">封面圖片為依據 Johann
           Sebastian Bach 公有畫像風格重新繪製之 AI 圖像，用於教學示意，無商業授權爭議。</div>
       </div>
     </div>
@@ -238,10 +238,10 @@
       div.innerHTML = `
         <img src="${track.cover}" alt="" class="w-12 h-12 rounded-lg mr-3 border border-gray-300">
         <div class="flex-1">
-          <div class="text-sm font-medium text-gray-900">${track.title}</div>
+          <div class="text-xs lg:text-sm font-medium text-gray-900">${track.title}</div>
           <div class="text-xs text-gray-600">${track.subtitle}</div>
         </div>
-        <div class="text-sm text-gray-500 font-mono">${track.duration}</div>
+        <div class="text-xs lg:text-sm text-gray-500 font-mono">${track.duration}</div>
       `;
       div.addEventListener('click', () => {
         currentIndex = i;

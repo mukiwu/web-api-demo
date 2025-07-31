@@ -10,15 +10,15 @@
 </head>
 
 <body class="bg-gray-50 h-screen overflow-hidden">
-  <div class="flex h-full">
+  <div class="flex flex-col lg:flex-row h-full">
     <!-- Sidebar -->
-    <div id="sidebar" class="w-80 flex-shrink-0"></div>
+    <div id="sidebar" class="w-full lg:w-80 flex-shrink-0"></div>
 
     <!-- Main Content -->
     <div class="flex-1 min-h-screen overflow-y-auto">
-      <div class="px-8 py-8">
-        <h1 class="text-4xl font-bold text-gray-900 mb-6">使用 Web Speech API 讓網頁開口說話</h1>
-        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+      <div class="px-4 py-6 lg:px-8 lg:py-8">
+        <h1 class="text-2xl lg:text-4xl font-bold text-gray-900 mb-6">使用 Web Speech API 讓網頁開口說話</h1>
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 lg:p-6 mb-6">
           <p class="mb-4 leading-none">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10351877"
               class="text-blue-600 hover:text-blue-800 font-medium underline">使用 Web Speech API 讓網頁開口說話</a></p>
           <p class="mb-0 leading-none">輸入的內容跟選擇的語言請相同，例如輸入英文，就請選擇 en-US</p>
@@ -27,26 +27,26 @@
         <!-- Voice Settings and Text Input -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           <!-- Voice Settings -->
-          <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h2 class="text-xl font-semibold text-gray-900 mb-4">語音設定</h2>
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 lg:p-6">
+            <h2 class="text-lg lg:text-xl font-semibold text-gray-900 mb-4">語音設定</h2>
             <div class="space-y-4">
               <div>
-                <label for="voiceSelect" class="block text-sm font-medium text-gray-700 mb-2">選擇語音:</label>
+                <label for="voiceSelect" class="block text-xs lg:text-sm font-medium text-gray-700 mb-2">選擇語音:</label>
                 <select id="voiceSelect"
                   class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"></select>
               </div>
               <div>
-                <label for="volumeRange" class="block text-sm font-medium text-gray-700 mb-2">音量:</label>
+                <label for="volumeRange" class="block text-xs lg:text-sm font-medium text-gray-700 mb-2">音量:</label>
                 <input type="range" id="volumeRange" min="0" max="1" step="0.1" value="1"
                   class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
               </div>
               <div>
-                <label for="pitchRange" class="block text-sm font-medium text-gray-700 mb-2">音調:</label>
+                <label for="pitchRange" class="block text-xs lg:text-sm font-medium text-gray-700 mb-2">音調:</label>
                 <input type="range" id="pitchRange" min="0" max="2" step="0.1" value="1"
                   class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
               </div>
               <div>
-                <label for="rateRange" class="block text-sm font-medium text-gray-700 mb-2">語速:</label>
+                <label for="rateRange" class="block text-xs lg:text-sm font-medium text-gray-700 mb-2">語速:</label>
                 <input type="range" id="rateRange" min="0.1" max="2" step="0.1" value="1"
                   class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
               </div>
@@ -54,10 +54,10 @@
           </div>
 
           <!-- Text Input -->
-          <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h2 class="text-xl font-semibold text-gray-900 mb-4">文字輸入</h2>
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 lg:p-6">
+            <h2 class="text-lg lg:text-xl font-semibold text-gray-900 mb-4">文字輸入</h2>
             <div>
-              <label for="textToSpeak" class="block text-sm font-medium text-gray-700 mb-2">要說的話:</label>
+              <label for="textToSpeak" class="block text-xs lg:text-sm font-medium text-gray-700 mb-2">要說的話:</label>
               <textarea id="textToSpeak" rows="4" cols="50"
                 class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">你好，歡迎使用我們的網站</textarea>
             </div>
@@ -65,9 +65,9 @@
         </div>
 
         <!-- Control Buttons -->
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h2 class="text-xl font-semibold text-gray-900 mb-4">語音控制</h2>
-          <div class="flex flex-wrap gap-4">
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 lg:p-6">
+          <h2 class="text-lg lg:text-xl font-semibold text-gray-900 mb-4">語音控制</h2>
+          <div class="flex flex-wrap gap-2 lg:gap-4">
             <button id="speakButton"
               class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200">播放語音</button>
             <button id="pauseButton"
