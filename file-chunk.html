@@ -2,15 +2,36 @@
 <html lang="en">
 
 <head>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="sidebar.css">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>File API 介紹與實際應用</title>
+  <title>File API 的 Chunk 分片上傳 | Browser Web API 系列文章 | MUKI space*</title>
 </head>
 
-<body>
-  <input type="file" id="fileInput" />
-  <button onclick="generateAndDownloadFile()">下載檔案</button>
+<body class="bg-gray-50 h-screen overflow-hidden">
+  <div class="flex h-full">
+    <!-- Sidebar -->
+    <div id="sidebar" class="w-80 flex-shrink-0"></div>
 
+    <!-- Main Content -->
+    <div class="flex-1 min-h-screen overflow-y-auto">
+      <div class="px-8 py-8">
+        <h1 class="text-4xl font-bold text-gray-900 mb-6">File API 的 Chunk 分片上傳</h1>
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+          <p class="leading-none">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10348881"
+              class="text-blue-600 hover:text-blue-800 font-medium underline">File API 介紹與實際應用</a></p>
+        </div>
+        <input type="file" id="fileInput" class="bg-white border border-gray-300 rounded-md p-2" />
+        <button onclick="generateAndDownloadFile()" class="bg-blue-600 text-white px-4 py-2 rounded-md">下載檔案</button>
+        <p class="text-gray-700 my-4">
+          請打開 console 觀看分片上傳的結果。
+        </p>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
+  <script src="template.js"></script>
   <script>
     function generateAndDownloadFile() {
       const content = 'Hello, World!';

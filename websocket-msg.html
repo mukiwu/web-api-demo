@@ -2,94 +2,96 @@
 <html lang="en">
 
 <head>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="sidebar.css">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/css/uikit.min.css" />
-  <title>WebSocket 的處理訊息機制 | Web API 系列文章 | MUKI space*</title>
+  <title>WebSocket 的處理訊息機制 | Browser Web API 系列文章 | MUKI space*</title>
 </head>
 
-<body>
-  <div class="uk-container-expand">
-    <div class="uk-grid-divider" uk-grid>
-      <div id="sidebar" class="uk-width-1-5@m"></div>
-      <div class="uk-width-3-5@m" uk-height-viewport="expand: true">
-        <article class="uk-article uk-padding uk-padding-remove-horizontal@m">
-          <h1 class="uk-article-title uk-margin-bottom">WebSocket 的處理訊息機制</h1>
-          <div uk-alert>
-            <p class="uk-margin">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10351866"
-                class="uk-text-primary">WebSocket 的處理訊息機制</a></p>
-            <p class="uk-margin">WebSocekt 啟動需要一點時間，請稍等。</p>
-          </div>
-          <p class="uk-margin">WebSocekt 連線狀態：<span id="connection-status">未連線</span></p>
-          <p class="uk-margin">可靜置網頁一段時間，通常 WebSocket 會自動連線，如果 server 被關閉，就不會收到 WebSocket 的訊息，但仍可以透過程式碼觀看完整範例。</p>
-          <div id="messages"></div>
-          <div id="input">
-            <input type="text" id="messageInput" placeholder="輸入訊息" class="uk-input uk-form-width-medium">
-            <button onclick="sendMessage()" class="uk-button uk-button-default">發送</button>
-          </div>
-        </article>
+<body class="bg-gray-50 h-screen overflow-hidden">
+  <div class="flex h-full">
+    <!-- Sidebar -->
+    <div id="sidebar" class="w-80 flex-shrink-0"></div>
+
+    <!-- Main Content -->
+    <div class="flex-1 min-h-screen overflow-y-auto">
+      <div class="px-8 py-8">
+        <h1 class="text-4xl font-bold text-gray-900 mb-6">WebSocket 的處理訊息機制</h1>
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+          <p class="mb-4 leading-none">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10351866"
+              class="text-blue-600 hover:text-blue-800 font-medium underline">WebSocket 的處理訊息機制</a></p>
+          <p>WebSocekt 啟動需要一點時間，請稍等。</p>
+        </div>
+        <p class="mb-4">WebSocekt 連線狀態：<span id="connection-status">未連線</span></p>
+        <p class="mb-4">可靜置網頁一段時間，通常 WebSocket 會自動連線，如果 server 被關閉，就不會收到 WebSocket 的訊息，但仍可以透過程式碼觀看完整範例。</p>
+        <div id="messages"></div>
+        <div id="input">
+          <input type="text" id="messageInput" placeholder="輸入訊息"
+            class="bg-white border border-gray-300 rounded-md p-2" />
+          <button onclick="sendMessage()" class="bg-blue-600 text-white px-4 py-2 rounded-md">發送</button>
+        </div>
       </div>
     </div>
   </div>
 
-</html>
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit-icons.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
-<script src="template.js"></script>
-<script>
-  const websocket = new WebSocket('wss://wary-telling-galley.glitch.me');
-  let messageQueue = [];
-  const BATCH_INTERVAL = 10000; // 10秒
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
+  <script src="template.js"></script>
+  <script>
+    const websocket = new WebSocket('wss://wary-telling-galley.glitch.me');
+    let messageQueue = [];
+    const BATCH_INTERVAL = 10000; // 10秒
 
-  websocket.onopen = function () {
-    document.getElementById('connection-status').textContent = '已連線';
-    console.log('WebSocket 連接已建立');
-  };
+    websocket.onopen = function () {
+      document.getElementById('connection-status').textContent = '已連線';
+      console.log('WebSocket 連接已建立');
+    };
 
-  websocket.onclose = function () {
-    document.getElementById('connection-status').textContent = '已關閉';
-  };
+    websocket.onclose = function () {
+      document.getElementById('connection-status').textContent = '已關閉';
+    };
 
-  websocket.onmessage = async function (event) {
-    const messages = JSON.parse(event.data);
-    const messagesDiv = document.getElementById('messages');
-    messages.forEach(message => {
-      const messageElement = document.createElement('div');
-      messageElement.textContent = message.content;
-      messagesDiv.appendChild(messageElement);
-    });
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    for (const message of messages) {
-      await processMessage(message);
+    websocket.onmessage = async function (event) {
+      const messages = JSON.parse(event.data);
+      const messagesDiv = document.getElementById('messages');
+      messages.forEach(message => {
+        const messageElement = document.createElement('div');
+        messageElement.textContent = message.content;
+        messagesDiv.appendChild(messageElement);
+      });
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      for (const message of messages) {
+        await processMessage(message);
+      }
+    };
+
+    websocket.onerror = function (error) {
+      console.error('WebSocket 錯誤:', error);
+      document.getElementById('connection-status').textContent = '錯誤';
+    };
+
+    async function processMessage(message) {
+      await new Promise(resolve => setTimeout(resolve, 100));
+      console.log('Processed message:', message);
     }
-  };
 
-  websocket.onerror = function (error) {
-    console.error('WebSocket 錯誤:', error);
-    document.getElementById('connection-status').textContent = '錯誤';
-  };
-
-  async function processMessage(message) {
-    await new Promise(resolve => setTimeout(resolve, 100));
-    console.log('Processed message:', message);
-  }
-
-  function sendMessage() {
-    const messageInput = document.getElementById('messageInput');
-    const message = messageInput.value;
-    if (message) {
-      messageQueue.push({ content: message });
-      messageInput.value = '';
+    function sendMessage() {
+      const messageInput = document.getElementById('messageInput');
+      const message = messageInput.value;
+      if (message) {
+        messageQueue.push({ content: message });
+        messageInput.value = '';
+      }
     }
-  }
 
-  setInterval(() => {
-    if (messageQueue.length > 0) {
-      const batch = messageQueue.splice(0, messageQueue.length);
-      websocket.send(JSON.stringify(batch));
-    }
-  }, BATCH_INTERVAL);
-</script>
+    setInterval(() => {
+      if (messageQueue.length > 0) {
+        const batch = messageQueue.splice(0, messageQueue.length);
+        websocket.send(JSON.stringify(batch));
+      }
+    }, BATCH_INTERVAL);
+  </script>
+
+</body>
 
 </html>

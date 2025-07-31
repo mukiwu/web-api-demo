@@ -2,10 +2,11 @@
 <html lang="en">
 
 <head>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="sidebar.css">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/css/uikit.min.css" />
-  <title>如何使用 MutationObserver API 追蹤 DOM 的變化 | Web API 系列文章 | MUKI space*</title>
+  <title>如何使用 MutationObserver API 追蹤 DOM 的變化 | Browser Web API 系列文章 | MUKI space*</title>
   <style>
     #list {
       margin-bottom: 20px;
@@ -46,84 +47,85 @@
   </style>
 </head>
 
-<body>
-  <div class="uk-container-expand">
-    <div class="uk-grid-divider" uk-grid>
-      <div id="sidebar" class="uk-width-1-5@m"></div>
-      <div class="uk-width-3-5@m" uk-height-viewport="expand: true">
-        <article class="uk-article uk-padding uk-padding-remove-horizontal@m">
-          <h1 class="uk-article-title uk-margin-bottom">如何使用 MutationObserver API 追蹤 DOM 的變化</h1>
-          <div uk-alert>
-            <div class="uk-margin">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10351887"
-                class="uk-text-primary">如何使用 MutationObserver API 追蹤 DOM 的變化</a></div>
+<body class="bg-gray-50 h-screen overflow-hidden">
+  <div class="flex h-full">
+    <!-- Sidebar -->
+    <div id="sidebar" class="w-80 flex-shrink-0"></div>
+
+    <!-- Main Content -->
+    <div class="flex-1 min-h-screen overflow-y-auto">
+      <div class="px-8 py-8">
+        <h1 class="text-4xl font-bold text-gray-900 mb-6">如何使用 MutationObserver API 追蹤 DOM 的變化</h1>
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+          <div class="leading-none">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10351887"
+              class="text-blue-600 hover:text-blue-800 font-medium underline">如何使用 MutationObserver API 追蹤 DOM 的變化</a>
           </div>
-          <div id="itemCount" class="uk-margin">目前有 0 筆資料</div>
-          <div id="list" class="uk-margin"></div>
-          <div class="uk-margin">
-            <button id="addItem" class="uk-button uk-button-default">新增資料</button>
-            <button id="removeItem" class="uk-button uk-button-default">刪除最後一筆資料</button>
-          </div>
-        </article>
+        </div>
+        <div id="itemCount" class="mb-4">目前有 0 筆資料</div>
+        <div id="list" class="mb-4"></div>
+        <div class="mb-4">
+          <button id="addItem" class="bg-blue-600 text-white px-4 py-2 rounded-md">新增資料</button>
+          <button id="removeItem" class="bg-blue-600 text-white px-4 py-2 rounded-md">刪除最後一筆資料</button>
+        </div>
       </div>
     </div>
   </div>
 
-</html>
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit-icons.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
-<script src="template.js"></script>
-<script>
-  const list = document.getElementById('list');
-  const addItemButton = document.getElementById('addItem');
-  const removeItemButton = document.getElementById('removeItem');
-  const itemCountDiv = document.getElementById('itemCount');
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
+  <script src="template.js"></script>
+  <script>
+    const list = document.getElementById('list');
+    const addItemButton = document.getElementById('addItem');
+    const removeItemButton = document.getElementById('removeItem');
+    const itemCountDiv = document.getElementById('itemCount');
 
-  // 更新顯示目前資料筆數的函式 
-  const updateItemCount = () => {
-    itemCountDiv.textContent = `目前有 ${list.children.length} 筆資料`;
-  };
+    // 更新顯示目前資料筆數的函式 
+    const updateItemCount = () => {
+      itemCountDiv.textContent = `目前有 ${list.children.length} 筆資料`;
+    };
 
-  addItemButton.addEventListener('click', () => {
-    const newItem = document.createElement('p');
-    newItem.textContent = `資料 ${list.children.length + 1}`;
-    list.appendChild(newItem);
-    // 等待瀏覽器渲染新元素後，再加上動畫 class 
-    requestAnimationFrame(() => {
-      newItem.classList.add('show');
-      newItem.classList.add('highlight');
-      setTimeout(() => {
-        newItem.classList.remove('highlight');
-      }, 600);
+    addItemButton.addEventListener('click', () => {
+      const newItem = document.createElement('p');
+      newItem.textContent = `資料 ${list.children.length + 1}`;
+      list.appendChild(newItem);
+      // 等待瀏覽器渲染新元素後，再加上動畫 class 
+      requestAnimationFrame(() => {
+        newItem.classList.add('show');
+        newItem.classList.add('highlight');
+        setTimeout(() => {
+          newItem.classList.remove('highlight');
+        }, 600);
+      });
     });
-  });
 
-  // 刪除最後一筆資料 
-  removeItemButton.addEventListener('click', () => {
-    if (list.children.length > 0) {
-      const lastItem = list.lastChild;
-      lastItem.classList.add('fade-out');
-      // 等待動畫結束後再真正從 DOM 移除 
-      lastItem.addEventListener('transitionend', () => {
-        if (lastItem.parentNode) {
-          list.removeChild(lastItem);
-        }
-      }, { once: true }); // 確保只觸發一次 
-    }
-  });
-
-  // 使用 MutationObserver 監聽 #list 的子元素變化 
-  const observer = new MutationObserver((mutationsList) => {
-    for (const mutation of mutationsList) {
-      if (mutation.type === 'childList') {
-        // 子節點增減時更新筆數 
-        updateItemCount();
+    // 刪除最後一筆資料 
+    removeItemButton.addEventListener('click', () => {
+      if (list.children.length > 0) {
+        const lastItem = list.lastChild;
+        lastItem.classList.add('fade-out');
+        // 等待動畫結束後再真正從 DOM 移除 
+        lastItem.addEventListener('transitionend', () => {
+          if (lastItem.parentNode) {
+            list.removeChild(lastItem);
+          }
+        }, { once: true }); // 確保只觸發一次 
       }
-    }
-  });
+    });
 
-  // 監控子節點 
-  observer.observe(list, { childList: true });
-</script>
+    // 使用 MutationObserver 監聽 #list 的子元素變化 
+    const observer = new MutationObserver((mutationsList) => {
+      for (const mutation of mutationsList) {
+        if (mutation.type === 'childList') {
+          // 子節點增減時更新筆數 
+          updateItemCount();
+        }
+      }
+    });
+
+    // 監控子節點 
+    observer.observe(list, { childList: true });
+  </script>
+
+</body>
 
 </html>

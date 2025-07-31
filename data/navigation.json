@@ -1,0 +1,218 @@
+{
+  "navigation": [
+    {
+      "title": "Browser Web API 系列文章",
+      "url": "index.html",
+      "icon": "home",
+      "category": "main"
+    },
+    {
+      "title": "用 Geolocation API 取得與追蹤使用者地理位置",
+      "url": "geo.html",
+      "icon": "location-marker",
+      "category": "geolocation"
+    },
+    {
+      "title": "用 Geolocation API 和 Leaflet Routing Machine 實作叫車導航功能",
+      "url": "geo-track.html",
+      "icon": "map",
+      "category": "geolocation"
+    },
+    {
+      "title": "用 Drag and Drop API 拖曳網頁元素",
+      "url": "drag-and-drop.html",
+      "icon": "arrows-expand",
+      "category": "interaction"
+    },
+    {
+      "title": "認識 History API：SPA 的關鍵技術之一",
+      "url": "history.html",
+      "icon": "clock",
+      "category": "navigation"
+    },
+    {
+      "title": "探索 Fullscreen API：從基礎到應用場景",
+      "url": "fullscreen.html",
+      "icon": "arrows-expand",
+      "category": "media"
+    },
+    {
+      "title": "使用 Web Notifications API 幫網站加入通知功能",
+      "url": "notification.html",
+      "icon": "bell",
+      "category": "notifications"
+    },
+    {
+      "title": "Web Notifications API 搭配 Service Workers 發送通知",
+      "url": "notification1.html",
+      "icon": "bell",
+      "category": "notifications"
+    },
+    {
+      "title": "Web Notifications API 結合 Google Cloud 的應用",
+      "url": "notification2.html",
+      "icon": "bell",
+      "category": "notifications"
+    },
+    {
+      "title": "使用 Web Workers API 處理大型資料的基本範例",
+      "url": "web-worker.html",
+      "icon": "cog",
+      "category": "performance"
+    },
+    {
+      "title": "Worker Pool 範例",
+      "url": "web-worker-pool.html",
+      "icon": "collection",
+      "category": "performance"
+    },
+    {
+      "title": "File API 介紹與實際應用",
+      "url": "file-drag.html",
+      "icon": "cloud-upload",
+      "category": "files"
+    },
+    {
+      "title": "File API：Blob 物件處理",
+      "url": "file-blob.html",
+      "icon": "document",
+      "category": "files"
+    },
+    {
+      "title": "File API：Object URL 預覽圖片",
+      "url": "file-objurl.html",
+      "icon": "photograph",
+      "category": "files"
+    },
+    {
+      "title": "File API：分片上傳大檔案",
+      "url": "file-chunk.html",
+      "icon": "cloud-upload",
+      "category": "files"
+    },
+    {
+      "title": "File API：多檔案拖放上傳",
+      "url": "file-drag-multi.html",
+      "icon": "cloud-upload",
+      "category": "files"
+    },
+    {
+      "title": "用 Battery Status API 打造節能模式的網站",
+      "url": "battery-safe.html",
+      "icon": "lightning-bolt",
+      "category": "device"
+    },
+    {
+      "title": "使用 audio 打造音樂播放器",
+      "url": "audio.html",
+      "icon": "volume-up",
+      "category": "media"
+    },
+    {
+      "title": "用 video 實作影音播放功能",
+      "url": "video.html",
+      "icon": "play",
+      "category": "media"
+    },
+    {
+      "title": "自己架個 WebSocket Server 玩玩吧",
+      "url": "websocket.html",
+      "icon": "chat",
+      "category": "communication"
+    },
+    {
+      "title": "WebSocket 的處理訊息機制",
+      "url": "websocket-msg.html",
+      "icon": "chat",
+      "category": "communication"
+    },
+    {
+      "title": "使用 Web Speech API 讓網頁聽得懂我們說的話",
+      "url": "speech.html",
+      "icon": "microphone",
+      "category": "speech"
+    },
+    {
+      "title": "使用 Web Speech API 讓網頁開口說話",
+      "url": "speech1.html",
+      "icon": "volume-up",
+      "category": "speech"
+    },
+    {
+      "title": "用 Web Speech API 與你的 AI 朋友互動聊天",
+      "url": "speech2.html",
+      "icon": "chat",
+      "category": "speech"
+    },
+    {
+      "title": "用 Web Speech API 打造智慧文件閱讀器",
+      "url": "e-reader-ithome.html",
+      "icon": "document-text",
+      "category": "speech"
+    },
+    {
+      "title": "如何使用 MutationObserver API 追蹤 DOM 的變化",
+      "url": "mutation.html",
+      "icon": "refresh",
+      "category": "observation"
+    },
+    {
+      "title": "深入了解 Intersection Observer API 與其應用 I",
+      "url": "observer.html",
+      "icon": "eye",
+      "category": "observation"
+    },
+    {
+      "title": "深入了解 Intersection Observer API 與其應用 II",
+      "url": "observer1.html",
+      "icon": "eye",
+      "category": "observation"
+    },
+    {
+      "title": "深入了解 Intersection Observer API 與其應用 III",
+      "url": "observer2.html",
+      "icon": "eye",
+      "category": "observation"
+    },
+    {
+      "title": "另一種儲存資料的方式：IndexedDB API",
+      "url": "indexeddb.html",
+      "icon": "database",
+      "category": "storage"
+    },
+    {
+      "title": "使用 JavaScript 操作動畫的 Web Animations API",
+      "url": "animation1.html",
+      "icon": "lightning-bolt",
+      "category": "animation"
+    },
+    {
+      "title": "使用 Web Animations API 製作打散文字的動畫效果",
+      "url": "animation.html",
+      "icon": "lightning-bolt",
+      "category": "animation"
+    },
+    {
+      "title": "使用 Screen Capture API 取得你的螢幕畫面",
+      "url": "screen-capture.html",
+      "icon": "camera",
+      "category": "media"
+    }
+  ],
+  "categories": {
+    "main": "主要頁面",
+    "geolocation": "地理位置",
+    "interaction": "互動操作",
+    "navigation": "導航",
+    "media": "多媒體",
+    "notifications": "通知",
+    "performance": "效能優化",
+    "files": "檔案處理",
+    "device": "裝置資訊",
+    "communication": "通訊",
+    "speech": "語音",
+    "observation": "觀察器",
+    "storage": "儲存",
+    "animation": "動畫"
+  }
+}

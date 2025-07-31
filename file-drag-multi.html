@@ -2,108 +2,181 @@
 <html lang="en">
 
 <head>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="sidebar.css">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/css/uikit.min.css" />
-  <title>使用 Drag and Drop API 和 File API 實作拖放與檔案上傳介面 | Web API 系列文章 | MUKI space*</title>
+  <title>使用 Drag and Drop API 和 File API 實作拖放與檔案上傳介面 | Browser Web API 系列文章 | MUKI space*</title>
+  <style>
+    /* 拖放時的視覺反饋 */
+    .drag-over-yellow {
+      background-color: #fef3c7 !important;
+      border-color: #f59e0b !important;
+      transform: scale(1.02);
+    }
+
+    /* 檔案項目樣式 */
+    .file-item {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* 預覽圖片樣式 */
+    .preview-img {
+      max-width: 100px;
+      max-height: 100px;
+      object-fit: cover;
+      border-radius: 0.25rem;
+      margin-right: 1rem;
+    }
+
+    /* 文字檔案預覽樣式 */
+    .file-item pre {
+      background: #f3f4f6;
+      padding: 0.5rem;
+      border-radius: 0.25rem;
+      font-size: 0.875rem;
+      max-height: 100px;
+      overflow-y: auto;
+      margin-right: 1rem;
+      flex: 1;
+    }
+  </style>
 </head>
 
-<body>
-  <div class="uk-container-expand">
-    <div class="uk-grid-divider" uk-grid>
-      <div id="sidebar" class="uk-width-1-5@m"></div>
-      <div class="uk-width-3-5@m" uk-height-viewport="expand: true">
-        <article class="uk-article uk-padding uk-padding-remove-horizontal@m">
-          <h1 class="uk-article-title uk-margin-bottom">使用 Drag and Drop API 和 File API 實作拖放與檔案上傳介面: 上傳多個檔案</h1>
-          <div id="drop-zone" class="drop-zone uk-card uk-card-default uk-card-body uk-width-1-2 uk-height-medium">
-            <h3 class="uk-card-title">拖放檔案到這裡</h3>
+<body class="bg-gray-50 h-screen overflow-hidden">
+  <div class="flex h-full">
+    <!-- Sidebar -->
+    <div id="sidebar" class="w-80 flex-shrink-0"></div>
+
+    <!-- Main Content -->
+    <div class="flex-1 min-h-screen overflow-y-auto">
+      <div class="px-8 py-8">
+        <h1 class="text-4xl font-bold text-gray-900 mb-6">使用 Drag and Drop API 和 File API 實作拖放與檔案上傳介面</h1>
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+          <p class="leading-none">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10348881"
+              class="text-blue-600 hover:text-blue-800 font-medium underline">使用 Drag and Drop API 和 File API
+              實作拖放與檔案上傳介面</a></p>
+        </div>
+
+        <!-- Drop Zone -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">拖放區域</h2>
+          <div id="drop-zone"
+            class="w-full h-48 border-2 border-dashed border-gray-300 rounded-lg p-6 bg-gray-50 hover:bg-gray-100 transition-colors duration-200 flex flex-col items-center justify-center">
+            <svg class="w-12 h-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+            </svg>
+            <h3 class="text-lg font-semibold text-gray-700 mb-2">拖放檔案到這裡</h3>
+            <p class="text-sm text-gray-500 text-center">支援多個檔案同時拖放</p>
           </div>
-          <div id="preview-area"></div>
-          <button id="upload-btn">上傳</button>
-        </article>
+        </div>
+
+        <!-- Preview Area -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">檔案預覽</h2>
+          <div id="preview-area" class="space-y-4">
+            <!-- 檔案預覽將在這裡動態生成 -->
+          </div>
+        </div>
+
+        <!-- Upload Button -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">上傳控制</h2>
+          <button id="upload-btn"
+            class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200">
+            上傳
+          </button>
+        </div>
       </div>
     </div>
   </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
+  <script src="template.js"></script>
+  <script>
+    const dropZone = document.getElementById('drop-zone');
+    const previewArea = document.getElementById('preview-area');
+    const uploadBtn = document.getElementById('upload-btn');
 
-</html>
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit-icons.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
-<script src="template.js"></script>
-<script>
-  const dropZone = document.getElementById('drop-zone');
-  const previewArea = document.getElementById('preview-area');
-  const uploadBtn = document.getElementById('upload-btn');
+    let files = [];
 
-  let files = [];
+    dropZone.addEventListener('dragover', (event) => {
+      event.preventDefault();
+      dropZone.classList.add('drag-over-yellow');
+    });
 
-  dropZone.addEventListener('dragover', (event) => {
-    event.preventDefault();
-    dropZone.classList.add('drag-over-yellow');
-  });
+    dropZone.addEventListener('dragleave', (event) => {
+      dropZone.classList.remove('drag-over-yellow');
+    });
 
-  dropZone.addEventListener('dragleave', (event) => {
-    dropZone.classList.remove('drag-over-yellow');
-  });
+    dropZone.addEventListener('drop', (event) => {
+      event.preventDefault();
+      dropZone.classList.remove('drag-over-yellow');
+      const droppedFiles = Array.from(event.dataTransfer.files);
+      files.push(...droppedFiles);
+      renderPreview();
+    });
 
-  dropZone.addEventListener('drop', (event) => {
-    event.preventDefault();
-    dropZone.classList.remove('drag-over-yellow');
-    const droppedFiles = Array.from(event.dataTransfer.files);
-    files.push(...droppedFiles);
-    renderPreview();
-  });
+    function renderPreview() {
+      previewArea.innerHTML = '';
+      files.forEach((file, index) => {
+        const fileItem = document.createElement('div');
+        fileItem.className = 'file-item';
 
-  function renderPreview() {
-    previewArea.innerHTML = '';
-    files.forEach((file, index) => {
-      const fileItem = document.createElement('div');
-      fileItem.className = 'file-item';
-
-      if (file.type.startsWith('image/')) {
-        const imgURL = URL.createObjectURL(file);
-        const img = document.createElement('img');
-        img.src = imgURL;
-        img.className = 'preview-img';
-        fileItem.appendChild(img);
-      } else if (file.type.startsWith('text/')) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          const pre = document.createElement('pre');
-          pre.textContent = reader.result;
-          fileItem.appendChild(pre);
-        };
-        reader.readAsText(file);
-      } else {
-        const fileName = document.createElement('p');
-        fileName.textContent = file.name;
-        fileItem.appendChild(fileName);
-      }
-      // 刪除按鈕
-      const deleteBtn = document.createElement('button');
-      deleteBtn.textContent = '刪除';
-      deleteBtn.addEventListener('click', () => {
-        files.splice(index, 1);
-        renderPreview();
+        if (file.type.startsWith('image/')) {
+          const imgURL = URL.createObjectURL(file);
+          const img = document.createElement('img');
+          img.src = imgURL;
+          img.className = 'preview-img';
+          fileItem.appendChild(img);
+        } else if (file.type.startsWith('text/')) {
+          const reader = new FileReader();
+          reader.onload = () => {
+            const pre = document.createElement('pre');
+            pre.textContent = reader.result;
+            fileItem.appendChild(pre);
+          };
+          reader.readAsText(file);
+        } else {
+          const fileName = document.createElement('p');
+          fileName.textContent = file.name;
+          fileItem.appendChild(fileName);
+        }
+        // 刪除按鈕
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = '刪除';
+        deleteBtn.className = 'bg-red-600 hover:bg-red-700 text-white font-medium py-1 px-3 rounded text-sm transition-colors duration-200';
+        deleteBtn.addEventListener('click', () => {
+          files.splice(index, 1);
+          renderPreview();
+        });
+        fileItem.appendChild(deleteBtn);
+        previewArea.appendChild(fileItem);
       });
-      fileItem.appendChild(deleteBtn);
-      previewArea.appendChild(fileItem);
-    });
-  }
-
-  uploadBtn.addEventListener('click', () => {
-    if (files.length === 0) {
-      alert('請先拖放檔案再上傳！');
-      return;
     }
-    // 模擬依序上傳
-    console.log('開始上傳檔案：');
-    files.forEach((file, index) => {
-      console.log(`第 ${index + 1} 個檔案：${file.name}`);
-      // 這裡可改成實際的 fetch / XMLHttpRequest 上傳程式碼
+
+    uploadBtn.addEventListener('click', () => {
+      if (files.length === 0) {
+        alert('請先拖放檔案再上傳！');
+        return;
+      }
+      // 模擬依序上傳
+      console.log('開始上傳檔案：');
+      files.forEach((file, index) => {
+        console.log(`第 ${index + 1} 個檔案：${file.name}`);
+        // 這裡可改成實際的 fetch / XMLHttpRequest 上傳程式碼
+      });
+      alert('上傳完成（模擬）！');
     });
-    alert('上傳完成（模擬）！');
-  });
-</script>
+  </script>
+
+</body>
 
 </html>

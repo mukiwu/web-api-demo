@@ -1,55 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="sidebar.css">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/css/uikit.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
   <title>用 Geolocation API 和 Leaflet Routing Machine 實作叫車導航功能 | Web API 系列文章 | MUKI space*</title>
 </head>
-<body>
-<style>
-  #map {
-    width: 100%;
-    height: 600px;
-  }
-</style>
-<div class="uk-container-expand">
-  <div class="uk-grid-divider" uk-grid>
-    <div id="sidebar" class="uk-width-1-5@m"></div>
-    <div class="uk-width-3-5@m" uk-height-viewport="expand: true">
-      <article class="uk-article uk-padding uk-padding-remove-horizontal@m">
-        <h1 class="uk-article-title uk-margin-bottom">用 Geolocation API 和 Leaflet Routing Machine 實作叫車導航功能</h1>
-        <div uk-alert>
-          <p class="uk-margin">完整文章：<a href="https://muki.tw/geolocation-api-leaflet-routing-machine/" class="uk-text-primary">用 Geolocation API 和 Leaflet Routing Machine 實作叫車導航功能</a></p>
-          <p class="uk-margin">請先輸入你的目的地並點選「<span class="uk-text-bold">搜尋地址</span>」，(不會儲存您的地址，請安心使用)。</p>
+
+<body class="bg-gray-50 h-screen overflow-hidden">
+  <style>
+    #map {
+      width: 100%;
+      height: 600px;
+    }
+  </style>
+  <div class="flex h-full">
+    <!-- Sidebar -->
+    <div id="sidebar" class="w-80 flex-shrink-0"></div>
+
+    <!-- Main Content -->
+    <div class="flex-1 min-h-screen overflow-y-auto">
+      <div class="px-8 py-8">
+        <h1 class="text-4xl font-bold text-gray-900 mb-6">用 Geolocation API 和 Leaflet Routing Machine 實作叫車導航功能</h1>
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+          <p class="mb-4 leading-none">完整文章：<a href="https://muki.tw/geolocation-api-leaflet-routing-machine/"
+              class="text-blue-600 hover:text-blue-800 font-medium underline">用 Geolocation API 和 Leaflet Routing
+              Machine 實作叫車導航功能</a></p>
+          <p class="mb-0 leading-none">請先輸入你的目的地並點選「<span
+              class="font-semibold text-blue-600">搜尋地址</span>」，(不會儲存您的地址，請安心使用)。</p>
         </div>
-        <div class="uk-margin">
-          <input type="text" id="addressInput" placeholder="輸入您的地址" class="uk-input uk-form-width-medium">
-          <button onclick="searchAddress()" class="uk-button uk-button-default">搜尋地址</button>
+
+        <!-- Address Search Section -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">地址搜尋</h2>
+          <div class="flex flex-wrap gap-4 items-center">
+            <input type="text" id="addressInput" placeholder="輸入您的地址"
+              class="flex-1 min-w-64 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            <button onclick="searchAddress()"
+              class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200">搜尋地址</button>
+          </div>
         </div>
-        <div id="status" class="uk-margin-small-top uk-margin-small-bottom"></div>
-        <div class="uk-margin">
-          <button class="uk-button uk-button-default" onclick="startSimulation()">開始模擬</button>
-          <button class="uk-button uk-button-default" onclick="stopSimulation()">停止模擬</button>
+
+        <!-- Status Display -->
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
+          <h3 class="text-lg font-medium text-gray-900 mb-2">狀態資訊</h3>
+          <div id="status" class="text-gray-700 font-mono text-sm">等待搜尋地址...</div>
         </div>
-        <div id="map" class="uk-background-muted"></div>
-        <div>
-          <a href="https://www.flaticon.com/free-icons/car" title="car icons">Car icons created by Konkapp - Flaticon</a>
+
+        <!-- Control Buttons -->
+        <div class="flex flex-wrap gap-4 mb-6">
+          <button
+            class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
+            onclick="startSimulation()">開始模擬</button>
+          <button
+            class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
+            onclick="stopSimulation()">停止模擬</button>
         </div>
-      </article>
+
+        <!-- Map Container -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">地圖顯示</h2>
+          <div id="map" class="w-full h-96 rounded-lg border border-gray-300"></div>
+        </div>
+
+        <!-- Attribution -->
+        <div class="text-xs text-gray-500 text-center">
+          <a href="https://www.flaticon.com/free-icons/car" title="car icons"
+            class="text-blue-600 hover:text-blue-800 underline">Car icons created by Konkapp - Flaticon</a>
+        </div>
+      </div>
     </div>
   </div>
-</div>
-</html>
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit-icons.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
-<script src="template.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-routing-machine/3.2.12/leaflet-routing-machine.min.js"></script>
-<script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
+  <script src="template.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-routing-machine/3.2.12/leaflet-routing-machine.min.js"></script>
+  <script>
     let map, userMarker, driverMarker, routeControl;
     let simulationInterval;
     let routePoints = [];
@@ -147,4 +178,6 @@
 
     initMap();
   </script>
+</body>
+
 </html>

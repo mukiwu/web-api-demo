@@ -1,38 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="sidebar.css">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/css/uikit.min.css" />
-  <title>探索 Fullscreen API：從基礎到應用場景 | Web API 系列文章 | MUKI space*</title>
+  <title>探索 Fullscreen API：從基礎到應用場景 | Browser Web API 系列文章 | MUKI space*</title>
 </head>
-<body>
-  <div class="uk-container-expand">
-    <div class="uk-grid-divider" uk-grid>
-      <div id="sidebar" class="uk-width-1-5@m"></div>
-      <div class="uk-width-3-5@m" uk-height-viewport="expand: true">
-        <article class="uk-article uk-padding uk-padding-remove-horizontal@m">
-          <h1 class="uk-article-title uk-margin-bottom">探索 Fullscreen API：從基礎到應用場景</h1>
-          <div uk-alert>
-            <p class="uk-margin">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10348877" class="uk-text-primary">探索 Fullscreen API：從基礎到應用場景</a></p>
 
-            <div id="fullscreenTarget" class="uk-card uk-card-secondary uk-card-body">
-              我是目標元素
-            </div>
-            
-            <div class="uk-margin-medium-top">
-              <button class="uk-button uk-button-primary" onclick="enterElementFullscreen()">單個元素全螢幕</button>
-              <button class="uk-button uk-button-primary" onclick="enterPageFullscreen()">整頁全螢幕</button>
-              <button class="uk-button uk-button-default" onclick="exitFullscreen()">退出全螢幕</button>
-            </div>
-          </div>          
-        </article>
+<body class="bg-gray-50 h-screen overflow-hidden">
+  <div class="flex h-full">
+    <!-- Sidebar -->
+    <div id="sidebar" class="w-80 flex-shrink-0"></div>
+
+    <!-- Main Content -->
+    <div class="flex-1 min-h-screen overflow-y-auto">
+      <div class="px-8 py-8">
+        <h1 class="text-4xl font-bold text-gray-900 mb-6">探索 Fullscreen API：從基礎到應用場景</h1>
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+          <p class="leading-none">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10348877"
+              class="text-blue-600 hover:text-blue-800 font-medium underline">探索 Fullscreen API：從基礎到應用場景</a></p>
+
+        </div>
+
+        <!-- Fullscreen Target -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">全螢幕目標元素</h2>
+          <div id="fullscreenTarget"
+            class="w-full h-32 bg-gray-100 border-2 border-gray-300 rounded-lg flex items-center justify-center text-gray-800 font-semibold text-lg cursor-pointer hover:bg-gray-200 hover:border-gray-400 transition-all duration-200">
+            我是目標元素
+          </div>
+        </div>
+
+        <!-- Control Buttons -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">全螢幕控制</h2>
+          <div class="flex flex-wrap gap-4">
+            <button
+              class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
+              onclick="enterElementFullscreen()">單個元素全螢幕</button>
+            <button
+              class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
+              onclick="enterPageFullscreen()">整頁全螢幕</button>
+            <button
+              class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
+              onclick="exitFullscreen()">退出全螢幕</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-  <script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit-icons.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
+  </div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
   <script src="template.js"></script>
   <script>
     const target = document.getElementById('fullscreenTarget');
@@ -56,4 +77,5 @@
     }
   </script>
 </body>
+
 </html>
