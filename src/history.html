@@ -10,22 +10,22 @@
 </head>
 
 <body class="bg-gray-50 h-screen overflow-hidden">
-  <div class="flex h-full">
+  <div class="flex flex-col lg:flex-row h-full">
     <!-- Sidebar -->
-    <div id="sidebar" class="w-80 flex-shrink-0"></div>
+    <div id="sidebar" class="w-full lg:w-80 flex-shrink-0"></div>
 
     <!-- Main Content -->
     <div class="flex-1 min-h-screen overflow-y-auto">
-      <div class="px-8 py-8">
-        <h1 class="text-4xl font-bold text-gray-900 mb-6">認識 History API：SPA 的關鍵技術之一</h1>
-        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+      <div class="px-4 py-6 lg:px-8 lg:py-8">
+        <h1 class="text-2xl lg:text-4xl font-bold text-gray-900 mb-6">認識 History API：SPA 的關鍵技術之一</h1>
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 lg:p-6 mb-6">
           <p class="leading-none">完整文章：<a href="https://muki.tw/history-apispa/"
               class="text-blue-600 hover:text-blue-800 font-medium underline">認識 History API：SPA 的關鍵技術之一</a></p>
         </div>
         <!-- Navigation -->
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-          <h2 class="text-xl font-semibold text-gray-900 mb-4">文章導航</h2>
-          <nav class="flex flex-wrap gap-4">
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 lg:p-6 mb-6">
+          <h2 class="text-lg lg:text-xl font-semibold text-gray-900 mb-4">文章導航</h2>
+          <nav class="flex flex-wrap gap-2 lg:gap-4">
             <a class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
               href="cdn-tailwindcss-vscode-enable-tailwindcss-intellisense/">文章一</a>
             <a class="bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
@@ -36,9 +36,9 @@
         </div>
 
         <!-- Content Area -->
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h2 class="text-xl font-semibold text-gray-900 mb-4">文章內容</h2>
-          <div id="content" class="prose prose-lg max-w-none">
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 lg:p-6">
+          <h2 class="text-lg lg:text-xl font-semibold text-gray-900 mb-4">文章內容</h2>
+          <div id="content" class="prose prose-sm lg:prose-lg max-w-none">
             <!-- Content will be loaded here -->
           </div>
         </div>

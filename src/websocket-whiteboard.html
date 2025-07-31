@@ -16,14 +16,14 @@
 </head>
 
 <body class="bg-gray-50 h-screen overflow-hidden">
-  <div class="flex h-full">
+  <div class="flex flex-col lg:flex-row h-full">
     <!-- Sidebar -->
-    <div id="sidebar" class="w-80 flex-shrink-0"></div>
+    <div id="sidebar" class="w-full lg:w-80 flex-shrink-0"></div>
 
     <!-- Main Content -->
     <div class="flex-1 min-h-screen overflow-y-auto">
-      <div class="px-8 py-8">
-          <h1 class="text-4xl font-bold text-gray-900 mb-6">用 WebSocket 實作多人白板服務</h1>
+      <div class="px-4 py-6 lg:px-8 lg:py-8">
+          <h1 class="text-2xl lg:text-4xl font-bold text-gray-900 mb-6">用 WebSocket 實作多人白板服務</h1>
           <div class="mb-4">
             <p>線上人數：<span id="online-count" class="text-blue-600 hover:text-blue-800 font-medium underline"></span></p>
             <p>我的畫筆顏色：<span id="my-color" class="text-blue-600 hover:text-blue-800 font-medium underline"></span></p>

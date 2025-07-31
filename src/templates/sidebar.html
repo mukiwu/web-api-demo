@@ -1,4 +1,4 @@
-<div class="bg-white shadow-lg min-h-screen">
+<div class="bg-white shadow-lg lg:min-h-screen overflow-hidden">
   <!-- Logo Section -->
   <div class="p-6 border-b border-gray-200">
     <a class="logo" href="https://muki.tw">
@@ -26,7 +26,7 @@
   <input type="checkbox" id="nav-toggle" class="hidden">
 
   <!-- Navigation Menu -->
-  <nav class="menu lg:block">
+  <nav class="menu lg:block overflow-y-auto">
     <div class="px-4 py-6">
       <ul class="space-y-1">
         {% for category, items in navigation | groupBy('category') %}

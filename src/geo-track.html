@@ -18,15 +18,15 @@
       height: 600px;
     }
   </style>
-  <div class="flex h-full">
+  <div class="flex flex-col lg:flex-row h-full">
     <!-- Sidebar -->
-    <div id="sidebar" class="w-80 flex-shrink-0"></div>
+    <div id="sidebar" class="w-full lg:w-80 flex-shrink-0"></div>
 
     <!-- Main Content -->
     <div class="flex-1 min-h-screen overflow-y-auto">
-      <div class="px-8 py-8">
-        <h1 class="text-4xl font-bold text-gray-900 mb-6">用 Geolocation API 和 Leaflet Routing Machine 實作叫車導航功能</h1>
-        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+      <div class="px-4 py-6 lg:px-8 lg:py-8">
+        <h1 class="text-2xl lg:text-4xl font-bold text-gray-900 mb-6">用 Geolocation API 和 Leaflet Routing Machine 實作叫車導航功能</h1>
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 lg:p-6 mb-6">
           <p class="mb-4 leading-none">完整文章：<a href="https://muki.tw/geolocation-api-leaflet-routing-machine/"
               class="text-blue-600 hover:text-blue-800 font-medium underline">用 Geolocation API 和 Leaflet Routing
               Machine 實作叫車導航功能</a></p>
@@ -35,9 +35,9 @@
         </div>
 
         <!-- Address Search Section -->
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-          <h2 class="text-xl font-semibold text-gray-900 mb-4">地址搜尋</h2>
-          <div class="flex flex-wrap gap-4 items-center">
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 lg:p-6 mb-6">
+          <h2 class="text-lg lg:text-xl font-semibold text-gray-900 mb-4">地址搜尋</h2>
+          <div class="flex flex-wrap gap-2 lg:gap-4 items-center">
             <input type="text" id="addressInput" placeholder="輸入您的地址"
               class="flex-1 min-w-64 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
             <button onclick="searchAddress()"
@@ -48,11 +48,11 @@
         <!-- Status Display -->
         <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
           <h3 class="text-lg font-medium text-gray-900 mb-2">狀態資訊</h3>
-          <div id="status" class="text-gray-700 font-mono text-sm">等待搜尋地址...</div>
+          <div id="status" class="text-gray-700 font-mono text-xs lg:text-sm">等待搜尋地址...</div>
         </div>
 
         <!-- Control Buttons -->
-        <div class="flex flex-wrap gap-4 mb-6">
+        <div class="flex flex-wrap gap-2 lg:gap-4 mb-6">
           <button
             class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
             onclick="startSimulation()">開始模擬</button>
@@ -62,8 +62,8 @@
         </div>
 
         <!-- Map Container -->
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-          <h2 class="text-xl font-semibold text-gray-900 mb-4">地圖顯示</h2>
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 lg:p-6 mb-6">
+          <h2 class="text-lg lg:text-xl font-semibold text-gray-900 mb-4">地圖顯示</h2>
           <div id="map" class="w-full h-96 rounded-lg border border-gray-300"></div>
         </div>
 

@@ -11,9 +11,17 @@ a.logo {
 
 /* Sidebar container styles */
 #sidebar {
-  height: 100vh;
+  height: auto;
+  max-height: 50vh;
   overflow-y: auto;
   overflow-x: hidden;
+}
+
+@media (min-width: 1024px) {
+  #sidebar {
+    height: 100vh;
+    max-height: none;
+  }
 }
 
 /* Custom styles for better navigation */
@@ -87,6 +95,12 @@ a.logo {
 @media (max-width: 1023px) {
   .menu {
     display: none;
+    max-height: 100vh;
+    overflow-y: auto;
+  }
+  
+  #nav-toggle:checked ~ .menu {
+    display: block;
   }
 }
 

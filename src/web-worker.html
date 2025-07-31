@@ -10,21 +10,21 @@
 </head>
 
 <body class="bg-gray-50 h-screen overflow-hidden">
-  <div class="flex h-full">
+  <div class="flex flex-col lg:flex-row h-full">
     <!-- Sidebar -->
-    <div id="sidebar" class="w-80 flex-shrink-0"></div>
+    <div id="sidebar" class="w-full lg:w-80 flex-shrink-0"></div>
 
     <!-- Main Content -->
     <div class="flex-1 min-h-screen overflow-y-auto">
-      <div class="px-8 py-8">
-        <h1 class="text-4xl font-bold text-gray-900 mb-6">使用 Web Workers API 處理大型資料的基本範例</h1>
-        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+      <div class="px-4 py-6 lg:px-8 lg:py-8">
+        <h1 class="text-2xl lg:text-4xl font-bold text-gray-900 mb-6">使用 Web Workers API 處理大型資料的基本範例</h1>
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 lg:p-6 mb-6">
           <p class="leading-none">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10351857"
               class="text-blue-600 hover:text-blue-800 font-medium underline">Web Workers API 的限制與效能優化處理</a></p>
         </div>
         <!-- Demo Section -->
-        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
-          <h2 class="text-xl font-semibold text-gray-900 mb-4">Web Worker 示範</h2>
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 lg:p-6 mb-6">
+          <h2 class="text-lg lg:text-xl font-semibold text-gray-900 mb-4">Web Worker 示範</h2>
           <button id="button"
             class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 mb-4">
             點我執行一段文字
@@ -34,7 +34,7 @@
 
         <!-- Code Links Section -->
         <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-6">
-          <h2 class="text-xl font-semibold text-gray-900 mb-4">完整程式碼</h2>
+          <h2 class="text-lg lg:text-xl font-semibold text-gray-900 mb-4">完整程式碼</h2>
           <div class="space-y-2">
             <button id="showMainJs"
               class="text-blue-600 hover:text-blue-800 font-medium border border-blue-600 rounded-md px-4 py-2 mr-2">web-worker-main.js</button>
@@ -56,7 +56,7 @@
                 </svg>
               </button>
             </div>
-            <pre id="codeContent" class="text-green-400 text-sm overflow-x-auto"></pre>
+            <pre id="codeContent" class="text-green-400 text-xs lg:text-sm overflow-x-auto"></pre>
           </div>
         </div>
       </div>

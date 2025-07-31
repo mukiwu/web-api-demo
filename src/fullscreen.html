@@ -10,23 +10,23 @@
 </head>
 
 <body class="bg-gray-50 h-screen overflow-hidden">
-  <div class="flex h-full">
+  <div class="flex flex-col lg:flex-row h-full">
     <!-- Sidebar -->
-    <div id="sidebar" class="w-80 flex-shrink-0"></div>
+    <div id="sidebar" class="w-full lg:w-80 flex-shrink-0"></div>
 
     <!-- Main Content -->
     <div class="flex-1 min-h-screen overflow-y-auto">
-      <div class="px-8 py-8">
-        <h1 class="text-4xl font-bold text-gray-900 mb-6">探索 Fullscreen API：從基礎到應用場景</h1>
-        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+      <div class="px-4 py-6 lg:px-8 lg:py-8">
+        <h1 class="text-2xl lg:text-4xl font-bold text-gray-900 mb-6">探索 Fullscreen API：從基礎到應用場景</h1>
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 lg:p-6 mb-6">
           <p class="leading-none">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10348877"
               class="text-blue-600 hover:text-blue-800 font-medium underline">探索 Fullscreen API：從基礎到應用場景</a></p>
 
         </div>
 
         <!-- Fullscreen Target -->
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-          <h2 class="text-xl font-semibold text-gray-900 mb-4">全螢幕目標元素</h2>
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 lg:p-6 mb-6">
+          <h2 class="text-lg lg:text-xl font-semibold text-gray-900 mb-4">全螢幕目標元素</h2>
           <div id="fullscreenTarget"
             class="w-full h-32 bg-gray-100 border-2 border-gray-300 rounded-lg flex items-center justify-center text-gray-800 font-semibold text-lg cursor-pointer hover:bg-gray-200 hover:border-gray-400 transition-all duration-200">
             我是目標元素
@@ -34,9 +34,9 @@
         </div>
 
         <!-- Control Buttons -->
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h2 class="text-xl font-semibold text-gray-900 mb-4">全螢幕控制</h2>
-          <div class="flex flex-wrap gap-4">
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 lg:p-6">
+          <h2 class="text-lg lg:text-xl font-semibold text-gray-900 mb-4">全螢幕控制</h2>
+          <div class="flex flex-wrap gap-2 lg:gap-4">
             <button
               class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
               onclick="enterElementFullscreen()">單個元素全螢幕</button>

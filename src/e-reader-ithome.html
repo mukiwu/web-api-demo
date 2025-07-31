@@ -10,9 +10,9 @@
 </head>
 
 <body class="bg-gray-50 h-screen overflow-hidden">
-  <div class="flex h-full">
+  <div class="flex flex-col lg:flex-row h-full">
     <!-- Sidebar -->
-    <div id="sidebar" class="w-80 flex-shrink-0"></div>
+    <div id="sidebar" class="w-full lg:w-80 flex-shrink-0"></div>
 
     <!-- Main Content -->
     <div class="flex-1 min-h-screen overflow-y-auto">
@@ -32,7 +32,7 @@
                           <path stroke-linecap="round" stroke-linejoin="rㄍound"
                             d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
                         </svg>
-                        <p class="font-laonoto text-sm tracking-wider text-gray-400 group-hover:text-gray-600">選擇文字檔案
+                        <p class="font-laonoto text-xs lg:text-sm tracking-wider text-gray-400 group-hover:text-gray-600">選擇文字檔案
                         </p>
                       </div>
                       <input type="file" id="fileInput" accept=".txt" class="opacity-0" />
@@ -42,14 +42,14 @@
               </div>
               <div class="flex my-4">
                 <button id="playBtn"
-                  class="mx-auto block rounded-md border bg-blue-500 px-3 py-1 text-white text-sm outline-none">開始閱讀</button>
+                  class="mx-auto block rounded-md border bg-blue-500 px-3 py-1 text-white text-xs lg:text-sm outline-none">開始閱讀</button>
                 <button id="pauseBtn"
-                  class="mx-auto block rounded-md border bg-yellow-500 px-3 py-1 text-white text-sm outline-none">暫停</button>
+                  class="mx-auto block rounded-md border bg-yellow-500 px-3 py-1 text-white text-xs lg:text-sm outline-none">暫停</button>
                 <button id="stopBtn"
-                  class="mx-auto block rounded-md border bg-red-500 px-3 py-1 text-white text-sm outline-none">停止</button>
+                  class="mx-auto block rounded-md border bg-red-500 px-3 py-1 text-white text-xs lg:text-sm outline-none">停止</button>
               </div>
 
-              <div class="flex justify-center items-center gap-4">
+              <div class="flex justify-center items-center gap-2 lg:gap-4">
                 <input type="range" id="rateRange" min="0.5" max="2" step="0.1" value="1"
                   class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
                 <span id="rateValue" class="text-center text-gray-700 min-w-[3rem]">1x</span>
@@ -71,7 +71,7 @@
                   </svg>
                 </div>
                 <div class="flex-grow pl-4">
-                  <h2 class="title-font mb-3 text-sm font-medium tracking-wider text-gray-900">文件內容</h2>
+                  <h2 class="title-font mb-3 text-xs lg:text-sm font-medium tracking-wider text-gray-900">文件內容</h2>
                   <div id="content" class="border border-gray-200 rounded-lg p-4 font-laonoto leading-relaxed">
                   </div>
                 </div>
