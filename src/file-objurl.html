@@ -4,13 +4,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/css/uikit.min.css" />
   <title>File API 介紹與實際應用</title>
 </head>
 
 <body>
-  <input type="file" id="fileInput" />
-  <img id="preview" src="" alt="Image preview" style="display:none;" />
-
+  <div class="uk-container-expand">
+    <div class="uk-grid-divider" uk-grid>
+      <div id="sidebar" class="uk-width-1-5@m"></div>
+      <div class="uk-width-3-5@m" uk-height-viewport="expand: true">
+        <article class="uk-article uk-padding uk-padding-remove-horizontal@m">
+          <h1 class="uk-article-title uk-margin-bottom">File API 介紹與實際應用</h1>
+          <div uk-alert>
+            <p class="uk-margin">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10348881" class="uk-text-primary">File API 介紹與實際應用</a></p>
+          </div>
+          <input type="file" id="fileInput" />
+          <img id="preview" src="" alt="Image preview" style="display:none;" />
+        </article>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit-icons.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
+  <script src="template.js"></script>
   <script>
     const fileInput = document.getElementById('fileInput');
     const img = document.getElementById('preview');

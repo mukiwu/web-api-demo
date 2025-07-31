@@ -1,34 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/css/uikit.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="sidebar.css">
   <title>Web API 系列文章 | MUKI space*</title>
 </head>
-<body>
-<div class="uk-container-expand">
-  <div class="uk-grid-divider" uk-grid>
-    <div id="sidebar" class="uk-width-1-5@m"></div>
-    <div class="uk-width-3-5@m" uk-height-viewport="expand: true">
-      <article class="uk-article uk-padding uk-padding-remove-horizontal@m">
-        <h1 class="uk-article-title uk-margin-bottom">Web API 系列文章</h1>
-        <p class="uk-article-meta uk-margin-bottom"><a href="https://ithelp.ithome.com.tw/2024ironman/reward">2024 iThome 鐵人賽 JavaScript 個人組 冠軍</a></p>
-        <div class="uk-text-lead uk-margin">關於這裡</div>
-        <p class="uk-margin">這系列文章是我參加 2024 iThome 鐵人賽期間撰寫的作品。完賽後，我對文章進行潤稿與修訂，並重新發佈在部落格上。</p>
-        <p class="uk-margin">為了聚焦在 Web API 上，文章內的所有範例都使用原生 HTML + CSS + JavaScript 撰寫，並提供完整的線上範例，如有任何問題，歡迎留言討論。</p>
-        <p class="uk-margin">這裡放的是文章內容的範例，關於完整文章，請移駕至我的部落格觀看：<a href="https://muki.tw/tag/web-api/" class="uk-text-primary">Web API 系列文章</a></p>
-        <div class="uk-text-lead uk-margin">問題與回報</div>
-        <p class="uk-margin">
-          任何問題歡迎到<a href="https://muki.tw" class="uk-text-primary">部落格</a>留言討論，或透過<a href="https://www.facebook.com/mukispace" class="uk-text-primary">粉絲團</a>與我聯繫
-        </p>
-      </article>
+
+<body class="bg-gray-50 h-screen overflow-hidden">
+  <div class="flex h-full">
+    <!-- Sidebar -->
+    <div id="sidebar" class="w-80 flex-shrink-0"></div>
+
+    <!-- Main Content -->
+    <div class="flex-1 min-h-screen overflow-y-auto">
+      <div class="max-w-4xl mx-auto px-6 py-8">
+        <article class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+          <!-- Header -->
+          <div class="bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-12 text-white">
+            <div class="max-w-3xl">
+              <h1 class="text-4xl font-bold mb-4">Web API 系列文章</h1>
+              <p class="text-xl text-blue-100 mb-6">
+                探索現代網頁開發的強大 API 功能
+              </p>
+              <div class="inline-flex items-center px-4 py-2 bg-white/20 rounded-full text-sm font-medium">
+                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd"
+                    d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clip-rule="evenodd"></path>
+                </svg>
+                2024 iThome 鐵人賽 JavaScript 個人組 冠軍
+              </div>
+            </div>
+          </div>
+
+          <!-- Content -->
+          <div class="px-8 py-12">
+            <div class="max-w-3xl space-y-8">
+              <!-- About Section -->
+              <section>
+                <h2 class="text-2xl font-semibold text-gray-900 mb-4 flex items-center">
+                  <svg class="w-6 h-6 mr-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                  關於這裡
+                </h2>
+                <div class="prose prose-lg text-gray-600 space-y-4">
+                  <p>
+                    這系列文章是我參加 2024 iThome 鐵人賽期間撰寫的作品。完賽後，我對文章進行潤稿與修訂，並重新發佈在部落格上。
+                  </p>
+                  <p>
+                    為了聚焦在 Web API 上，文章內的所有範例都使用原生 HTML + CSS + JavaScript 撰寫，並提供完整的線上範例，如有任何問題，歡迎留言討論。
+                  </p>
+                  <p>
+                    這裡放的是文章內容的範例，關於完整文章，請移駕至我的部落格觀看：
+                    <a href="https://muki.tw/tag/web-api/"
+                      class="text-blue-600 hover:text-blue-800 font-medium underline">
+                      Web API 系列文章
+                    </a>
+                  </p>
+                </div>
+              </section>
+
+              <!-- Contact Section -->
+              <section>
+                <h2 class="text-2xl font-semibold text-gray-900 mb-4 flex items-center">
+                  <svg class="w-6 h-6 mr-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z">
+                    </path>
+                  </svg>
+                  問題與回報
+                </h2>
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                  <p class="text-gray-700 mb-4">
+                    任何問題歡迎到
+                    <a href="https://muki.tw" class="text-blue-600 hover:text-blue-800 font-medium underline">
+                      部落格
+                    </a>
+                    留言討論，或透過
+                    <a href="https://www.facebook.com/mukispace"
+                      class="text-blue-600 hover:text-blue-800 font-medium underline">
+                      粉絲團
+                    </a>
+                    與我聯繫
+                  </p>
+                  <div class="flex space-x-4">
+                    <a href="https://muki.tw"
+                      class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200">
+                      <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9v-9m0-9v9"></path>
+                      </svg>
+                      訪問部落格
+                    </a>
+                    <a href="https://www.facebook.com/mukispace"
+                      class="inline-flex items-center px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200">
+                      <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                          d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                      </svg>
+                      粉絲團
+                    </a>
+                  </div>
+                </div>
+              </section>
+            </div>
+          </div>
+        </article>
+      </div>
     </div>
   </div>
-</div>
-</html>
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit-icons.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
-<script src="template.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
+  <script src="template.js"></script>
+</body>
+
 </html>

@@ -1,0 +1,108 @@
+/* Logo styles */
+a.logo {
+  background-image: url('https://muki.tw/logo.svg');
+  overflow: hidden;
+  display: inline-block;
+  width: 206px;
+  height: 48px;
+  text-indent: 100%;
+  font-size: 0;
+}
+
+/* Sidebar container styles */
+#sidebar {
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Custom styles for better navigation */
+.nav-link {
+  display: block;
+  padding: 0.75rem 1rem;
+  color: #374151;
+  transition: all 0.2s;
+  border-left: 4px solid transparent;
+  line-height: 1.4; /* 設定合適的行高 */
+}
+
+.nav-link:hover {
+  color: #2563eb;
+  background-color: #eff6ff;
+  border-left-color: #3b82f6;
+}
+
+.nav-link.active {
+  color: #2563eb;
+  background-color: #eff6ff;
+  border-left-color: #3b82f6;
+}
+
+/* 確保導航項目內的 flex 容器正確對齊 */
+.nav-link .flex {
+  align-items: flex-start;
+  line-height: 1.4; /* 與父元素保持一致的行高 */
+}
+
+/* 確保 SVG 圖標永遠是 16x16 並且與文字頂部對齊 */
+.nav-link svg {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  margin-top: 0.125rem; /* 微調垂直對齊 */
+  line-height: 1; /* 重置 SVG 的行高 */
+}
+
+/* 文字容器的行高設定 */
+.nav-link .text-content {
+  line-height: 1.4;
+  display: inline;
+}
+
+.nav-divider {
+  border-top: 1px solid #e5e7eb;
+  margin: 0.5rem 0;
+}
+
+.category-header {
+  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background-color: #f3f4f6;
+}
+
+/* Mobile menu styles */
+.menu {
+  display: block;
+}
+
+#nav-toggle:checked ~ .menu {
+  display: block;
+}
+
+@media (max-width: 1023px) {
+  .menu {
+    display: none;
+  }
+}
+
+/* 自定義滾動條樣式 */
+#sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+#sidebar::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+#sidebar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+#sidebar::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+} 

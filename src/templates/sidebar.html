@@ -1,58 +1,57 @@
-<style>
-  .logo {
-    background-image: url('https://muki.tw/logo.svg');
-    overflow: hidden;
-    display: inline-block;
-    width: 206px;
-    height: 48px;
-    text-indent: 100%;
-    font-size: 0;
-  }
+<div class="bg-white shadow-lg min-h-screen">
+  <!-- Logo Section -->
+  <div class="p-6 border-b border-gray-200">
+    <a class="logo" href="https://muki.tw">
+      <h1 class="sr-only">MUKI space*</h1>
+    </a>
+  </div>
 
-  #nav-toggle:checked+.menu {
-    display: block !important;
-  }
-</style>
-<div class="uk-padding">
-  <a class="logo" href="https://muki.tw">
-    <h1>MUKI space*</h1>
-  </a>
-</div>
-<label for="nav-toggle" class="uk-button uk-button-link uk-hidden@s" style="margin: 0 0 1rem 1rem">
-  <span uk-icon="plus"></span>/<span uk-icon="minus"></span>
-  收合選單
-</label>
-<input type="checkbox" id="nav-toggle" class="uk-hidden">
-<div class="menu uk-width@m uk-visible@s">
-  <ul class="uk-padding uk-padding-remove-vertical uk-nav-default uk-nav-divider" uk-nav>
-    <li><a href="index.html">Web API 系列文章 首頁</a></li>
-    <li><a href="geo.html">用 Geolocation API 取得與追蹤使用者地理位置</a></li>
-    <li><a href="geo-track.html">用 Geolocation API 和 Leaflet Routing Machine 實作叫車導航功能</a></li>
-    <li><a href="drag-and-drop.html">用 Drag and Drop API 拖曳網頁元素</a></li>
-    <li><a href="history.html">認識 History API：SPA 的關鍵技術之一</a></li>
-    <li><a href="fullscreen.html">探索 Fullscreen API：從基礎到應用場景</a></li>
-    <li><a href="notification.html">使用 Web Notifications API 幫網站加入通知功能</a></li>
-    <li><a href="notification1.html">Web Notifications API 搭配 Service Workers 發送通知</a></li>
-    <li><a href="notification2.html">Web Notifications API 結合 Google Cloud 的應用</a></li>
-    <li><a href="web-worker.html">使用 Web Workers API 處理大型資料的基本範例</a></li>
-    <li><a href="web-worker-pool.html">Worker Pool 範例</a></li>
-    <li><a href="file-drag.html">File API 介紹與實際應用</a></li>
-    <li><a href="battery-safe.html">用 Battery Status API 打造節能模式的網站</a></li>
-    <li><a href="audio.html">使用 audio 打造音樂播放器 </a></li>
-    <li><a href="video.html">用 video 實作影音播放功能</a></li>
-    <li><a href="websocket.html">自己架個 WebSocket Server 玩玩吧</a></li>
-    <li><a href="websocket-msg.html">WebSocket 的處理訊息機制</a></li>
-    <li><a href="speech.html">使用 Web Speech API 讓網頁聽得懂我們說的話</a></li>
-    <li><a href="speech1.html">使用 Web Speech API 讓網頁開口說話</a></li>
-    <li><a href="speech2.html">用 Web Speech API 與你的 AI 朋友互動聊天</a></li>
-    <li><a href="mutation.html">如何使用 MutationObserver API 追蹤 DOM 的變化</a></li>
-    <li><a href="observer.html">深入了解 Intersection Observer API 與其應用 I</a></li>
-    <li><a href="observer1.html">深入了解 Intersection Observer API 與其應用 II</a></li>
-    <li><a href="observer2.html">深入了解 Intersection Observer API 與其應用 III</a></li>
-    <li><a href="indexeddb.html">另一種儲存資料的方式：IndexedDB API</a></li>
-    <!-- <li><a href="#">使用 IndexedDB API 做一個筆記儲存功能</a></li> -->
-    <li><a href="animation1.html">使用 JavaScript 操作動畫的 Web Animations API</a></li>
-    <li><a href="animation.html">使用 Web Animations API 製作打散文字的動畫效果</a></li>
-    <li><a href="screen-capture.html">使用 Screen Capture API 取得你的螢幕畫面</a></li>
-  </ul>
+  <!-- Mobile Menu Toggle -->
+  <div class="lg:hidden p-4 border-b border-gray-200">
+    <label for="nav-toggle"
+      class="flex items-center justify-between w-full px-4 py-2 text-gray-700 bg-gray-100 rounded-lg cursor-pointer hover:bg-gray-200 transition-colors duration-200">
+      <span class="text-sm font-medium">收合選單</span>
+      <div class="flex items-center space-x-1">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+        </svg>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
+        </svg>
+      </div>
+    </label>
+  </div>
+
+  <!-- Hidden checkbox for mobile menu -->
+  <input type="checkbox" id="nav-toggle" class="hidden">
+
+  <!-- Navigation Menu -->
+  <nav class="menu lg:block">
+    <div class="px-4 py-6">
+      <ul class="space-y-1">
+        {% for category, items in navigation | groupBy('category') %}
+        {% if category != 'main' %}
+        <li class="category-header">
+          {{ categories[category] }}
+        </li>
+        {% endif %}
+
+        {% for item in items %}
+        <li>
+          <a href="{{ item.url }}" class="nav-link" data-url="{{ item.url }}">
+            <span class="flex items-start">
+              <svg class="w-4 h-4 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ icons[item.icon] }}"></path>
+              </svg>
+              <span class="text-content">{{ item.title }}</span>
+            </span>
+          </a>
+        </li>
+        {% endfor %}
+
+        <li class="nav-divider"></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </nav>
 </div>
