@@ -2,66 +2,67 @@
 <html lang="en">
 
 <head>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="sidebar.css">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/css/uikit.min.css" />
   <title>結合 Web API 製作情緒追蹤器，以更好地理解自己 | MUKI space*</title>
   <style>
-    .uk-table td img {
+    . td img {
       display: block;
       margin: 0 auto;
     }
   </style>
 </head>
 
-<body>
-  <div class="uk-container-expand">
-    <div class="uk-grid-divider" uk-grid>
-      <div id="sidebar" class="uk-width-1-5@m"></div>
-      <div class="uk-width-3-5@m" uk-height-viewport="expand: true">
-        <article class="uk-article uk-padding uk-padding-remove-horizontal@m">
-          <h1 class="uk-article-title uk-margin-bottom">結合 Web API 製作情緒追蹤器，以更好地理解自己</h1>
+<body class="bg-gray-50 h-screen overflow-hidden">
+  <div class="flex h-full">
+    <!-- Sidebar -->
+    <div id="sidebar" class="w-80 flex-shrink-0"></div>
 
-          <div class="uk-card uk-card-default uk-card-body uk-margin">
-            <h3 class="uk-card-title">記錄今日心情</h3>
+    <!-- Main Content -->
+    <div class="flex-1 min-h-screen overflow-y-auto">
+      <div class="px-8 py-8">
+          <h1 class="text-4xl font-bold text-gray-900 mb-6">結合 Web API 製作情緒追蹤器，以更好地理解自己</h1>
 
-            <div class="uk-margin">
-              <label class="uk-form-label" for="mood">我的心情：</label>
-              <div class="uk-form-controls">
-                <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
-                  <label><input class="uk-radio" type="radio" name="mood" value="1"> 1 (很差)</label>
-                  <label><input class="uk-radio" type="radio" name="mood" value="2"> 2 (不好)</label>
-                  <label><input class="uk-radio" type="radio" name="mood" value="3" checked> 3 (一般)</label>
-                  <label><input class="uk-radio" type="radio" name="mood" value="4"> 4 (不錯)</label>
-                  <label><input class="uk-radio" type="radio" name="mood" value="5"> 5 (很好)</label>
-                </div>
+          <div class="   ">
+            <h3 class="">記錄今日心情</h3>
+
+            <div class="mb-4">
+              <label class="" for="mood">我的心情：</label>
+              <div class="">
+                <div class="   ">
+                  <label><input class="" type="radio" name="mood" value="1"> 1 (很差)</label>
+                  <label><input class="" type="radio" name="mood" value="2"> 2 (不好)</label>
+                  <label><input class="" type="radio" name="mood" value="3" checked> 3 (一般)</label>
+                  <label><input class="" type="radio" name="mood" value="4"> 4 (不錯)</label>
+                  <label><input class="" type="radio" name="mood" value="5"> 5 (很好)</label>
+      </div>
+    </div>
+  </div>
+            <div class="mb-4">
+              <label class="" for="notes">心情筆記：</label>
+              <div class="">
+                <textarea class="" id="notes" rows="4" placeholder="寫下您此刻的想法和感受..."></textarea>
               </div>
             </div>
 
-            <div class="uk-margin">
-              <label class="uk-form-label" for="notes">心情筆記：</label>
-              <div class="uk-form-controls">
-                <textarea class="uk-textarea" id="notes" rows="4" placeholder="寫下您此刻的想法和感受..."></textarea>
-              </div>
-            </div>
-
-            <div class="uk-margin">
-              <label class="uk-form-label" for="mediaUpload">上傳照片或語音：</label>
-              <div class="uk-form-controls">
-                <div uk-form-custom="target: true">
+            <div class="mb-4">
+              <label class="" for="mediaUpload">上傳照片或語音：</label>
+              <div class="">
+                <div ="target: true">
                   <input type="file" id="mediaUpload" accept="image/*,audio/*">
-                  <input class="uk-input uk-form-width-medium" type="text" placeholder="選擇檔案" disabled>
-                </div>
-              </div>
-            </div>
-
-            <button class="uk-button uk-button-primary" id="saveMood">記錄心情</button>
+                  <input class=" " type="text" placeholder="選擇檔案" disabled>
+      </div>
+    </div>
+  </div>
+            <button class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200" id="saveMood">記錄心情</button>
           </div>
 
-          <div class="uk-card uk-card-default uk-card-body">
-            <h3 class="uk-card-title">過往記錄</h3>
-            <div id="entries" class="uk-margin">
-              <table class="uk-table uk-table-divider uk-table-hover uk-table-middle uk-table-responsive">
+          <div class="  ">
+            <h3 class="">過往記錄</h3>
+            <div id="entries" class="mb-4">
+              <table class="    ">
                 <thead>
                   <tr>
                     <th>日期</th>
@@ -74,17 +75,12 @@
                 <tbody id="entriesBody">
                 </tbody>
               </table>
-            </div>
-          </div>
-
-        </article>
       </div>
     </div>
   </div>
+    </div>
+  </div>
 
-</html>
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit-icons.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
 <script src="template.js"></script>
 
@@ -234,7 +230,7 @@
       } else {
         if (entriesBody.children.length === 0) {
           const noDataRow = document.createElement('tr');
-          noDataRow.innerHTML = '<td colspan="5" class="uk-text-center">目前沒有記錄，開始記錄您的心情吧！</td>';
+          noDataRow.innerHTML = '<td colspan="5" class="">目前沒有記錄，開始記錄您的心情吧！</td>';
           entriesBody.appendChild(noDataRow);
         }
       }
@@ -246,4 +242,5 @@
   }
 </script>
 
+</body>
 </html>

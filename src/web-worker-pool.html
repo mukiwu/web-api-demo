@@ -2,10 +2,11 @@
 <html lang="zh-TW">
 
 <head>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="sidebar.css">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/css/uikit.min.css" />
-  <title>Worker Pool 範例 | Web API 系列文章 | MUKI space*</title>
+  <title>Worker Pool 範例 | Browser Web API 系列文章 | MUKI space*</title>
   <style>
     #output {
       border: 1px solid #ccc;
@@ -32,30 +33,32 @@
   </style>
 </head>
 
-<body>
-  <div class="uk-container-expand">
-    <div class="uk-grid-divider" uk-grid>
-      <div id="sidebar" class="uk-width-1-5@m"></div>
-      <div class="uk-width-3-5@m" uk-height-viewport="expand: true">
-        <article class="uk-article uk-padding uk-padding-remove-horizontal@m">
-          <h1 class="uk-article-title uk-margin-bottom">Worker Pool 範例</h1>
-          <div uk-alert>
-            <p class="uk-margin">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10351858"
-                class="uk-text-primary">Web Workers API 的生命週期</a></p>
-          </div>
-          <div class="uk-margin">
-            <button id="addTask" class="uk-button uk-button-primary">新增任務</button>
-            <button id="addMultipleTasks" class="uk-button uk-button-primary">新增 5 個任務</button>
-            <button id="clearLog" class="uk-button uk-button-primary">清除日誌</button>
-          </div>
-          <div id="output"></div>
-        </article>
+<body class="bg-gray-50 h-screen overflow-hidden">
+  <div class="flex h-full">
+    <!-- Sidebar -->
+    <div id="sidebar" class="w-80 flex-shrink-0"></div>
+
+    <!-- Main Content -->
+    <div class="flex-1 min-h-screen overflow-y-auto">
+      <div class="px-8 py-8">
+        <h1 class="text-4xl font-bold text-gray-900 mb-6">Worker Pool 範例</h1>
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+          <p class="leading-none">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10351858"
+              class="text-blue-600 hover:text-blue-800 font-medium underline">Web Workers API 的生命週期</a></p>
+        </div>
+        <div class="mb-4">
+          <button id="addTask"
+            class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200">新增任務</button>
+          <button id="addMultipleTasks"
+            class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200">新增
+            5 個任務</button>
+          <button id="clearLog"
+            class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200">清除日誌</button>
+        </div>
+        <div id="output"></div>
       </div>
     </div>
   </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit-icons.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
   <script src="template.js"></script>
 

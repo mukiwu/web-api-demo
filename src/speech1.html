@@ -2,108 +2,157 @@
 <html lang="en">
 
 <head>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="sidebar.css">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/css/uikit.min.css" />
-  <title>使用 Web Speech API 讓網頁開口說話 | Web API 系列文章 | MUKI space*</title>
+  <title>使用 Web Speech API 讓網頁開口說話 | Browser Web API 系列文章 | MUKI space*</title>
 </head>
 
-<body>
-  <div class="uk-container-expand">
-    <div class="uk-grid-divider" uk-grid>
-      <div id="sidebar" class="uk-width-1-5@m"></div>
-      <div class="uk-width-3-5@m" uk-height-viewport="expand: true">
-        <article class="uk-article uk-padding uk-padding-remove-horizontal@m">
-          <h1 class="uk-article-title uk-margin-bottom">使用 Web Speech API 讓網頁開口說話</h1>
-          <div uk-alert>
-            <p class="uk-margin">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10351877"
-                class="uk-text-primary">使用 Web Speech API 讓網頁開口說話</a></p>
-            <p class="uk-margin">輸入的內容跟選擇的語言請相同，例如輸入英文，就請選擇 en-US</p>
+<body class="bg-gray-50 h-screen overflow-hidden">
+  <div class="flex h-full">
+    <!-- Sidebar -->
+    <div id="sidebar" class="w-80 flex-shrink-0"></div>
+
+    <!-- Main Content -->
+    <div class="flex-1 min-h-screen overflow-y-auto">
+      <div class="px-8 py-8">
+        <h1 class="text-4xl font-bold text-gray-900 mb-6">使用 Web Speech API 讓網頁開口說話</h1>
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+          <p class="mb-4 leading-none">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10351877"
+              class="text-blue-600 hover:text-blue-800 font-medium underline">使用 Web Speech API 讓網頁開口說話</a></p>
+          <p class="mb-0 leading-none">輸入的內容跟選擇的語言請相同，例如輸入英文，就請選擇 en-US</p>
+        </div>
+
+        <!-- Voice Settings and Text Input -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <!-- Voice Settings -->
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">語音設定</h2>
+            <div class="space-y-4">
+              <div>
+                <label for="voiceSelect" class="block text-sm font-medium text-gray-700 mb-2">選擇語音:</label>
+                <select id="voiceSelect"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"></select>
+              </div>
+              <div>
+                <label for="volumeRange" class="block text-sm font-medium text-gray-700 mb-2">音量:</label>
+                <input type="range" id="volumeRange" min="0" max="1" step="0.1" value="1"
+                  class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+              </div>
+              <div>
+                <label for="pitchRange" class="block text-sm font-medium text-gray-700 mb-2">音調:</label>
+                <input type="range" id="pitchRange" min="0" max="2" step="0.1" value="1"
+                  class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+              </div>
+              <div>
+                <label for="rateRange" class="block text-sm font-medium text-gray-700 mb-2">語速:</label>
+                <input type="range" id="rateRange" min="0.1" max="2" step="0.1" value="1"
+                  class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+              </div>
+            </div>
           </div>
-          <div class="uk-text-lead">語音合成控制</div>
-          <div class="uk-margin">
-            <label for="voiceSelect">選擇語音:</label>
-            <select id="voiceSelect" class="uk-select"></select>
+
+          <!-- Text Input -->
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">文字輸入</h2>
+            <div>
+              <label for="textToSpeak" class="block text-sm font-medium text-gray-700 mb-2">要說的話:</label>
+              <textarea id="textToSpeak" rows="4" cols="50"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">你好，歡迎使用我們的網站</textarea>
+            </div>
           </div>
-          <div class="uk-margin">
-            <label for="volumeRange">音量:</label>
-            <input type="range" class="uk-range" id="volumeRange" min="0" max="1" step="0.1" value="1">
+        </div>
+
+        <!-- Control Buttons -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">語音控制</h2>
+          <div class="flex flex-wrap gap-4">
+            <button id="speakButton"
+              class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200">播放語音</button>
+            <button id="pauseButton"
+              class="bg-yellow-600 hover:bg-yellow-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200">暫停播放</button>
+            <button id="resumeButton"
+              class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200">恢復播放</button>
           </div>
-          <div class="uk-margin">
-            <label for="pitchRange">音調:</label>
-            <input type="range" id="pitchRange" class="uk-range" min="0" max="2" step="0.1" value="1">
-          </div>
-          <div class="uk-margin">
-            <label for="rateRange">語速:</label>
-            <input type="range" id="rateRange" class="uk-range" min="0.1" max="2" step="0.1" value="1">
-          </div>
-          <div class="uk-margin">
-            <label for="textToSpeak">要說的話:</label><br>
-            <textarea id="textToSpeak" class="uk-textarea" rows="4" cols="50">你好，歡迎使用我們的網站</textarea>
-          </div>
-          <button id="speakButton" class="uk-button uk-button-default">播放語音</button>
-          <button id="pauseButton" class="uk-button uk-button-default">暫停播放</button>
-          <button id="resumeButton" class="uk-button uk-button-default">恢復播放</button>
-        </article>
+        </div>
       </div>
     </div>
   </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
+  <script src="template.js"></script>
+  <script>
+    let voices = [];
 
-</html>
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit-icons.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
-<script src="template.js"></script>
-<script>
-  let voices = [];
+    // 更新語音選項
+    function populateVoiceList() {
+      voices = window.speechSynthesis.getVoices();
+      const voiceSelect = document.getElementById('voiceSelect');
+      voiceSelect.innerHTML = ''; // 清空現有選項
 
-  // 更新語音選項
-  function populateVoiceList() {
-    voices = window.speechSynthesis.getVoices();
-    const voiceSelect = document.getElementById('voiceSelect');
-    voiceSelect.innerHTML = ''; // 清空現有選項
+      voices.forEach((voice, index) => {
+        const option = document.createElement('option');
+        option.textContent = `${voice.name} (${voice.lang})`;
+        option.value = index;
+        voiceSelect.appendChild(option);
+      });
+    }
 
-    voices.forEach((voice, index) => {
-      const option = document.createElement('option');
-      option.textContent = `${voice.name} (${voice.lang})`;
-      option.value = index;
-      voiceSelect.appendChild(option);
+    // 當語音列表變更時更新語音選項
+    window.speechSynthesis.onvoiceschanged = function () {
+      console.log('語音列表變更事件觸發');
+      populateVoiceList();
+    };
+
+    // 頁面載入時立即嘗試載入語音列表
+    document.addEventListener('DOMContentLoaded', function () {
+      console.log('頁面載入完成，嘗試載入語音列表');
+      populateVoiceList();
+
+      // 如果沒有語音，再次嘗試
+      if (voices.length === 0) {
+        setTimeout(populateVoiceList, 1000);
+      }
     });
-  }
 
-  // 當語音列表變更時更新語音選項
-  window.speechSynthesis.onvoiceschanged = function () {
-    // 延遲執行 populateVoiceList，確保語音列表已經加載完成
-    setTimeout(populateVoiceList, 1000);
-  };
-
-  // 播放語音
-  document.getElementById('speakButton').onclick = function () {
-    const textToSpeak = document.getElementById('textToSpeak').value;
-    const utterance = new SpeechSynthesisUtterance(textToSpeak);
-
-    // 設定語音選擇
-    const selectedVoiceIndex = document.getElementById('voiceSelect').value;
-    utterance.voice = voices[selectedVoiceIndex];
-
-    // 設定音量、音調、語速
-    utterance.volume = document.getElementById('volumeRange').value;
-    utterance.pitch = document.getElementById('pitchRange').value;
-    utterance.rate = document.getElementById('rateRange').value;
+    // 用戶互動時也嘗試載入語音列表
+    document.addEventListener('click', function () {
+      if (voices.length === 0) {
+        populateVoiceList();
+      }
+    }, { once: true });
 
     // 播放語音
-    window.speechSynthesis.speak(utterance);
-  };
+    document.getElementById('speakButton').onclick = function () {
+      const textToSpeak = document.getElementById('textToSpeak').value;
+      const utterance = new SpeechSynthesisUtterance(textToSpeak);
 
-  // 暫停播放
-  document.getElementById('pauseButton').onclick = function () {
-    window.speechSynthesis.pause();
-  };
+      // 設定語音選擇
+      const selectedVoiceIndex = document.getElementById('voiceSelect').value;
+      if (selectedVoiceIndex && voices[selectedVoiceIndex]) {
+        utterance.voice = voices[selectedVoiceIndex];
+      }
 
-  // 恢復播放
-  document.getElementById('resumeButton').onclick = function () {
-    window.speechSynthesis.resume();
-  };
-</script>
+      // 設定音量、音調、語速
+      utterance.volume = document.getElementById('volumeRange').value;
+      utterance.pitch = document.getElementById('pitchRange').value;
+      utterance.rate = document.getElementById('rateRange').value;
+
+      // 播放語音
+      window.speechSynthesis.speak(utterance);
+    };
+
+    // 暫停播放
+    document.getElementById('pauseButton').onclick = function () {
+      window.speechSynthesis.pause();
+    };
+
+    // 恢復播放
+    document.getElementById('resumeButton').onclick = function () {
+      window.speechSynthesis.resume();
+    };
+  </script>
+
+</body>
 
 </html>

@@ -2,65 +2,66 @@
 <html lang="en">
 
 <head>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="sidebar.css">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/css/uikit.min.css" />
-  <title>Web Notifications API 搭配 Service Workers 發送通知 | Web API 系列文章 | MUKI space*</title>
+  <title>Web Notifications API 搭配 Service Workers 發送通知 | Browser Web API 系列文章 | MUKI space*</title>
 </head>
 
-<body>
-  <div class="uk-container-expand">
-    <div class="uk-grid-divider" uk-grid>
-      <div id="sidebar" class="uk-width-1-5@m"></div>
-      <div class="uk-width-3-5@m" uk-height-viewport="expand: true">
-        <article class="uk-article uk-padding uk-padding-remove-horizontal@m">
-          <h1 class="uk-article-title uk-margin-bottom">Web Notifications API 搭配 Service Workers 發送通知</h1>
-          <div uk-alert>
-            <p class="uk-margin">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10348879"
-                class="uk-text-primary">Web Notifications API 搭配 Service Workers 發送通知</a></p>
-          </div>
-          <div>
-            <p>請先點擊「請求通知權限」，才能開始此功能</p>
-            <button id="notificationButton" class="uk-button uk-button-default">請求通知權限</button>
-          </div>
-          <div uk-alert>
-            <a href class="uk-alert-close"></a>
-            <h3>使用方法</h3>
-            <p>1. 打開瀏覽器開發者工具，切換到 Application 分頁，點擊 Service Workers，可以看到 Service Workers 的狀態</p>
-            <p>2. 點擊「Push」，可以看到 Push 的註冊狀態</p>
-            <p>3. 在 Push 對話框填入以下資料，再按下 Push 就會發送通知</p>
-            <p class="uk-text-small uk-text-wrap">
-              {
-              "title": "這是通知標題",
-              "body": "這是通知內容",
-              "data": {
-              "url": "https://muki.tw/ngrok-err-ngrok-6024/"
-              }
-              }
-            </p>
-          </div>
-        </article>
+<body class="bg-gray-50 h-screen overflow-hidden">
+  <div class="flex h-full">
+    <!-- Sidebar -->
+    <div id="sidebar" class="w-80 flex-shrink-0"></div>
+
+    <!-- Main Content -->
+    <div class="flex-1 min-h-screen overflow-y-auto">
+      <div class="px-8 py-8">
+        <h1 class="text-4xl font-bold text-gray-900 mb-6">Web Notifications API 搭配 Service Workers 發送通知</h1>
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+          <p class="leading-none">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10348879"
+              class="text-blue-600 hover:text-blue-800 font-medium underline">Web Notifications API 搭配 Service Workers
+              發送通知</a></p>
+        </div>
+        <div>
+          <p class="mb-4">請先點擊「請求通知權限」，才能開始此功能</p>
+          <button id="notificationButton" class="bg-blue-600 text-white mb-4 px-4 py-2 rounded-md">請求通知權限</button>
+        </div>
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+          <h3 class="text-lg font-bold mb-4">使用方法</h3>
+          <p class="mb-2">1. 打開瀏覽器開發者工具，切換到 Application 分頁，點擊 Service Workers，可以看到 Service Workers 的狀態</p>
+          <p class="mb-2">2. 點擊「Push」，可以看到 Push 的註冊狀態</p>
+          <p class="mb-2">3. 在 Push 對話框填入以下資料，再按下 Push 就會發送通知</p>
+          <pre class="bg-gray-100 p-4 rounded-md text-sm">
+{
+  "title": "這是通知標題",
+  "body": "這是通知內容",
+  "data": {
+    "url": "https://muki.tw/ngrok-err-ngrok-6024/"
+  }
+}
+          </pre>
+        </div>
       </div>
     </div>
   </div>
 
-</html>
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit-icons.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
-<script src="template.js"></script>
-<script src="service-workers-register.js"></script>
-<script src="sw.js"></script>
-<script>
-  document.getElementById('notificationButton').addEventListener('click', function () {
-    Notification.requestPermission().then(function (permission) {
-      if (permission === "granted") {
-        console.log("通知權限已獲得");
-      } else {
-        console.log("通知權限被拒絕");
-      }
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
+  <script src="template.js"></script>
+  <script src="service-workers-register.js"></script>
+  <script src="sw.js"></script>
+  <script>
+    document.getElementById('notificationButton').addEventListener('click', function () {
+      Notification.requestPermission().then(function (permission) {
+        if (permission === "granted") {
+          console.log("通知權限已獲得");
+        } else {
+          console.log("通知權限被拒絕");
+        }
+      });
     });
-  });
-</script>
+  </script>
+
+</body>
 
 </html>

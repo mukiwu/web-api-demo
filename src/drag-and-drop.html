@@ -1,107 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="sidebar.css">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/css/uikit.min.css" />
-  <title>用 Drag and Drop API 拖曳網頁元素 | Web API 系列文章 | MUKI space*</title>
+  <title>用 Drag and Drop API 拖曳網頁元素 | Browser Web API 系列文章 | MUKI space*</title>
 </head>
-<body>
-<style>
-  .drag-over-yellow {
-    background-color: yellow;
-  }
 
-  .drag-over-blue {
-    background-color: teal;
-  }
+<body class="bg-gray-50 h-screen overflow-hidden">
+  <style>
+    .drag-over-yellow {
+      background-color: #fef3c7 !important;
+      border-color: #f59e0b !important;
+    }
 
-  .drop-zone {
-    border: 1px solid #F1F1F1;
-    margin: 0 10px;
-  }
+    .drag-over-blue {
+      background-color: #dbeafe !important;
+      border-color: #3b82f6 !important;
+    }
 
-  #draggable-item {
-    cursor: move;
-    padding: 10px;
-    background-color: #f0f0f0;
-    display: inline-block;
-  }
+    .drop-zone {
+      transition: all 0.2s ease;
+    }
 
-  .flex {
-    display: flex;
-  }
-</style>
-<div class="uk-container-expand">
-  <div class="uk-grid-divider" uk-grid>
-    <div id="sidebar" class="uk-width-1-5@m"></div>
-    <div class="uk-width-3-5@m" uk-height-viewport="expand: true">
-      <article class="uk-article uk-padding uk-padding-remove-horizontal@m">
-        <h1 class="uk-article-title uk-margin-bottom">用 Drag and Drop API 拖曳網頁元素</h1>
-        <div uk-alert>
-          <p class="uk-margin">完整文章：<a href="https://muki.tw/drag-and-drop-api/" class="uk-text-primary">用 Drag and Drop API 拖曳網頁元素</a></p>
+    #draggable-item {
+      transition: all 0.2s ease;
+    }
+  </style>
+  <div class="flex h-full">
+    <!-- Sidebar -->
+    <div id="sidebar" class="w-80 flex-shrink-0"></div>
+
+    <!-- Main Content -->
+    <div class="flex-1 min-h-screen overflow-y-auto">
+      <div class="px-8 py-8">
+        <h1 class="text-4xl font-bold text-gray-900 mb-6">用 Drag and Drop API 拖曳網頁元素</h1>
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+          <p class="leading-none">完整文章：<a href="https://muki.tw/drag-and-drop-api/"
+              class="text-blue-600 hover:text-blue-800 font-medium underline">用 Drag and Drop API 拖曳網頁元素</a></p>
         </div>
-        <div id="draggable-item" class="uk-margin" draggable="true">可以拖動的元素</div>
-        <div class="flex">
-          <div id="drop-zone-1" class="drop-zone uk-card uk-card-default uk-card-body uk-width-1-2 uk-height-medium">
-            <h3 class="uk-card-title">放置區域 1</h3>
-          </div>
-          <div id="drop-zone-2" class="drop-zone uk-card uk-card-default uk-card-body uk-width-1-2 uk-height-medium">
-            <h3 class="uk-card-title">放置區域 2</h3>
+        <!-- Draggable Item -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">拖拽元素</h2>
+          <div id="draggable-item"
+            class="inline-block px-4 py-3 bg-gray-100 border border-gray-300 rounded-lg cursor-move hover:bg-gray-200 transition-colors duration-200"
+            draggable="true">
+            可以拖動的元素
           </div>
         </div>
-      </article>
+
+        <!-- Drop Zones -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">放置區域 1</h2>
+            <div id="drop-zone-1"
+              class="drop-zone min-h-32 border-2 border-dashed border-gray-300 rounded-lg p-4 flex items-center justify-center bg-gray-50 hover:bg-gray-100 transition-colors duration-200">
+              <h3 class="text-gray-600 font-medium">放置區域 1</h3>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">放置區域 2</h2>
+            <div id="drop-zone-2"
+              class="drop-zone min-h-32 border-2 border-dashed border-gray-300 rounded-lg p-4 flex items-center justify-center bg-gray-50 hover:bg-gray-100 transition-colors duration-200">
+              <h3 class="text-gray-600 font-medium">放置區域 2</h3>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-</div>
-</html>
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit-icons.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
-<script src="template.js"></script>
-<script>
-  const draggableItem = document.getElementById('draggable-item');
-  const dropZones = document.querySelectorAll('.drop-zone');
-  const dropZone1 = document.getElementById('drop-zone-1');
-  const dropZone2 = document.getElementById('drop-zone-2');
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
+  <script src="template.js"></script>
+  <script>
+    const draggableItem = document.getElementById('draggable-item');
+    const dropZones = document.querySelectorAll('.drop-zone');
+    const dropZone1 = document.getElementById('drop-zone-1');
+    const dropZone2 = document.getElementById('drop-zone-2');
 
-  draggableItem.addEventListener('dragstart', (event) => {
-    event.dataTransfer.setData('text/plain', event.target.id);
-    event.target.style.opacity = '0.5';
-  });
-
-  draggableItem.addEventListener('dragend', (event) => {
-    event.target.style.opacity = '';
-  });
-
-  dropZones.forEach(zone => {
-    zone.addEventListener('dragover', (event) => {
-      event.preventDefault(); // 阻止默認行為以允許放置
+    draggableItem.addEventListener('dragstart', (event) => {
+      event.dataTransfer.setData('text/plain', event.target.id);
+      event.target.style.opacity = '0.5';
     });
 
-    zone.addEventListener('drop', (event) => {
-      event.preventDefault();
-      const draggedItemId = event.dataTransfer.getData('text/plain');
-      const draggedItem = document.getElementById(draggedItemId);
-      event.target.appendChild(draggedItem);
-      event.target.classList.remove('drag-over-yellow', 'drag-over-blue');
+    draggableItem.addEventListener('dragend', (event) => {
+      event.target.style.opacity = '';
     });
-  });
 
-  dropZone1.addEventListener('dragenter', (event) => {
-    event.target.classList.add('drag-over-yellow');
-  });
+    dropZones.forEach(zone => {
+      zone.addEventListener('dragover', (event) => {
+        event.preventDefault(); // 阻止默認行為以允許放置
+      });
 
-  dropZone1.addEventListener('dragleave', (event) => {
-    event.target.classList.remove('drag-over-yellow');
-  });
+      zone.addEventListener('drop', (event) => {
+        event.preventDefault();
+        const draggedItemId = event.dataTransfer.getData('text/plain');
+        const draggedItem = document.getElementById(draggedItemId);
+        event.target.appendChild(draggedItem);
+        event.target.classList.remove('drag-over-yellow', 'drag-over-blue');
+      });
+    });
 
-  dropZone2.addEventListener('dragenter', (event) => {
-    event.target.classList.add('drag-over-blue');
-  });
+    dropZone1.addEventListener('dragenter', (event) => {
+      event.target.classList.add('drag-over-yellow');
+    });
 
-  dropZone2.addEventListener('dragleave', (event) => {
-    event.target.classList.remove('drag-over-blue');
-  });
-</script>
+    dropZone1.addEventListener('dragleave', (event) => {
+      event.target.classList.remove('drag-over-yellow');
+    });
+
+    dropZone2.addEventListener('dragenter', (event) => {
+      event.target.classList.add('drag-over-blue');
+    });
+
+    dropZone2.addEventListener('dragleave', (event) => {
+      event.target.classList.remove('drag-over-blue');
+    });
+  </script>
+</body>
+
 </html>

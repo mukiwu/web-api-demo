@@ -2,9 +2,10 @@
 <html lang="en">
 
 <head>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="sidebar.css">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/css/uikit.min.css" />
   <title>自己架個 WebSocket Server 玩玩吧 | Web API 系列文章 | MUKI space*</title>
   <style>
     canvas {
@@ -14,26 +15,23 @@
   </style>
 </head>
 
-<body>
-  <div class="uk-container-expand">
-    <div class="uk-grid-divider" uk-grid>
-      <div id="sidebar" class="uk-width-1-5@m"></div>
-      <div class="uk-width-3-5@m" uk-height-viewport="expand: true">
-        <article class="uk-article uk-padding uk-padding-remove-horizontal@m">
-          <h1 class="uk-article-title uk-margin-bottom">用 WebSocket 實作多人白板服務</h1>
-          <div class="uk-margin">
-            <p>線上人數：<span id="online-count" class="uk-text-primary"></span></p>
-            <p>我的畫筆顏色：<span id="my-color" class="uk-text-primary"></span></p>
+<body class="bg-gray-50 h-screen overflow-hidden">
+  <div class="flex h-full">
+    <!-- Sidebar -->
+    <div id="sidebar" class="w-80 flex-shrink-0"></div>
+
+    <!-- Main Content -->
+    <div class="flex-1 min-h-screen overflow-y-auto">
+      <div class="px-8 py-8">
+          <h1 class="text-4xl font-bold text-gray-900 mb-6">用 WebSocket 實作多人白板服務</h1>
+          <div class="mb-4">
+            <p>線上人數：<span id="online-count" class="text-blue-600 hover:text-blue-800 font-medium underline"></span></p>
+            <p>我的畫筆顏色：<span id="my-color" class="text-blue-600 hover:text-blue-800 font-medium underline"></span></p>
           </div>
           <canvas id="board" width="800" height="600"></canvas>
-        </article>
       </div>
     </div>
   </div>
-
-</html>
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit-icons.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
 <script src="template.js"></script>
 <script>
@@ -157,4 +155,5 @@
 
 </script>
 
+</body>
 </html>

@@ -2,62 +2,62 @@
 <html lang="en">
 
 <head>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="sidebar.css">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/css/uikit.min.css" />
-  <title>自己架個 WebSocket Server 玩玩吧 | Web API 系列文章 | MUKI space*</title>
+  <title>自己架個 WebSocket Server 玩玩吧 | Browser Web API 系列文章 | MUKI space*</title>
 </head>
 
-<body>
-  <div class="uk-container-expand">
-    <div class="uk-grid-divider" uk-grid>
-      <div id="sidebar" class="uk-width-1-5@m"></div>
-      <div class="uk-width-3-5@m" uk-height-viewport="expand: true">
-        <article class="uk-article uk-padding uk-padding-remove-horizontal@m">
-          <h1 class="uk-article-title uk-margin-bottom">自己架個 WebSocket Server 玩玩吧</h1>
-          <div uk-alert>
-            <p class="uk-margin">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10351860"
-                class="uk-text-primary">自己架個 WebSocket Server 玩玩吧</a></p>
-            <p class="uk-margin">WebSocekt 啟動需要一點時間，請稍等。</p>
-          </div>
-          <p class="uk-margin">WebSocekt 連線狀態：<span id="connection-status">未連線</span></p>
-          <p class="uk-margin">可靜置網頁一段時間，通常 WebSocket 會自動連線，如果 server 被關閉，就不會收到 WebSocket 的訊息，但仍可以透過程式碼觀看完整範例。</p>
-          <div id="messages"></div>
-        </article>
+<body class="bg-gray-50 h-screen overflow-hidden">
+  <div class="flex h-full">
+    <!-- Sidebar -->
+    <div id="sidebar" class="w-80 flex-shrink-0"></div>
+
+    <!-- Main Content -->
+    <div class="flex-1 min-h-screen overflow-y-auto">
+      <div class="px-8 py-8">
+        <h1 class="text-4xl font-bold text-gray-900 mb-6">自己架個 WebSocket Server 玩玩吧</h1>
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+          <p class="mb-4 leading-none">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10351860"
+              class="text-blue-600 hover:text-blue-800 font-medium underline">自己架個 WebSocket Server 玩玩吧</a></p>
+          <p>WebSocekt 啟動需要一點時間，請稍等。</p>
+        </div>
+        <p class="mb-4">WebSocekt 連線狀態：<span id="connection-status">未連線</span></p>
+        <p class="mb-4">可靜置網頁一段時間，通常 WebSocket 會自動連線，如果 server 被關閉，就不會收到 WebSocket 的訊息，但仍可以透過程式碼觀看完整範例。</p>
+        <div id="messages"></div>
       </div>
     </div>
   </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
+  <script src="template.js"></script>
+  <script>
+    // const socket = new WebSocket('ws:/localhost:8080/');
+    const socket = new WebSocket('wss:/websocket-server-314033823953.asia-east1.run.app/');
 
-</html>
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit-icons.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
-<script src="template.js"></script>
-<script>
-  // const socket = new WebSocket('ws:/localhost:8080/');
-  const socket = new WebSocket('wss:/websocket-server-314033823953.asia-east1.run.app/');
+    socket.onopen = () => {
+      document.getElementById('connection-status').textContent = '已連線';
+      console.log('Connected to the WebSocket server');
+    };
 
-  socket.onopen = () => {
-    document.getElementById('connection-status').textContent = '已連線';
-    console.log('Connected to the WebSocket server');
-  };
+    socket.onmessage = (event) => {
+      const messagesDiv = document.getElementById('messages');
+      const newMessage = document.createElement('p');
+      newMessage.textContent = `Received: ${event.data}`;
+      messagesDiv.appendChild(newMessage);
+    };
 
-  socket.onmessage = (event) => {
-    const messagesDiv = document.getElementById('messages');
-    const newMessage = document.createElement('p');
-    newMessage.textContent = `Received: ${event.data}`;
-    messagesDiv.appendChild(newMessage);
-  };
+    socket.onclose = () => {
+      document.getElementById('connection-status').textContent = '已關閉';
+      console.log('WebSocket connection closed');
+    };
 
-  socket.onclose = () => {
-    document.getElementById('connection-status').textContent = '已關閉';
-    console.log('WebSocket connection closed');
-  };
+    socket.onerror = (error) => {
+      document.getElementById('connection-status').textContent = '錯誤';
+      console.error('WebSocket error:', error);
+    };
+  </script>
 
-  socket.onerror = (error) => {
-    document.getElementById('connection-status').textContent = '錯誤';
-    console.error('WebSocket error:', error);
-  };
-</script>
+</body>
 
 </html>

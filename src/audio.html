@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/css/uikit.min.css" />
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="sidebar.css">
   <title>使用 audio 打造音樂播放器 | Web API 系列文章 | MUKI space*</title>
   <style>
     input[id='volume']::-webkit-slider-thumb {
@@ -16,7 +17,7 @@
       border: 2px solid #7A9E9F;
       margin-top: 0px;
     }
-  
+
     input[id='volume']::-moz-range-thumb {
       height: 14px;
       width: 14px;
@@ -26,66 +27,111 @@
     }
 
     input[id='progress']::-webkit-slider-thumb {
-      transition: transform 0.2s ease; 
+      transition: transform 0.2s ease;
     }
+
     input[id='progress']::-webkit-slider-thumb:hover {
       transform: scale(1.2);
     }
 
     input[id='progress']::-moz-range-thumb {
-      transition: transform 0.2s ease; 
+      transition: transform 0.2s ease;
     }
+
     input[id='progress']::-moz-range-thumb:hover {
       transform: scale(1.2);
     }
+
+    /* 播放按鈕樣式 */
+    #playBtn.playing span::before {
+      content: "⏸";
+    }
+
+    #playBtn:not(.playing) span::before {
+      content: "▶";
+    }
+
+    #playBtn span {
+      display: inline-block;
+      width: 1.5rem;
+      height: 1.5rem;
+      text-align: center;
+      line-height: 1.5rem;
+    }
   </style>
 </head>
-<body>
-  <div class="uk-container-expand">
-    <div class="uk-grid-divider" uk-grid>
-      <div id="sidebar" class="uk-width-1-5@m"></div>
-      <div class="uk-width-3-5@m" uk-height-viewport="expand: true">
-        <article class="uk-article uk-padding uk-padding-remove-horizontal@m">
-          <h1 class="uk-article-title uk-margin-bottom">使用 audio 打造音樂播放器 </h1>
-          <div uk-alert>
-            <p class="uk-margin">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10349363" class="uk-text-primary">用 Audio 和 Video API 打造自己的影音平台</a></p>
-            <p>(範例有調整過，會跟文章內容有些許不同)</p>
-          </div>
-          <div class="text-[#2f2f2f] rounded-xl p-6 m-4 max-w-md shadow-lg text-center border-4 border-[#e07a5f]">
-            <img id="cover" src="img/Johann_Sebastian_Bach.png" alt="cover" class="w-full rounded-xl mb-4 border-2 border-[#81b29a]">
-            <div class="text-xl font-bold" id="title">15 Inventions</div>
-            <div class="text-sm text-[#3d405b] mb-3" id="subtitle">Johann Sebastian Bach</div>
-            <input type="range" id="progress" value="0" min="0" max="100" class="w-full h-1 accent-[#e07a5f] cursor-pointer">
-            <div class="flex justify-between text-xs text-[#3d405b] mt-1">
-              <span id="currentTime">0:00</span>
-              <span id="duration">0:00</span>
-            </div>
-            <div class="flex justify-between items-center mt-4">
-              <div class="flex-1"></div>
-              <div class="flex-1 relative top-0.5">
-                <div class="space-x-6">
-                  <button onclick="prev()" class="leading-none"><span uk-icon="icon: chevron-double-left"></span></button>
-                  <button onclick="togglePlay()" id="playBtn" class="leading-none"><span uk-icon="icon: play-circle"></span></button>
-                  <button onclick="next()" class="leading-none"><span uk-icon="icon: chevron-double-right"></span></button>
-                </div>
-              </div>
-              <div class="flex-1 flex justify-end items-center space-x-2">
-                <input type="range" id="volume" value="1" min="0" max="1" step="0.01" class="relative -top-0.5 w-16 h-1 accent-[#7A9E9F] bg-[#e5e5e5] appearance-none cursor-pointer">
-              </div>
-            </div>
-          </div>
-        
-          <div class="overflow-y-auto flex-grow w-full max-w-md mx-4" id="playlist"></div>
 
-          <audio id="audio"></audio>
-          
-          <div uk-alert class="text-xs text-[#3d405b] mt-4">封面圖片為依據 Johann Sebastian Bach 公有畫像風格重新繪製之 AI 圖像，用於教學示意，無商業授權爭議。</div>
-        </article>
+<body class="bg-gray-50 h-screen overflow-hidden">
+  <div class="flex h-full">
+    <!-- Sidebar -->
+    <div id="sidebar" class="w-80 flex-shrink-0"></div>
+
+    <!-- Main Content -->
+    <div class="flex-1 min-h-screen overflow-y-auto">
+      <div class="px-8 py-8">
+        <h1 class="text-4xl font-bold text-gray-900 mb-6">使用 audio 打造音樂播放器 </h1>
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+          <p class="mb-4 leading-none">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10349363"
+              class="text-blue-600 hover:text-blue-800 font-medium underline">用 Audio 和 Video API 打造自己的影音平台</a></p>
+          <p>(範例有調整過，會跟文章內容有些許不同)</p>
+        </div>
+        <!-- Music Player -->
+        <div class="bg-gray-50 rounded-xl p-6 mb-6 text-center border-2 border-gray-200 max-w-md">
+          <img id="cover" src="img/Johann_Sebastian_Bach.png" alt="cover"
+            class="w-full rounded-xl mb-4 border-2 border-gray-300">
+          <div class="text-xl font-bold text-gray-900" id="title">15 Inventions</div>
+          <div class="text-sm text-gray-600 mb-3" id="subtitle">Johann Sebastian Bach</div>
+          <input type="range" id="progress" value="0" min="0" max="100"
+            class="w-full h-1 accent-blue-600 cursor-pointer">
+          <div class="flex justify-between text-xs text-gray-500 mt-1">
+            <span id="currentTime">0:00</span>
+            <span id="duration">0:00</span>
+          </div>
+          <div class="flex justify-between items-center mt-4">
+            <div class="flex-1"></div>
+            <div class="flex-1 flex justify-center">
+              <div class="flex items-center space-x-4">
+                <button onclick="prev()"
+                  class="p-2 rounded-full bg-gray-200 hover:bg-gray-300 transition-colors duration-200">
+                  <svg class="w-5 h-5 text-gray-700" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" />
+                  </svg>
+                </button>
+                <button onclick="togglePlay()" id="playBtn"
+                  class="p-3 rounded-full bg-blue-600 hover:bg-blue-700 transition-colors duration-200">
+                  <span class="text-white text-lg font-bold"></span>
+                </button>
+                <button onclick="next()"
+                  class="p-2 rounded-full bg-gray-200 hover:bg-gray-300 transition-colors duration-200">
+                  <svg class="w-5 h-5 text-gray-700 rotate-180" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M6 18h2V6H6v12zm3.5-6l8.5-6v12l-8.5-6z" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="flex-1 flex justify-end items-center space-x-2">
+              <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
+              </svg>
+              <input type="range" id="volume" value="1" min="0" max="1" step="0.01"
+                class="w-16 h-1 accent-gray-600 bg-gray-300 appearance-none cursor-pointer rounded">
+            </div>
+          </div>
+        </div>
+
+        <!-- Playlist -->
+        <div class="max-w-md" id="playlist">
+          <!-- Playlist items will be loaded here -->
+        </div>
+
+        <audio id="audio"></audio>
+
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6 text-xs text-[#3d405b] mt-4">封面圖片為依據 Johann
+          Sebastian Bach 公有畫像風格重新繪製之 AI 圖像，用於教學示意，無商業授權爭議。</div>
       </div>
     </div>
   </div>
-  <script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit-icons.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
   <script src="template.js"></script>
   <script>
@@ -134,17 +180,17 @@
       audio.src = track.src;
       audio.load();
       audio.volume = volumeEl.value;
-      document.querySelectorAll('.track').forEach(el => el.classList.remove('bg-[#e07a5f]/30'));
-      document.querySelectorAll('.track')[index].classList.add('bg-[#e07a5f]/30');
+      document.querySelectorAll('.track').forEach(el => el.classList.remove('bg-blue-100', 'border-blue-300'));
+      document.querySelectorAll('.track')[index].classList.add('bg-blue-100', 'border-blue-300');
     }
 
     function togglePlay() {
       if (audio.paused) {
         audio.play();
-        playBtn.innerHTML = "<span uk-icon='icon: minus'></span>";
+        playBtn.classList.add('playing');
       } else {
         audio.pause();
-        playBtn.innerHTML = "<span uk-icon='icon: play-circle'></span>";
+        playBtn.classList.remove('playing');
       }
     }
 
@@ -152,14 +198,14 @@
       currentIndex = (currentIndex - 1 + tracks.length) % tracks.length;
       loadTrack(currentIndex);
       audio.play();
-      playBtn.innerHTML = "<span uk-icon='icon: minus'></span>";
+      playBtn.classList.add('playing');
     }
 
     function next() {
       currentIndex = (currentIndex + 1) % tracks.length;
       loadTrack(currentIndex);
       audio.play();
-      playBtn.innerHTML = "<span uk-icon='icon: minus'></span>";
+      playBtn.classList.add('playing');
     }
 
     audio.addEventListener('loadedmetadata', () => {
@@ -188,20 +234,20 @@
 
     tracks.forEach((track, i) => {
       const div = document.createElement('div');
-      div.className = 'track flex items-center bg-[#81b29a]/10 hover:bg-[#81b29a]/20 transition rounded-lg p-2 mb-2 cursor-pointer';
+      div.className = 'track flex items-center bg-gray-50 hover:bg-gray-100 transition-colors duration-200 rounded-lg p-3 mb-2 cursor-pointer border border-gray-200';
       div.innerHTML = `
-        <img src="${track.cover}" alt="" class="w-10 h-10 rounded mr-3">
+        <img src="${track.cover}" alt="" class="w-12 h-12 rounded-lg mr-3 border border-gray-300">
         <div class="flex-1">
-          <div class="text-sm">${track.title}</div>
-          <div class="text-xs text-[#3d405b]">${track.subtitle}</div>
+          <div class="text-sm font-medium text-gray-900">${track.title}</div>
+          <div class="text-xs text-gray-600">${track.subtitle}</div>
         </div>
-        <div class="text-sm text-[#3d405b]">${track.duration}</div>
+        <div class="text-sm text-gray-500 font-mono">${track.duration}</div>
       `;
       div.addEventListener('click', () => {
         currentIndex = i;
         loadTrack(i);
         audio.play();
-        playBtn.innerHTML = "<span uk-icon='icon: minus'></span>";
+        playBtn.classList.add('playing');
       });
       playlistEl.appendChild(div);
     });
@@ -209,4 +255,5 @@
     loadTrack(currentIndex);
   </script>
 </body>
+
 </html>

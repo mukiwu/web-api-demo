@@ -1,39 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="sidebar.css">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/css/uikit.min.css" />
   <title>用 Battery Status API 打造節能模式的網站 | Web API 系列文章 | MUKI space*</title>
 </head>
-<body>
+<body class="bg-gray-50 h-screen overflow-hidden">
   <style>
     .power-saving-mode {
       background: #000;
     }
   </style>
-<div class="uk-container-expand">
-  <div class="uk-grid-divider" uk-grid>
-    <div id="sidebar" class="uk-width-1-5@m"></div>
-    <div class="uk-width-3-5@m" uk-height-viewport="expand: true">
-      <article class="uk-article uk-padding uk-padding-remove-horizontal@m">
-        <h1 class="uk-article-title uk-margin-bottom">用 Battery Status API 打造節能模式的網站</h1>
-        <div uk-alert>
-          <p class="uk-margin">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10348882" class="uk-text-primary">用 Battery Status API 打造節能模式的網站</a></p>
-          <p class="uk-margin">
+<div class="flex h-full">
+    <!-- Sidebar -->
+    <div id="sidebar" class="w-80 flex-shrink-0"></div>
+
+    <!-- Main Content -->
+    <div class="flex-1 min-h-screen overflow-y-auto">
+      <div class="px-8 py-8">
+        <h1 class="text-4xl font-bold text-gray-900 mb-6">用 Battery Status API 打造節能模式的網站</h1>
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+          <p class="mb-4 leading-none">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10348882" class="text-blue-600 hover:text-blue-800 font-medium underline">用 Battery Status API 打造節能模式的網站</a></p>
+          <p class="mb-4">
             啟動節電模式(電量低於 80%)時，背景顏色為黑色
           </p>
         </div>
         <div>
           <img src="img/battery.png" alt="" />
-        </div>
-      </article>
+      </div>
     </div>
   </div>
-</div>
-</html>
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit-icons.min.js"></script>
+  </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
 <script src="template.js"></script>
 <script>
@@ -50,4 +49,5 @@
     battery.addEventListener('levelchange', togglePowerSavingMode);
   });
 </script>
+</body>
 </html>

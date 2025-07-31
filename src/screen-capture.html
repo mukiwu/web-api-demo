@@ -1,77 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="sidebar.css">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/css/uikit.min.css" />
-  <title>使用 Screen Capture API 取得你的螢幕畫面 | Web API 系列文章 | MUKI space*</title>
+  <title>使用 Screen Capture API 取得你的螢幕畫面 | Browser Web API 系列文章 | MUKI space*</title>
 </head>
-<body>
-<div class="uk-container-expand">
-  <div class="uk-grid-divider" uk-grid>
-    <div id="sidebar" class="uk-width-1-5@m"></div>
-    <div class="uk-width-3-5@m" uk-height-viewport="expand: true">
-      <article class="uk-article uk-padding uk-padding-remove-horizontal@m">
-        <h1 class="uk-article-title uk-margin-bottom">使用 Screen Capture API 取得你的螢幕畫面</h1>
-        <div uk-alert>
-          <p class="uk-margin">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10357398" class="uk-text-primary">使用 Screen Capture API 取得你的螢幕畫面</a></p>
+
+<body class="bg-gray-50 h-screen overflow-hidden">
+  <div class="flex h-full">
+    <!-- Sidebar -->
+    <div id="sidebar" class="w-80 flex-shrink-0"></div>
+
+    <!-- Main Content -->
+    <div class="flex-1 min-h-screen overflow-y-auto">
+      <div class="px-8 py-8">
+        <h1 class="text-4xl font-bold text-gray-900 mb-6">使用 Screen Capture API 取得你的螢幕畫面</h1>
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+          <p class="leading-none">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10357398"
+              class="text-blue-600 hover:text-blue-800 font-medium underline">使用 Screen Capture API 取得你的螢幕畫面</a></p>
         </div>
-        <button id="startCapture" class="uk-button uk-button-default">取得螢幕</button>
-        <button id="stopCapture" class="uk-button uk-button-default">停止分享</button>
-        <div class="uk-margin">
-          <video id="screenVideo" controls autoplay></video>
+        <!-- Screen Capture Controls -->
+        <div class="flex flex-wrap gap-4 mb-6">
+          <button id="startCapture"
+            class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200">
+            取得螢幕
+          </button>
+          <button id="stopCapture"
+            class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200">
+            停止分享
+          </button>
         </div>
-      </article>
+
+        <!-- Screen Video Display -->
+        <div class="mb-6">
+          <video id="screenVideo" controls autoplay
+            class="w-full max-w-4xl rounded-lg border border-gray-300 shadow-sm bg-gray-100"></video>
+        </div>
+      </div>
     </div>
   </div>
-</div>
-</html>
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit-icons.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
-<script src="template.js"></script>
-<script>
-  document.getElementById('startCapture').addEventListener('click', startScreenCapture);
-  document.getElementById('stopCapture').addEventListener('click', stopScreenCapture); 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
+  <script src="template.js"></script>
+  <script>
+    document.getElementById('startCapture').addEventListener('click', startScreenCapture);
+    document.getElementById('stopCapture').addEventListener('click', stopScreenCapture);
 
-  async function startScreenCapture() {
-    try {
-      const videoElement = document.getElementById('screenVideo');
+    async function startScreenCapture() {
+      try {
+        const videoElement = document.getElementById('screenVideo');
 
-      const screenStream = await navigator.mediaDevices.getDisplayMedia({
-        video: true,
-        audio: true
-      });
+        const screenStream = await navigator.mediaDevices.getDisplayMedia({
+          video: true,
+          audio: true
+        });
 
-      // 將擷取到的螢幕串流顯示在 video 元素中
-      videoElement.srcObject = screenStream;
+        // 將擷取到的螢幕串流顯示在 video 元素中
+        videoElement.srcObject = screenStream;
 
-      // 監聽使用者停止分享畫面
-      const track = screenStream.getVideoTracks()[0]; 
-      track.onended = () => { 
-        console.log("使用者已停止分享畫面");
+        // 監聽使用者停止分享畫面
+        const track = screenStream.getVideoTracks()[0];
+        track.onended = () => {
+          console.log("使用者已停止分享畫面");
+          document.getElementById('screenVideo').srcObject = null;
+        };
+
+        // 在 videoElement 裡加入動畫效果
+        videoElement.animate([
+          { transform: 'scale(1)', opacity: 1 },
+          { transform: 'scale(1.02)', opacity: 0.8 },
+          { transform: 'scale(1)', opacity: 1 }
+        ], {
+          duration: 500
+        });
+      } catch (error) {
+        console.error("螢幕擷取失敗: ", error);
+      }
+    }
+
+    async function stopScreenCapture() {
+      const stream = document.getElementById('screenVideo').srcObject;
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
         document.getElementById('screenVideo').srcObject = null;
-      }; 
-
-      // 在 videoElement 裡加入動畫效果
-      videoElement.animate([
-        { transform: 'scale(1)', opacity: 1 },
-        { transform: 'scale(1.02)', opacity: 0.8 },
-        { transform: 'scale(1)', opacity: 1 }
-      ], {
-        duration: 500
-      });
-    } catch (error) {
-      console.error("螢幕擷取失敗: ", error);
+      }
     }
-  }
+  </script>
+</body>
 
-  async function stopScreenCapture() {
-    const stream = document.getElementById('screenVideo').srcObject;
-    if (stream) {
-      stream.getTracks().forEach(track => track.stop());
-      document.getElementById('screenVideo').srcObject = null;
-    }
-  }
-</script>
 </html>

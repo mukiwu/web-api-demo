@@ -2,49 +2,166 @@
 <html lang="en">
 
 <head>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="sidebar.css">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/css/uikit.min.css" />
-  <title>使用 Web Workers API 處理大型資料的基本範例 | Web API 系列文章 | MUKI space*</title>
+  <title>使用 Web Workers API 處理大型資料的基本範例 | Browser Web API 系列文章 | MUKI space*</title>
 </head>
 
-<body>
-  <div class="uk-container-expand">
-    <div class="uk-grid-divider" uk-grid>
-      <div id="sidebar" class="uk-width-1-5@m"></div>
-      <div class="uk-width-3-5@m" uk-height-viewport="expand: true">
-        <article class="uk-article uk-padding uk-padding-remove-horizontal@m">
-          <h1 class="uk-article-title uk-margin-bottom">使用 Web Workers API 處理大型資料的基本範例</h1>
-          <div uk-alert>
-            <p class="uk-margin">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10351857"
-                class="uk-text-primary">Web Workers API 的限制與效能優化處理</a></p>
+<body class="bg-gray-50 h-screen overflow-hidden">
+  <div class="flex h-full">
+    <!-- Sidebar -->
+    <div id="sidebar" class="w-80 flex-shrink-0"></div>
+
+    <!-- Main Content -->
+    <div class="flex-1 min-h-screen overflow-y-auto">
+      <div class="px-8 py-8">
+        <h1 class="text-4xl font-bold text-gray-900 mb-6">使用 Web Workers API 處理大型資料的基本範例</h1>
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+          <p class="leading-none">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10351857"
+              class="text-blue-600 hover:text-blue-800 font-medium underline">Web Workers API 的限制與效能優化處理</a></p>
+        </div>
+        <!-- Demo Section -->
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">Web Worker 示範</h2>
+          <button id="button"
+            class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 mb-4">
+            點我執行一段文字
+          </button>
+          <p class="text-gray-700 mb-4">請打開 console 面板查看結果</p>
+        </div>
+
+        <!-- Code Links Section -->
+        <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-6">
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">完整程式碼</h2>
+          <div class="space-y-2">
+            <button id="showMainJs"
+              class="text-blue-600 hover:text-blue-800 font-medium border border-blue-600 rounded-md px-4 py-2 mr-2">web-worker-main.js</button>
+            <button id="showChunkJs"
+              class="text-blue-600 hover:text-blue-800 font-medium border border-blue-600 rounded-md px-4 py-2">web-worker-chunk.js</button>
           </div>
-          <div uk-alert>
-            <button id="button" class="uk-button uk-button-primary">
-              點我執行一段文字
-            </button>
-            <p>請打開 console 面板查看結果</p>
-            <p>完整程式碼：</p>
-            <p><a href="web-worker-main.js" class="uk-text-primary">web-worker-main.js</a></p>
-            <p><a href="web-worker-chunk.js" class="uk-text-primary">web-worker-chunk.js</a></p>
+        </div>
+
+        <!-- Code Display Section -->
+        <div id="codeDisplay" class="hidden">
+          <div class="bg-gray-900 rounded-lg p-6 mb-6">
+            <div class="flex justify-between items-center mb-4">
+              <h3 id="codeTitle" class="text-lg font-semibold text-white"></h3>
+              <button id="closeCode" class="text-gray-400 hover:text-white">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd"
+                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                    clip-rule="evenodd"></path>
+                </svg>
+              </button>
+            </div>
+            <pre id="codeContent" class="text-green-400 text-sm overflow-x-auto"></pre>
           </div>
-        </article>
+        </div>
       </div>
     </div>
   </div>
 
-</html>
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit-icons.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
-<script src="template.js"></script>
-<script src="web-worker-main.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
+  <script src="template.js"></script>
+  <script src="web-worker-main.js"></script>
 
-<script>
-  const button = document.getElementById('button');
-  button.addEventListener('click', () => {
-    console.log('點我執行一段文字');
-  });
-</script>
+  <script>
+    const button = document.getElementById('button');
+    button.addEventListener('click', () => {
+      console.log('點我執行一段文字');
+    });
+
+    // 程式碼顯示功能
+    const showMainJs = document.getElementById('showMainJs');
+    const showChunkJs = document.getElementById('showChunkJs');
+    const codeDisplay = document.getElementById('codeDisplay');
+    const codeTitle = document.getElementById('codeTitle');
+    const codeContent = document.getElementById('codeContent');
+    const closeCode = document.getElementById('closeCode');
+
+    // 程式碼內容
+    const mainJsCode = `// 建立 Worker 實例
+const worker = new Worker('web-worker-chunk.js');
+
+// 記錄每個子任務結果
+const results = [];
+let receivedCount = 0;
+
+// 接收來自 Worker 的訊息
+worker.onmessage = function (event) {
+  const { result, index } = event.data;
+  console.log(\`Worker 回傳 Chunk \${index} 的結果：\${result}\`);
+  results[index] = result;
+  receivedCount++;
+
+  // 當所有子任務完成，合併結果
+  if (receivedCount === 4) {
+    const total = results.reduce((sum, val) => sum + val, 0);
+    console.log(\`所有子任務完成，總合計：\${total}\`);
+    console.timeEnd('worker');
+  }
+};
+
+// 拆分複雜的任務並發送給 Worker
+function processLargeData(data) {
+  console.time('worker');
+  const chunkSize = Math.ceil(data.length / 4);
+  for (let i = 0; i < 4; i++) {
+    const chunk = data.slice(i * chunkSize, (i + 1) * chunkSize);
+    console.log(\`發送 Chunk \${i}，資料筆數：\${chunk.length}\`);
+    worker.postMessage({ chunk, index: i });
+  }
+}
+
+// 產生 100 萬筆隨機數字（模擬大量數據處理）
+const largeData = Array.from({ length: 1000000 }, () => Math.floor(Math.random() * 100));
+console.log(\`準備處理大型資料，共 \${largeData.length} 筆\`);
+processLargeData(largeData);`;
+
+    const chunkJsCode = `// 接收主執行緒的數據，處理每個子任務
+onmessage = function (event) {
+  const { chunk, index } = event.data;
+  console.log(\`Worker 接收到 Chunk \${index}，開始處理...\`);
+  const result = processChunk(chunk);
+  console.log(\`Worker 完成 Chunk \${index} 的處理\`);
+  postMessage({ result, index });
+};
+
+function processChunk(chunk) {
+  if (!chunk || !Array.isArray(chunk)) {
+    console.warn('收到不合法的 chunk 資料', chunk);
+    return 0;
+  }
+
+  let sum = 0;
+  for (let i = 0; i < chunk.length; i++) {
+    sum += chunk[i];
+  }
+  return sum;
+}`;
+
+    // 顯示主程式碼
+    showMainJs.addEventListener('click', () => {
+      codeTitle.textContent = 'web-worker-main.js';
+      codeContent.textContent = mainJsCode;
+      codeDisplay.classList.remove('hidden');
+    });
+
+    // 顯示 Worker 程式碼
+    showChunkJs.addEventListener('click', () => {
+      codeTitle.textContent = 'web-worker-chunk.js';
+      codeContent.textContent = chunkJsCode;
+      codeDisplay.classList.remove('hidden');
+    });
+
+    // 關閉程式碼顯示
+    closeCode.addEventListener('click', () => {
+      codeDisplay.classList.add('hidden');
+    });
+  </script>
+
+</body>
 
 </html>

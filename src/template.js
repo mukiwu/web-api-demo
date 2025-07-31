@@ -24,24 +24,17 @@ env.addFilter('groupBy', function (array, key) {
 // 動態載入導航數據和模板
 async function loadNavigationData() {
   try {
-    console.log('開始載入導航數據...');
-
     // 並行載入導航數據和圖標數據
     const [navigationResponse, iconsResponse] = await Promise.all([
       fetch('data/navigation.json'),
       fetch('data/icons.json')
     ]);
-
-    console.log('數據載入完成:', navigationResponse.status, iconsResponse.status);
-
     if (!navigationResponse.ok || !iconsResponse.ok) {
       throw new Error('Failed to load navigation data');
     }
 
     const navigationData = await navigationResponse.json();
     const iconsData = await iconsResponse.json();
-
-    console.log('解析的數據:', navigationData, iconsData);
 
     // 將數據傳遞給 nunjucks 模板
     const templateData = {
@@ -50,11 +43,8 @@ async function loadNavigationData() {
       icons: iconsData
     };
 
-    console.log('模板數據:', templateData);
-
     // 渲染側邊欄
     const renderedHTML = env.render('sidebar.html', templateData);
-    console.log('渲染的HTML:', renderedHTML);
 
     document.getElementById('sidebar').innerHTML = renderedHTML;
 
@@ -63,9 +53,6 @@ async function loadNavigationData() {
 
     // 設置當前頁面的導航項目為活動狀態
     setActiveNavigationItem();
-
-    console.log('導航載入完成');
-
   } catch (error) {
     console.error('Error loading navigation data:', error);
     // 如果載入失敗，顯示錯誤信息
@@ -115,6 +102,5 @@ function setActiveNavigationItem() {
 
 // 頁面載入完成後執行
 document.addEventListener('DOMContentLoaded', function () {
-  console.log('頁面載入完成，開始載入導航...');
   loadNavigationData();
 });

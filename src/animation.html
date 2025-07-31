@@ -5,18 +5,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdn.tailwindcss.com"></script>
-  <title>使用 Web Animations API 製作打散文字的動畫效果 | Web API 系列文章 | MUKI space*</title>
+  <link rel="stylesheet" href="sidebar.css">
+  <title>使用 Web Animations API 製作打散文字的動畫效果 | Browser Web API 系列文章 | MUKI space*</title>
 </head>
 
-<body class="bg-gray-50 min-h-screen">
+<body class="bg-gray-50 h-screen overflow-hidden">
   <style>
     #box {
       font-family: Arial, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 600px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      height: 400px;
+      background: #f3f4f6;
       margin: 0;
       border-radius: 12px;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
@@ -28,18 +29,8 @@
       display: inline-block;
       cursor: pointer;
       position: relative;
-      color: white;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-      padding: 2rem;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 8px;
-      backdrop-filter: blur(10px);
+      color: #374151;
       transition: all 0.3s ease;
-    }
-
-    #text-container:hover {
-      background: rgba(255, 255, 255, 0.2);
-      transform: scale(1.02);
     }
 
     .char {
@@ -48,85 +39,35 @@
     }
   </style>
 
-  <div class="flex">
+  <div class="flex h-full">
     <!-- Sidebar -->
     <div id="sidebar" class="w-80 flex-shrink-0"></div>
 
     <!-- Main Content -->
-    <div class="flex-1 min-h-screen">
-      <div class="max-w-6xl mx-auto px-6 py-8">
-        <article class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-          <!-- Header -->
-          <div class="bg-gradient-to-r from-purple-600 to-pink-600 px-8 py-12 text-white">
-            <div class="max-w-4xl">
-              <h1 class="text-4xl font-bold mb-4">使用 Web Animations API 製作打散文字的動畫效果</h1>
-              <p class="text-xl text-purple-100">
-                體驗文字動畫的魔法，讓每個字符都有生命
-              </p>
-            </div>
-          </div>
+    <div class="flex-1 min-h-screen overflow-y-auto">
+      <div class="px-8 py-8">
+        <h1 class="text-4xl font-bold text-gray-900 mb-6">使用 Web Animations API 製作打散文字的動畫效果</h1>
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+          <p class="leading-none">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10357395"
+              class="text-blue-600 hover:text-blue-800 font-medium underline">使用 Web Animations API 製作打散文字的動畫效果</a>
+          </p>
+        </div>
 
-          <!-- Content -->
-          <div class="px-8 py-12">
-            <div class="max-w-4xl space-y-8">
-              <!-- Alert Section -->
-              <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
-                <div class="flex items-start">
-                  <svg class="w-6 h-6 text-blue-600 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor"
-                    viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                  </svg>
-                  <div>
-                    <h3 class="text-lg font-medium text-blue-900 mb-2">完整文章</h3>
-                    <p class="text-blue-700 mb-3">
-                      <a href="https://ithelp.ithome.com.tw/articles/10357395"
-                        class="text-blue-600 hover:text-blue-800 font-medium underline">
-                        使用 Web Animations API 製作打散文字的動畫效果
-                      </a>
-                    </p>
-                    <p class="text-blue-700 font-medium">
-                      💡 請將滑鼠移到文字上體驗動畫效果
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Animation Demo -->
-              <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg p-8">
-                <h2 class="text-2xl font-semibold text-gray-900 mb-6 text-center">動畫演示</h2>
-                <div id="box" class="w-full">
-                  <div id="text-container">
-                    你好，我是 MUKI，很高興認識你，Nice to meet you.
-                  </div>
-                </div>
-              </div>
-
-              <!-- Code Explanation -->
-              <div class="bg-gray-50 rounded-lg p-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                  <svg class="w-5 h-5 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
-                  </svg>
-                  技術說明
-                </h3>
-                <div class="prose prose-sm text-gray-600">
-                  <p class="mb-3">
-                    這個動畫使用了 <strong>Web Animations API</strong> 來實現文字打散效果。當滑鼠懸停在文字上時，每個字符會隨機移動到不同位置並旋轉，移開時會回到原位。
-                  </p>
-                  <p>
-                    主要技術包括：字符分割、隨機位置計算、CSS 動畫、以及 Web Animations API 的 <code>animate()</code> 方法。
-                  </p>
-                </div>
+        <!-- Content -->
+        <div class="space-y-8">
+          <!-- Animation Demo -->
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">動畫演示</h2>
+            <div id="box" class="w-full">
+              <div id="text-container">
+                你好，我是 MUKI，很高興認識你，Nice to meet you.
               </div>
             </div>
           </div>
-        </article>
+        </div>
       </div>
     </div>
   </div>
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
   <script src="template.js"></script>
   <script>

@@ -1,108 +1,192 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="sidebar.css">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/css/uikit.min.css" />
-  <title>認識 History API：SPA 的關鍵技術之一 | Web API 系列文章 | MUKI space*</title>
+  <title>認識 History API：SPA 的關鍵技術之一 | Browser Web API 系列文章 | MUKI space*</title>
 </head>
-<body>
-  <div class="uk-container-expand">
-    <div class="uk-grid-divider" uk-grid>
-      <div id="sidebar" class="uk-width-1-5@m"></div>
-      <div class="uk-width-3-5@m" uk-height-viewport="expand: true">
-        <article class="uk-article uk-padding uk-padding-remove-horizontal@m">
-          <h1 class="uk-article-title uk-margin-bottom">認識 History API：SPA 的關鍵技術之一</h1>
-          <div uk-alert>
-            <p class="uk-margin">完整文章：<a href="https://muki.tw/history-apispa/" class="uk-text-primary">認識 History API：SPA 的關鍵技術之一</a></p>
-          </div>
-          <nav class="uk-margin">
-            <a class="uk-button uk-button-default" href="cdn-tailwindcss-vscode-enable-tailwindcss-intellisense/">文章一</a>
-            <a class="uk-button uk-button-default" href="introduction-singleton-design-pattern/">文章二</a>
-            <a class="uk-button uk-button-default" href="quill-react-ant-design-and-upload-image/">文章三</a>
+
+<body class="bg-gray-50 h-screen overflow-hidden">
+  <div class="flex h-full">
+    <!-- Sidebar -->
+    <div id="sidebar" class="w-80 flex-shrink-0"></div>
+
+    <!-- Main Content -->
+    <div class="flex-1 min-h-screen overflow-y-auto">
+      <div class="px-8 py-8">
+        <h1 class="text-4xl font-bold text-gray-900 mb-6">認識 History API：SPA 的關鍵技術之一</h1>
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+          <p class="leading-none">完整文章：<a href="https://muki.tw/history-apispa/"
+              class="text-blue-600 hover:text-blue-800 font-medium underline">認識 History API：SPA 的關鍵技術之一</a></p>
+        </div>
+        <!-- Navigation -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">文章導航</h2>
+          <nav class="flex flex-wrap gap-4">
+            <a class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
+              href="cdn-tailwindcss-vscode-enable-tailwindcss-intellisense/">文章一</a>
+            <a class="bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
+              href="introduction-singleton-design-pattern/">文章二</a>
+            <a class="bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
+              href="quill-react-ant-design-and-upload-image/">文章三</a>
           </nav>
-          <div id="content" class="uk-background-muted"></div>
-        </article>
+        </div>
+
+        <!-- Content Area -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <h2 class="text-xl font-semibold text-gray-900 mb-4">文章內容</h2>
+          <div id="content" class="prose prose-lg max-w-none">
+            <!-- Content will be loaded here -->
+          </div>
+        </div>
       </div>
     </div>
   </div>
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit-icons.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
-<script src="template.js"></script>
-<script>
-  const contentElement = document.getElementById('content');
-
-  function showLoading() {
-    const loadingElement = document.createElement('div');
-    loadingElement.className = 'loading';
-    contentElement.appendChild(loadingElement);
-  }
-
-  function hideLoading() {
-    const loadingElement = document.querySelector('.loading');
-    if (loadingElement) {
-      loadingElement.remove();
+  <style>
+    /* 改善載入內容的樣式 */
+    #content {
+      min-height: 200px;
     }
-  }
 
-  async function navigateTo(page) {
-    showLoading();
-    try {
-      const res = await fetch(`https://muki.tw/${page}`);
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
+    #content img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 0.5rem;
+      margin: 1rem 0;
+    }
+
+    #content h1,
+    #content h2,
+    #content h3,
+    #content h4,
+    #content h5,
+    #content h6 {
+      color: #1f2937;
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    #content p {
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+
+    #content a {
+      color: #2563eb;
+      text-decoration: underline;
+    }
+
+    #content a:hover {
+      color: #1d4ed8;
+    }
+
+    #content code {
+      background-color: #f3f4f6;
+      padding: 0.125rem 0.25rem;
+      border-radius: 0.25rem;
+      font-family: 'Courier New', monospace;
+    }
+
+    #content pre {
+      background-color: #1f2937;
+      color: #f9fafb;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      overflow-x: auto;
+      margin: 1rem 0;
+    }
+
+    #content pre code {
+      background-color: transparent;
+      padding: 0;
+      color: inherit;
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
+  <script src="template.js"></script>
+  <script>
+    const contentElement = document.getElementById('content');
+
+    function showLoading() {
+      const loadingElement = document.createElement('div');
+      loadingElement.className = 'flex items-center justify-center py-8';
+      loadingElement.innerHTML = `
+      <div class="flex items-center space-x-2">
+        <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+        <span class="text-gray-600">載入中...</span>
+      </div>
+    `;
+      contentElement.appendChild(loadingElement);
+    }
+
+    function hideLoading() {
+      const loadingElement = contentElement.querySelector('.flex.items-center.justify-center');
+      if (loadingElement) {
+        loadingElement.remove();
       }
-      const htmlContent = await res.text();
-      const extractedContent = extractContent(htmlContent);
-      history.pushState({ page, content: extractedContent }, page, `/${page}`);
-      updateContent(extractedContent);
-    } catch (error) {
-      console.error('Fetch error:', error);
-      updateContent('載入失敗，請稍後再試。');
-    } finally {
-      hideLoading();
     }
-  }
 
-  function extractContent(htmlString) {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(htmlString, 'text/html');
-    const targetDiv = doc.querySelector('.single-content-inner');
-
-    if (targetDiv) {
-      return targetDiv.innerHTML;
-    } else {
-      // 如果找不到指定的 div，嘗試獲取 body 內容
-      const bodyContent = doc.body.innerHTML;
-      return bodyContent || '找不到指定的內容';
+    async function navigateTo(page) {
+      showLoading();
+      try {
+        const res = await fetch(`https://muki.tw/${page}`);
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        const htmlContent = await res.text();
+        const extractedContent = extractContent(htmlContent);
+        history.pushState({ page, content: extractedContent }, page, `/${page}`);
+        updateContent(extractedContent);
+      } catch (error) {
+        console.error('Fetch error:', error);
+        updateContent('載入失敗，請稍後再試。');
+      } finally {
+        hideLoading();
+      }
     }
-  }
 
-  function updateContent(content) {
-    contentElement.innerHTML = content;
-  }
+    function extractContent(htmlString) {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(htmlString, 'text/html');
+      const targetDiv = doc.querySelector('.single-content-inner');
 
-  document.querySelectorAll('nav a').forEach(link => {
-    link.addEventListener('click', function (e) {
-      e.preventDefault();
-      const page = this.getAttribute('href').replace(/^\//, '');
-      navigateTo(page);
+      if (targetDiv) {
+        return targetDiv.innerHTML;
+      } else {
+        // 如果找不到指定的 div，嘗試獲取 body 內容
+        const bodyContent = doc.body.innerHTML;
+        return bodyContent || '找不到指定的內容';
+      }
+    }
+
+    function updateContent(content) {
+      contentElement.innerHTML = content;
+    }
+
+    document.querySelectorAll('nav a').forEach(link => {
+      link.addEventListener('click', function (e) {
+        e.preventDefault();
+        const page = this.getAttribute('href').replace(/^\//, '');
+        navigateTo(page);
+      });
     });
-  });
 
-  window.onpopstate = async function (event) {
-    if (event.state && event.state.content) {
-      updateContent(event.state.content);
-    } else if (event.state && event.state.page) {
-      await navigateTo(event.state.page);
-    }
-  };
+    window.onpopstate = async function (event) {
+      if (event.state && event.state.content) {
+        updateContent(event.state.content);
+      } else if (event.state && event.state.page) {
+        await navigateTo(event.state.page);
+      }
+    };
 
-  window.addEventListener('load', async function () {
-    const initialPage = 'cdn-tailwindcss-vscode-enable-tailwindcss-intellisense/';
-    await navigateTo(initialPage);
-  });
-</script>
+    window.addEventListener('load', async function () {
+      const initialPage = 'cdn-tailwindcss-vscode-enable-tailwindcss-intellisense/';
+      await navigateTo(initialPage);
+    });
+  </script>
 </body>
+
 </html>

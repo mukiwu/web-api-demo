@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="sidebar.css">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/css/uikit.min.css" />
-  <title>用 video 實作影音播放功能  | Web API 系列文章 | MUKI space*</title>
+  <title>用 video 實作影音播放功能 | Browser Web API 系列文章 | MUKI space*</title>
 </head>
-<body>
+
+<body class="bg-gray-50 h-screen overflow-hidden">
   <style>
     :root {
       --base: #c3efe9;
@@ -15,126 +18,136 @@
       --range: 0%;
     }
 
-    .video-controller {
-      width: 300px;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
 
-    .controls {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 10px;
-    }
-    
+
     .highlight {
-      background-color: #ffff99;
+      background-color: #fef3c7 !important;
+      border-color: #f59e0b !important;
     }
   </style>
-<div class="uk-container-expand">
-  <div class="uk-grid-divider" uk-grid>
-    <div id="sidebar" class="uk-width-1-5@m"></div>
-    <div class="uk-width-3-5@m" uk-height-viewport="expand: true">
-      <article class="uk-article uk-padding uk-padding-remove-horizontal@m">
-        <h1 class="uk-article-title uk-margin-bottom">用 Video 實作影音播放功能</h1>
-        <div uk-alert>
-          <p class="uk-margin">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10351844" class="uk-text-primary">用 Audio 和 Video API 打造自己的影音平台 II</a></p>
+  <div class="flex h-full">
+    <!-- Sidebar -->
+    <div id="sidebar" class="w-80 flex-shrink-0"></div>
+
+    <!-- Main Content -->
+    <div class="flex-1 min-h-screen overflow-y-auto">
+      <div class="px-8 py-8">
+        <h1 class="text-4xl font-bold text-gray-900 mb-6">用 Video 實作影音播放功能</h1>
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
+          <p class="mb-4 leading-none">完整文章：<a href="https://ithelp.ithome.com.tw/articles/10351844"
+              class="text-blue-600 hover:text-blue-800 font-medium underline">用 Audio 和 Video API 打造自己的影音平台 II</a></p>
           <p>(範例有調整過，會跟文章內容有些許不同)</p>
         </div>
-        <div class="video-controller">
-          <video id="video" width="300" controls class="uk-margin uk-width-1-1">
+        <!-- Video Player -->
+        <div class="mb-6">
+          <video id="video" width="300" controls class="w-full max-w-md rounded-lg border border-gray-300 shadow-sm">
             <source src="video.mp4" type="video/mp4">
           </video>
-          <dl id="hint" class="uk-description-list">
-            <dt id="hint-5">第五秒</dt>
-            <dd id="content-5">我是第五秒的內容</dd>
-            <dt id="hint-10">第十秒</dt>
-            <dd id="content-10">我是第十秒的內容</dd>
-          </dl>
-          <button id="playPause" class="uk-button uk-button-default">播放</button>
-          <button id="pipButton" class="uk-button uk-button-default">子母畫面</button>
         </div>
-      </article>
+
+        <!-- Video Controls -->
+        <div class="flex flex-wrap gap-4 mb-6">
+          <button id="playPause"
+            class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200">
+            播放
+          </button>
+          <button id="pipButton"
+            class="bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200">
+            子母畫面
+          </button>
+        </div>
+
+        <!-- Video Hints -->
+        <div class="max-w-md">
+          <dl id="hint" class="space-y-4">
+            <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+              <dt id="hint-5" class="font-semibold text-gray-900 mb-2">第五秒</dt>
+              <dd id="content-5" class="text-gray-700">我是第五秒的內容</dd>
+            </div>
+            <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+              <dt id="hint-10" class="font-semibold text-gray-900 mb-2">第十秒</dt>
+              <dd id="content-10" class="text-gray-700">我是第十秒的內容</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
     </div>
   </div>
-</div>
-</html>
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.21.16/dist/js/uikit-icons.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
-<script src="template.js"></script>
-<script>
-  // 獲取 DOM 元素
-  const video = document.getElementById('video');
-  const hint = document.getElementById('hint');
-  const playButton = document.getElementById('playPause');
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.2.4/nunjucks.min.js"></script>
+  <script src="template.js"></script>
+  <script>
+    // 獲取 DOM 元素
+    const video = document.getElementById('video');
+    const hint = document.getElementById('hint');
+    const playButton = document.getElementById('playPause');
 
-  // 播放/暫停功能
-  function togglePlay() {
-    if (video.paused) {
-      video.play();
-      playButton.textContent = '暫停';
-    } else {
-      video.pause();
-      playButton.textContent = '播放';
-    }
-  }
-
-  // 子母畫面功能
-  async function togglePiP() {
-  try {
-    if (video !== document.pictureInPictureElement) {
-      await video.requestPictureInPicture();
-    } else {
-      await document.exitPictureInPicture();
+    // 播放/暫停功能
+    function togglePlay() {
+      if (video.paused) {
+        video.play();
+        playButton.textContent = '暫停';
+      } else {
+        video.pause();
+        playButton.textContent = '播放';
       }
-    } catch (error) {
-      console.error(error);
     }
-}
 
-  pipButton.addEventListener('click', togglePiP);
-  playButton.addEventListener('click', togglePlay);
-  
-  video.addEventListener('timeupdate', () => {
-    // 第五秒時顯示提示並高亮第一組內容
-    if (video.currentTime >= 5 && video.currentTime < 6) {
-      hint.style.display = 'block';
-      document.getElementById('hint-5').classList.add('highlight');
-      document.getElementById('content-5').classList.add('highlight');
-    } 
-    // 第十秒時高亮第二組內容
-    else if (video.currentTime >= 10 && video.currentTime < 11) {
-      hint.style.display = 'block';
-      document.getElementById('hint-10').classList.add('highlight');
-      document.getElementById('content-10').classList.add('highlight');
+    // 子母畫面功能
+    async function togglePiP() {
+      try {
+        if (video !== document.pictureInPictureElement) {
+          await video.requestPictureInPicture();
+        } else {
+          await document.exitPictureInPicture();
+        }
+      } catch (error) {
+        console.error(error);
+      }
     }
-    // 其他時間移除所有高亮
-    else {
-      document.getElementById('hint-5').classList.remove('highlight');
-      document.getElementById('content-5').classList.remove('highlight');
-      document.getElementById('hint-10').classList.remove('highlight');
-      document.getElementById('content-10').classList.remove('highlight');
-    }
-  });
 
-  video.addEventListener('waiting', () => {
-    console.log('緩衝中...');
-  });
+    pipButton.addEventListener('click', togglePiP);
+    playButton.addEventListener('click', togglePlay);
 
-  video.addEventListener('canplay', () => {
-    console.log('可以播放');
-  });
+    video.addEventListener('timeupdate', () => {
+      // 第五秒時顯示提示並高亮第一組內容
+      if (video.currentTime >= 5 && video.currentTime < 6) {
+        hint.style.display = 'block';
+        document.getElementById('hint-5').classList.add('highlight');
+        document.getElementById('content-5').classList.add('highlight');
+      }
+      // 第十秒時高亮第二組內容
+      else if (video.currentTime >= 10 && video.currentTime < 11) {
+        hint.style.display = 'block';
+        document.getElementById('hint-10').classList.add('highlight');
+        document.getElementById('content-10').classList.add('highlight');
+      }
+      // 其他時間移除所有高亮
+      else {
+        document.getElementById('hint-5').classList.remove('highlight');
+        document.getElementById('content-5').classList.remove('highlight');
+        document.getElementById('hint-10').classList.remove('highlight');
+        document.getElementById('content-10').classList.remove('highlight');
+      }
+    });
 
-  // 檢查緩衝進度
-  setInterval(() => {
-  const buffered = video.buffered;
-  if (buffered.length > 0) {
-      const bufferedEnd = buffered.end(buffered.length - 1);
-      console.log(`已緩衝 ${bufferedEnd} 秒`);
-  }
-}, 1000);
+    video.addEventListener('waiting', () => {
+      console.log('緩衝中...');
+    });
 
-</script>
+    video.addEventListener('canplay', () => {
+      console.log('可以播放');
+    });
+
+    // 檢查緩衝進度
+    setInterval(() => {
+      const buffered = video.buffered;
+      if (buffered.length > 0) {
+        const bufferedEnd = buffered.end(buffered.length - 1);
+        console.log(`已緩衝 ${bufferedEnd} 秒`);
+      }
+    }, 1000);
+
+  </script>
+</body>
+
 </html>
